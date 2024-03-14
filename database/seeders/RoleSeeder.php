@@ -13,19 +13,20 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
+        $rolSU = Role::create(['name' => 'super_usuario']);
         $rolAdmin = Role::create(['name' => 'administrador']);
         $rolFiguraPublica = Role::create(['name' => 'figura_publica']);
         $rolCapturista = Role::create(['name' => 'capturista']);
 
         //INTENTAR HACER UN PERMISO POR CADA RUTA
-        Permission::create(['name' => 'crudUsuarios.index'])->syncRoles([$rolAdmin]);
-        Permission::create(['name' => 'crudUsuarios.create'])->syncRoles([$rolAdmin]);
-        Permission::create(['name' => 'crudUsuarios.edit'])->syncRoles([$rolAdmin]);
-        Permission::create(['name' => 'crudUsuarios.delete'])->syncRoles([$rolAdmin]);
-        Permission::create(['name' => 'capturarProspecto.index'])->syncRoles([$rolAdmin, $rolFiguraPublica, $rolCapturista]);
-        Permission::create(['name' => 'capturarProspecto.create'])->syncRoles([$rolAdmin, $rolFiguraPublica, $rolCapturista]);
-        Permission::create(['name' => 'capturarProspecto.edit'])->syncRoles([$rolAdmin, $rolFiguraPublica, $rolCapturista]);
-        Permission::create(['name' => 'capturarProspecto.delete'])->syncRoles([$rolAdmin, $rolFiguraPublica, $rolCapturista]);
+        Permission::create(['name' => 'crudUsuarios.index'])->syncRoles([$rolSU, $rolAdmin]);
+        Permission::create(['name' => 'crudUsuarios.create'])->syncRoles([$rolSU, $rolAdmin]);
+        Permission::create(['name' => 'crudUsuarios.edit'])->syncRoles([$rolSU, $rolAdmin]);
+        Permission::create(['name' => 'crudUsuarios.delete'])->syncRoles([$rolSU, $rolAdmin]);
+        Permission::create(['name' => 'capturarProspecto.index'])->syncRoles([$rolSU, $rolAdmin, $rolFiguraPublica, $rolCapturista]);
+        Permission::create(['name' => 'capturarProspecto.create'])->syncRoles([$rolSU, $rolAdmin, $rolFiguraPublica, $rolCapturista]);
+        Permission::create(['name' => 'capturarProspecto.edit'])->syncRoles([$rolSU, $rolAdmin, $rolFiguraPublica, $rolCapturista]);
+        Permission::create(['name' => 'capturarProspecto.delete'])->syncRoles([$rolSU, $rolAdmin, $rolFiguraPublica, $rolCapturista]);
 
 
     }

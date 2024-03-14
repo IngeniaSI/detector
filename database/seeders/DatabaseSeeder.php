@@ -25,6 +25,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'emiliomendoza20@hotmail.com',
             'password' => Hash::make('123'),
             'email_verified_at' => Date("Y-m-d H:i:s"),
-        ])->assignRole('administrador');
+        ])->assignRole('super_usuario');
     }
 }
