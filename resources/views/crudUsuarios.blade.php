@@ -24,6 +24,11 @@
         </style>
 </head>
 <body>
+    @if (session()->has('mensaje'))
+        <script>
+            alert('{{session("mensaje")}}');
+        </script>
+    @endif
     {{-- FORMULARIO DE AGREGAR USUARIO --}}
     <form id="formularioCrearUsuario" action="{{route('crudUsuario.crear')}}" method="post" style=" @if (!session()->has('formularioCrearErrores')) display:none; @endif ">
         <h3>Crear usuario</h3>
@@ -49,15 +54,12 @@
             <h5>{{$message}}</h5>
         @enderror
         <h4>Contraseña</h4>
-        <input type="password" name="contrasenia" value="{{old('contrasenia')}}">
+        <input type="password" class="contraseniaRandom" name="contrasenia" value="{{old('contrasenia')}}">
         @error('contrasenia')
             <h5>{{$message}}</h5>
         @enderror
-        <h4>Repetir Contraseña</h4>
-        <input type="password" name="repetirContrasenia" value="{{old('repetirContrasenia')}}">
-        @error('repetirContrasenia')
-            <h5>{{$message}}</h5>
-        @enderror
+        <button class="botonRevelarContrasenia" type="button">Revelar contraseña</button>
+        <button class="botonGenerarClaveRandom" type="button">Generar nueva contraseña</button>
         <h4>Roles</h4>
         <select name="rolUsuario">
             <option value="-1">Selecciona un rol</option>
@@ -104,13 +106,14 @@
             <h5>{{$message}}</h5>
         @enderror
         <h4>Contraseña</h4>
-        <input type="password" name="contrasenia" value="{{old('contrasenia')}}">
+        <input type="password" class="contraseniaRandom" name="contrasenia" value="{{old('contrasenia')}}">
         @error('contrasenia')
             <h5>{{$message}}</h5>
         @enderror
-        <button type="button">Generar nueva contraseña</button>
+        <button class="botonRevelarContrasenia" type="button">Revelar contraseña</button>
+        <button class="botonGenerarClaveRandom" type="button">Generar nueva contraseña</button>
         <h4>Roles</h4>
-        <select id="modificarRolUsuario" name="rolUsuario">
+        <select id="modificarRolUsuario" name="rolUsuario" @disabled(old('rolUsuario') == null)>
             @foreach ($roles as $rol)
                 <option value="{{$rol->name}}">{{str_replace('_', ' ', $rol->name)}}</option>
             @endforeach
@@ -138,6 +141,10 @@
 
         </tbody>
     </table>
+    @error('errorBorrar')
+        <h5>{{$message}}</h5>
+    @enderror
+
     <hr>
     <form action="{{route('logout')}}" method="post">
         @csrf
@@ -145,7 +152,23 @@
     </form>
     {{-- PASAR LIBRERIAS A PLANTILLA --}}
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="/js/generador-contrasenias.js" text="text/javascript"></script>
     <script text="text/javascript">
+    //FUNCION PARA ASIGNAR UNA CLAVE ALEATORIA Y ASIGNARLA EN EL FORMULARIO DE MODIFICAR
+    $('.botonGenerarClaveRandom').click(function (e) {
+        $('.contraseniaRandom').val(getPassword());
+    });
+
+    //FUNCION PARA ASIGNAR UNA CLAVE ALEATORIA Y ASIGNARLA EN EL FORMULARIO DE MODIFICAR
+    $('.botonRevelarContrasenia').click(function (e) {
+        if($('.contraseniaRandom').attr('type') == 'password'){
+            $('.contraseniaRandom').attr('type', 'text')
+        }
+        else{
+            $('.contraseniaRandom').attr('type', 'password')
+        }
+    });
+
     // FUNCION PARA CARGAR TABLA DE USUARIOS
     $(document).ready(function () {
         $.when(
@@ -155,6 +178,12 @@
                 data: [],
                 contentType: "application/x-www-form-urlencoded",
                 success: function (response) {
+                    if(response.length == 0){
+                        var nuevaFila = $('<tr>').append(
+                            $('<td>').attr('colspan', 99).text('Sin registros')
+                        );
+                        $('#tablaUsuarios tbody').append(nuevaFila);
+                    }
                     $.each(response, function (index, elemento) {
                         var nuevaFila = $('<tr>').append(
                             $('<td>').text(elemento.email),
@@ -218,6 +247,12 @@
                     $('#modificarApellidoPaterno').val(response[0].apellido_paterno);
                     $('#modificarApellidoMaterno').val(response[0].apellido_materno);
                     $('#modificarCorreo').val(response[0].email);
+                    if(response[1] == 'super_usuario'){
+                        $('#modificarRolUsuario').prop('disabled', true);
+                    }
+                    else{
+                        $('#modificarRolUsuario').prop('disabled', false);
+                    }
                     $('#modificarRolUsuario').val(response[1]);
 
                     $('#formularioModificarUsuario').attr('action', ruta);

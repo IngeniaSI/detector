@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('bitacoras', function (Blueprint $table) {
+        Schema::create('localidads', function (Blueprint $table) {
             $table->id();
-            $table->string('accion');
-            $table->string('url');
-            $table->string('ip');
+            $table->string('nombre');
             $table->string('tipo');
-            $table->foreignId('user_id')->nullable()->constrained();
+            $table->foreignId('seccion_id');
             $table->timestamps();
         });
     }
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('bitacoras');
+        Schema::dropIfExists('localidads');
     }
 };
