@@ -80,7 +80,7 @@
         <hr>
     </form>
     {{-- FORMULARIO DE MODIFICAR USUARIO --}}
-    <form id="formularioModificarUsuario" action="" method="post" style=" @if (!session()->has('formularioModificarErrores')) display:none; @endif ">
+    <form id="formularioModificarUsuario" action="@if (session()->has('formularioModificarErrores')) {{route('crudUsuario.editar', session('usuarioAModificar'))}} @endif " method="post" style=" @if (!session()->has('formularioModificarErrores')) display:none; @endif ">
         <h3>Modificar usuario</h3>
         @csrf
         <h4>Crear usuario</h4>
@@ -247,7 +247,7 @@
                     $('#modificarApellidoPaterno').val(response[0].apellido_paterno);
                     $('#modificarApellidoMaterno').val(response[0].apellido_materno);
                     $('#modificarCorreo').val(response[0].email);
-                    if(response[1] == 'super_usuario'){
+                    if(response[1] == 'SUPER_ADMINISTRADOR'){
                         $('#modificarRolUsuario').prop('disabled', true);
                     }
                     else{
