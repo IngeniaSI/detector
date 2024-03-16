@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Detector</title>
+        <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+        <link href="css/styles.css" rel="stylesheet" />
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    </head>
+    <body class="sb-nav-fixed">
+        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+            <!-- Navbar Brand-->
+            <a class="navbar-brand ps-3" href="index.html">Detector</a>
+            <!-- Sidebar Toggle-->
+            <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
+            <!-- Navbar Search-->
+            <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
+                <div class="input-group">
+                    <!-- <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+                    <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button> -->
+                </div>
+            </form>
+            <!-- Navbar-->
+            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i> Eduardo Reyes Mtz</a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <!-- <li><a class="dropdown-item" href="#!">Settings</a></li>
+                        <li><a class="dropdown-item" href="#!">Activity Log</a></li> -->
+                        <li><hr class="dropdown-divider" /></li>
+                        <li><a class="dropdown-item" href="./login.html">Cerrar Sesión</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+        <div id="layoutSidenav">
+            <div id="layoutSidenav_nav">
+                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                    <div class="sb-sidenav-menu">
+                        <div class="nav">
+                            <div class="sb-sidenav-menu-heading">Menú</div>
+                            <a class="nav-link" href="index.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-chart-bar"></i></div>
+                                Estadística
+                            </a>
+                            <a class="nav-link" href="encuesta.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-file"></i></div>
+                                Encuesta
+                            </a>
+                            <a class="nav-link" href="tablaEncuesta.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                                Tabla de Encuestas
+                            </a>
+                            <a class="nav-link" href="mapa.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-map"></i></div>
+                                Mapa Geoespacial
+                            </a>
+                            
+                            <a class="nav-link" href="usuarios.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                Usuarios
+                            </a>
+                            <a class="nav-link" href="bitacora.html">
+                                <div class="sb-nav-link-icon"><i class="fas fa-info"></i></div>
+                                Bitácora
+                            </a>
+                        </div>
+                    </div>
+                    <div class="sb-sidenav-footer">
+                        <div class="small">Usuario:</div>
+                        Administrador
+                    </div>
+                </nav>
+            </div>
+            <div id="layoutSidenav_content">
+                <br />
+                <div class="container">
+                  <section class="row">
+                    <div class="col-md-12">
+                      <h1 class="text-center">Formato de Encuesta</h1>
+                    </div>
+                  </section>
+                  <hr><br />
+                  <section class="row">
+                    <section class="col-md-12">
+                      <h3>Datos Generales</h3>
+                      <p></p>
+                    </section>
+                  </section>
+                  <section class="row">
+                    <section class="col-md-12">
+                      <section class="row">
+                        <div class="col-md-3">
+                          <label for="tipoAtencion">Campaña: *</label>
+                          <select class="form-control" id="tipoAtencion">
+                          <option value=""> </option>
+                          <option value="ce">Campaña 1</option>
+                          <option value="farm">Campaña 2</option>
+                        </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tipoAtencion">Sección: *</label>
+                            <select class="form-control" id="tipoAtencion">
+                                <option value=""> </option>
+                            <option value="ce">Sección 1</option>
+                            <option value="farm">Sección 2</option>
+                          </select>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                              <label for="fechaActual">Fecha Actual: *</label>
+                              <input type="date" class="form-control" id="fechaActual" value="2024-03-14" required>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tipoAtencion">Sexo: *</label>
+                            <select class="form-control" id="tipoAtencion">
+                                <option value=""> </option>
+                            <option value="ce">Hombre</option>
+                            <option value="farm">Mujer</option>
+                          </select>
+                        </div>
+                      </section>
+                      <section class="row">
+                        <div class="col-md-2">
+                          <div class="form-group">
+                            <label for="nombreCompleto">Nombre: *</label>
+                            <input type="text" class="form-control" id="nombreCompleto" maxlength="128"  required>
+                          </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                              <label for="nombreCompleto">Apellido Paterno: *</label>
+                              <input type="text" class="form-control" id="nombreCompleto" maxlength="128"  required>
+                            </div>
+                          </div>
+                          <div class="col-md-2">
+                            <div class="form-group">
+                              <label for="nombreCompleto">Apellido Materno: *</label>
+                              <input type="text" class="form-control" id="nombreCompleto" maxlength="128"  required>
+                            </div>
+                          </div>
+                        <div class="col-md-2">
+                            <label for="tipoAtencion">Fecha de Nacimiento: *</label>
+                            <input type="date" class="form-control" id="fechaActual" value="" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="telefono">Telefono Fijo: *</label>
+                            <input type="number" class="form-control" id="telefono" maxlength="10" required/>
+                        </div>
+                        <div class="col-md-2">
+                            <label for="telefono">Telefono Celular: *</label>
+                            <input type="number" class="form-control" id="telefono" maxlength="10" required/>
+                        </div>
+                      </section>
+                      <section class="row">
+                        <div class="col-md-4">
+                            <label for="tipoAtencion">Correo Electronico: *</label>
+                            <input type="email" class="form-control" id="telefono"equired/>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="tipoAtencion">Nombre Facebook: *</label>
+                            <input type="text" class="form-control" id="telefono"  required/>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="tipoAtencion">Escolaridad: *</label>
+                            <select class="form-control" id="tipoAtencion">
+                                <option value=""> </option>
+                            <option value="ce">Primaria</option>
+                            <option value="farm">Secundaria</option>
+                            <option value="farm">Preparatoria</option>
+                          </select>
+                        </div>
+                    
+                      </section>
+                      <hr><br />
+                  <section class="row">
+                    <section class="col-md-12">
+                      <h3>Domicilio</h3>
+                      <p></p>
+                    </section>
+                  </section>
+                      <section class="row">
+                        <div class="col-md-4">
+                            <label for="tipoAtencion">Municipio: *</label>
+                            <select class="form-control" id="tipoAtencion">
+                                <option value=""> </option>
+                            <option value="ce">La Paz</option>
+                            <option value="farm">Cabo San Lucas</option>
+                          </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="tipoAtencion">Localidad: *</label>
+                            <select class="form-control" id="tipoAtencion">
+                                <option value=""> </option>
+                            <option value="ce">La Paz</option>
+                            <option value="farm">Cabo San Lucas</option>
+                          </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="tipoAtencion">Colonia: *</label>
+                            <select class="form-control" id="tipoAtencion">
+                                <option value=""> </option>
+                            <option value="ce">Centro</option>
+                            <option value="farm">Indeco</option>
+                            <option value="farm">Garzas</option>
+                          </select>
+                        </div>
+                    
+                      </section>
+
+                      
+                      <section class="row">
+                        <div class="col-md-3">
+                            <label for="tipoAtencion">Calle Principal: *</label>
+                            <input type="text" class="form-control" id="telefono"  required/>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tipoAtencion">Calle Lateral 1: *</label>
+                            <input type="text" class="form-control" id="telefono"  required/>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tipoAtencion">Calle Lateral 2: *</label>
+                            <input type="text" class="form-control" id="telefono"  required/>
+                          </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tipoAtencion">Numero Exterior: *</label>
+                            <input type="number" class="form-control" id="telefono"  required/>
+                          </select>
+                        </div>
+                        
+                      </section>
+                      </section>
+                    </section>
+                  </section>
+                  <hr />
+                  <br>
+                  <section class="row">
+                    <section class="col-md-12">
+                      <h3>Identificación</h3>
+                      <p></p>
+                    </section>
+                  </section>
+                      
+
+                      
+                      <section class="row">
+                        <div class="col-md-4">
+                            <label for="tipoAtencion">CURP: *</label>
+                            <input type="text" class="form-control" id="telefono"  required/>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="tipoAtencion">Clave Electoral: *</label>
+                            <input type="text" class="form-control" id="telefono"  required/>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="tipoAtencion">INE *</label>
+                            <input type="file" class="form-control" id="telefono"  required/>
+                          </select>
+                        </div>
+                        
+                        
+                      </section>
+                      </section>
+                    </section>
+                  </section>
+                  <hr />
+                  <!--  Preguntas  -->
+                  <section class="row">
+                    <div class="col-md-12">
+                      <h3>Preguntas</h3>
+                      <p></p>
+                    </div>
+                  </section>
+                  <!--  PREGUNTA 1  -->
+                  <section class="row">
+                    <hr>
+                    <div class="col-md-6">
+                      <p>1- ¿"Conocia la campaña?</p>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="radio">
+                      <input type="radio" name="pregunta1" id="pregunta1a" value="SI"> Si
+                    </label>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="radio">
+                      <input type="radio" name="pregunta1" id="preguntab" value="NO"> No
+                    </label>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="radio">
+                      <input type="radio" name="pregunta1" id="preguntac" value="NA"> Tal Vez
+                    </label>
+                    </div>
+
+                  </section>
+                  <!--  PREGUNTA 2  -->
+                  <section class="row">
+                    <hr>
+                    <div class="col-md-6">
+                      <p>2- ¿Votaria por esta campaña? </p>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="radio">
+                      <input type="radio" name="pregunta1" id="pregunta1a" value="SI"> Si
+                    </label>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="radio">
+                      <input type="radio" name="pregunta1" id="preguntab" value="NO"> No
+                    </label>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="radio">
+                      <input type="radio" name="pregunta1" id="preguntac" value="NA"> Tal Vez
+                    </label>
+                    </div>
+                  </section>
+                  <!--  PREGUNTA 3  -->
+                  <section class="row">
+                    <hr>
+                    <div class="col-md-6">
+                      <p>3- ¿Recomendaria esta campaña algun conocido? </p>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="radio">
+                      <input type="radio" name="pregunta1" id="pregunta1a" value="SI"> Si
+                    </label>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="radio">
+                      <input type="radio" name="pregunta1" id="preguntab" value="NO"> No
+                    </label>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="radio">
+                      <input type="radio" name="pregunta1" id="preguntac" value="NA"> Tal Vez
+                    </label>
+                    </div>
+                  </section>
+                  <!--  PREGUNTA 4  -->
+                  <section class="row">
+                    <hr>
+                    <div class="col-md-6">
+                      <p>4- ¿Tiene algun familiar en alguna campaña?</p>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="radio">
+                      <input type="radio" name="pregunta1" id="pregunta1a" value="SI"> Si
+                    </label>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="radio">
+                      <input type="radio" name="pregunta1" id="preguntab" value="NO"> No
+                    </label>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="radio">
+                      <input type="radio" name="pregunta1" id="preguntac" value="NA"> Tal Vez
+                    </label>
+                    </div>
+                  </section>
+                  <!--  PREGUNTA 5  -->
+                  <section class="row">
+                    <hr>
+                    <div class="col-md-6">
+                      <p>5- ¿Estaria dispuesto compartir información de esta campaña?</p>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="radio">
+                      <input type="radio" name="pregunta1" id="pregunta1a" value="SI"> Si
+                    </label>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="radio">
+                      <input type="radio" name="pregunta1" id="preguntab" value="NO"> No
+                    </label>
+                    </div>
+                    <div class="col-md-2">
+                      <label class="radio">
+                      <input type="radio" name="pregunta1" id="preguntac" value="NA"> Tal Vez
+                    </label>
+                    </div>
+                  </section>
+                  <hr>
+                  <br>
+              
+                  <!--  Comentarios  -->
+                  <section class="row">
+                    <div class="col-md-12">
+                      <h3>Comentarios.</h3>
+                      <p></p>
+                    </div>
+                  </section>
+                  <section class="row">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="comment">Opcional:</label>
+                        <textarea class="form-control" rows="6" id="comentarios"></textarea>
+                      </div>
+                    </div>
+                  </section>
+                  <section class="row">
+                    <div class="col-md-12">
+                      <button type="button" class="btn btn-info" id="saveForm" onclick="saveForm">Guardar Encuesta</button>
+                      <button type="button" class="btn btn-danger" id="clearForm">Limpiar Encusta</button>
+                    </div>
+                  </section>
+                </div>
+              
+                <br /><br />
+                <footer class="container">
+                </footer>
+                <footer class="py-4 bg-light mt-auto">
+                    <div class="container-fluid px-4">
+                        <div class="d-flex align-items-center justify-content-between small">
+                            <div class="text-muted">Copyright &copy; IngeniaIS 2024</div>
+                           
+                            
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="js/scripts.js"></script>
+        <script>
+            var d = new Date();
+
+// // $("input:radio[name='pregunta']:checked").val();
+
+// guardar todos los datos.
+$('#saveForm').click(() => {
+    var datas = {
+        tda: $('#tipoAtencion'),
+        fac: $('#fechaActual'),
+        fat: $('#fechaAtencion'),
+        man: $('#nombreCompleto'),
+        edd: $('#edadEncuestado'),
+        idn: $('#idIdentificacion'),
+        tel: $('#telefono'),
+        eps: $('#epsPaciente'),
+        p01: $('input:radio[name=pregunta1]:checked'),
+        p02: $('input:radio[name=pregunta2]:checked'),
+        p03: $('input:radio[name=pregunta3]:checked'),
+        p04: $('input:radio[name=pregunta4]:checked'),
+        p05: $('input:radio[name=pregunta5]:checked'),
+        p06: $('input:radio[name=pregunta6]:checked'),
+        p07: $('input:radio[name=pregunta7]:checked'),
+        p08: $('input:radio[name=pregunta8]:checked'),
+        p09: $('input:radio[name=pregunta9]:checked'),
+        p10: $('input:radio[name=pregunta10]:checked'),
+        p11: $('input:radio[name=pregunta11]:checked'),
+        p12: $('input:radio[name=pregunta12]:checked'),
+        p13: $('#pregunta13'),
+        p14: $('#pregunta14'),
+        com: $('#comentarios'),
+    }
+    console.log('ejecutando...')
+    console.log(datas)
+    console.log(d)
+});
+
+// $('#clearForm').click(()=>{
+//   alert('hola mundos')
+// });
+
+
+        </script>
+    </body>
+</html>
