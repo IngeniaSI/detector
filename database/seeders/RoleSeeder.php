@@ -14,13 +14,13 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         //ACCESO A TODO CON CANDADO PARA NO BORRAR
-        $rolSU = Role::create(['name' => 'super_usuario']);
+        $rolSU = Role::create(['name' => 'SUPER_ADMINISTRADOR']);
         //ACCESO A TODO Y ESTADISTICOS
-        $rolAdmin = Role::create(['name' => 'administrador']);
+        $rolAdmin = Role::create(['name' => 'ADMINISTRADOR']);
         //CONTROL TOTAL DEL CRUD DE ENCUESTAS
-        $rolSupervisor = Role::create(['name' => 'supervisor']);
+        $rolSupervisor = Role::create(['name' => 'SUPERVISOR']);
         //CAPTURA Y EDICION DE ENCUESTAS
-        $rolCapturista = Role::create(['name' => 'capturista']);
+        $rolCapturista = Role::create(['name' => 'CAPTURISTA']);
 
         //INTENTAR HACER UN PERMISO POR CADA RUTA
         Permission::create(['name' => 'crudUsuarios.index'])->syncRoles([$rolSU, $rolAdmin]);

@@ -23,7 +23,7 @@ class crudUsuariosController extends Controller
         $bitacora->user_id = $user->id;
         $bitacora->save();
 
-        $roles = Role::where('name', '!=', 'super_usuario')->get(['name']);
+        $roles = Role::where('name', '!=', 'SUPER_ADMINISTRADOR')->get(['name']);
         return view('crudUsuarios', compact('roles'));
     }
     public function todosUsuarios(Request $formulario){
@@ -103,6 +103,7 @@ class crudUsuariosController extends Controller
 
     }
     public function editarUsuario(Request $formulario, User $usuario){
+        session()->flash('usuarioAModificar', $usuario->id);
         session()->flash('formularioModificarErrores', true);
         $formulario->validate([
             'nombre' => 'required',
@@ -135,7 +136,7 @@ class crudUsuariosController extends Controller
 
                 $nombreRol = $usuario->getRoleNames()->first();
                 //VALIDAR NO ELIMIAR SUPER USUARIO
-                if($nombreRol != $formulario->rolUsuario && $nombreRol != 'super_usuario'){
+                if($nombreRol != $formulario->rolUsuario && $nombreRol != 'SUPER_ADMINISTRADOR'){
                     $usuario->removeRole($nombreRol);
                     $usuario->assignRole($formulario->rolUsuario);
                 }
@@ -153,7 +154,7 @@ class crudUsuariosController extends Controller
     }
     public function borrarUsuario(Request $formulario, User $usuario){
         $nombreRol = $usuario->getRoleNames()->first();
-        if($nombreRol == 'super_usuario'){
+        if($nombreRol == 'SUPER_ADMINISTRADOR'){
 
             $user = auth()->user();
             $bitacora = new bitacora();

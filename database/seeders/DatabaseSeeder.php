@@ -19,12 +19,12 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
 
         User::Create([
-            'nombre' => 'Emilio',
-            'apellido_paterno' => 'Mendoza',
-            'apellido_materno' => 'Sarmiento',
+            'nombre' => 'EMILIO',
+            'apellido_paterno' => 'MENDOZA',
+            'apellido_materno' => 'SARMIENTO',
             'email' => 'emiliomendoza20@hotmail.com',
             'password' => Hash::make('123'),
             'email_verified_at' => Date("Y-m-d H:i:s"),
-        ])->assignRole('super_usuario');
+        ])->assignRole('SUPER_ADMINISTRADOR');
     }
 }
