@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nombres');
             $table->string('apellido_paterno');
+            $table->string('apellido_materno');
             $table->string('genero');
             $table->string('telefono_celular');
             $table->string('telefono_fijo');

@@ -74,15 +74,15 @@ class crudUsuariosController extends Controller
         $bitacora->user_id = $user->id;
         $bitacora->save();
 
-        $buscarUsuario = User::where('email', $formulario->correo)->first();
+        $buscarUsuario = User::where('email', strtoupper($formulario->correo))->first();
         if(!isset($buscarUsuario)){
             try{
                 DB::beginTransaction();
                 $usuario = new User();
-                $usuario->nombre = $formulario->nombre;
-                $usuario->apellido_paterno = $formulario->apellido_paterno;
-                $usuario->apellido_materno = $formulario->apellido_materno;
-                $usuario->email = $formulario->correo;
+                $usuario->nombre = strtoupper($formulario->nombre);
+                $usuario->apellido_paterno = strtoupper($formulario->apellido_paterno);
+                $usuario->apellido_materno = strtoupper($formulario->apellido_materno);
+                $usuario->email = strtoupper($formulario->correo);
                 $usuario->password = Hash::make($formulario->contrasenia);
                 $usuario->save();
                 $usuario->assignRole($formulario->rolUsuario);
@@ -125,10 +125,10 @@ class crudUsuariosController extends Controller
         if(!isset($usuario->deteled_at)){
             try{
                 DB::beginTransaction();
-                $usuario->nombre = $formulario->nombre;
-                $usuario->apellido_paterno = $formulario->apellido_paterno;
-                $usuario->apellido_materno = $formulario->apellido_materno;
-                $usuario->email = $formulario->correo;
+                $usuario->nombre = strtoupper($formulario->nombre);
+                $usuario->apellido_paterno = strtoupper($formulario->apellido_paterno);
+                $usuario->apellido_materno = strtoupper($formulario->apellido_materno);
+                $usuario->email = strtoupper($formulario->correo);
                 if(isset($formulario->contrasenia) && $formulario->contrasenia != ""){
                     $usuario->password = Hash::make($formulario->contrasenia);
                 }

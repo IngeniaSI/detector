@@ -29,11 +29,11 @@ class iniciarSesionController extends Controller
         $bitacora->user_id = null;
         $bitacora->save();
 
-        $validarSiEliminado = User::where('email', $formulario->correo)->first();
+        $validarSiEliminado = User::where('email', strtoupper($formulario->correo))->first();
         if(isset($validarSiEliminado) && isset($validarSiEliminado->deleted_at)){
             return back()->withErrors(['email' => 'Credenciales incorrectas']);
         }
-        if (Auth::attempt(['email' => $formulario->correo, 'password' => $formulario->contrasenia])) {
+        if (Auth::attempt(['email' => strtoupper($formulario->correo), 'password' => $formulario->contrasenia])) {
             // Obtener el usuario de la sesion
             $user = auth()->user();
             return redirect()->route('crudUsuario.index');
