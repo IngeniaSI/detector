@@ -34,27 +34,27 @@
         <h3>Crear usuario</h3>
         @csrf
         <h4>Nombre</h4>
-        <input type="text" name="nombre" value="{{old('nombre')}}">
+        <input type="text" name="nombre" value="{{old('nombre')}}" minlength="3" maxlength="255">
         @error('nombre')
             <h5>{{$message}}</h5>
         @enderror
         <h4>Apellido paterno</h4>
-        <input type="text" name="apellido_paterno" value="{{old('apellido_paterno')}}">
+        <input type="text" name="apellido_paterno" value="{{old('apellido_paterno')}}" minlength="3" maxlength="255">
         @error('apellido_paterno')
             <h5>{{$message}}</h5>
         @enderror
         <h4>Apellido materno</h4>
-        <input type="text" name="apellido_materno" value="{{old('apellido_materno')}}">
+        <input type="text" name="apellido_materno" value="{{old('apellido_materno')}}" minlength="3" maxlength="255">
         @error('apellido_materno')
             <h5>{{$message}}</h5>
         @enderror
         <h4>Correo</h4>
-        <input type="email" name="correo" value="{{old('correo')}}">
+        <input type="email" name="correo" value="{{old('correo')}}" minlength="3" maxlength="255">
         @error('correo')
             <h5>{{$message}}</h5>
         @enderror
         <h4>Contraseña</h4>
-        <input type="password" class="contraseniaRandom" name="contrasenia" value="{{old('contrasenia')}}">
+        <input type="password" class="contraseniaRandom" name="contrasenia" value="{{old('contrasenia')}}" minlength="3" maxlength="255">
         @error('contrasenia')
             <h5>{{$message}}</h5>
         @enderror
@@ -86,27 +86,27 @@
         <h4>Crear usuario</h4>
         @csrf
         <h4>Nombre</h4>
-        <input type="text" id="modificarNombre" name="nombre" value="{{old('nombre')}}">
+        <input type="text" id="modificarNombre" name="nombre" value="{{old('nombre')}}" minlength="3" maxlength="255">
         @error('nombre')
             <h5>{{$message}}</h5>
         @enderror
         <h4>Apellido paterno</h4>
-        <input type="text" id="modificarApellidoPaterno" name="apellido_paterno" value="{{old('apellido_paterno')}}">
+        <input type="text" id="modificarApellidoPaterno" name="apellido_paterno" value="{{old('apellido_paterno')}}" minlength="3" maxlength="255">
         @error('apellido_paterno')
             <h5>{{$message}}</h5>
         @enderror
         <h4>Apellido materno</h4>
-        <input type="text" id="modificarApellidoMaterno" name="apellido_materno" value="{{old('apellido_materno')}}">
+        <input type="text" id="modificarApellidoMaterno" name="apellido_materno" value="{{old('apellido_materno')}}" minlength="3" maxlength="255">
         @error('apellido_materno')
             <h5>{{$message}}</h5>
         @enderror
         <h4>Correo</h4>
-        <input type="email" id="modificarCorreo" name="correo" value="{{old('correo')}}">
+        <input type="email" id="modificarCorreo" name="correo" value="{{old('correo')}}" minlength="3" maxlength="255">
         @error('correo')
             <h5>{{$message}}</h5>
         @enderror
         <h4>Contraseña</h4>
-        <input type="password" class="contraseniaRandom" name="contrasenia" value="{{old('contrasenia')}}">
+        <input type="password" class="contraseniaRandom" name="contrasenia" value="{{old('contrasenia')}}" minlength="3" maxlength="255">
         @error('contrasenia')
             <h5>{{$message}}</h5>
         @enderror

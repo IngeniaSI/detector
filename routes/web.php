@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\crudUsuariosController;
+use App\Http\Controllers\formularioSimpatizanteController;
 use App\Http\Controllers\iniciarSesionController;
+use App\Http\Controllers\tablaSimpatizantesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,3 +32,9 @@ Route::post('/gestor-usuarios/crear-usuario', [crudUsuariosController::class, 'c
 Route::post('/gestor-usuarios/editar-usuario-{usuario}', [crudUsuariosController::class, 'editarUsuario'])->name('crudUsuario.editar')->middleware('auth');
 Route::post('/gestor-usuarios/borrar-usuario-{usuario}', [crudUsuariosController::class, 'borrarUsuario'])->name('crudUsuario.borrar')->middleware('auth');
 
+Route::get('/simpatizantes', [tablaSimpatizantesController::class, 'index'])->name('crudSimpatizantes.index')->middleware('auth');
+Route::get('/simpatizantes/inicializar', [tablaSimpatizantesController::class, 'inicializar'])->name('crudSimpatizantes.inicializar')->middleware('auth');
+
+Route::get('/simpatizantes/agregar', [formularioSimpatizanteController::class, 'index'])->name('agregarSimpatizante.index')->middleware('auth');
+Route::get('/simpatizantes/agregar/inicializar', [formularioSimpatizanteController::class, 'inicializar'])->name('agregarSimpatizante.inicializar')->middleware('auth');
+Route::post('/simpatizantes/agregar/agregando', [formularioSimpatizanteController::class, 'agregandoSimpatizante'])->name('agregarSimpatizante.agregandoSimpatizante')->middleware('auth');

@@ -10,9 +10,9 @@
     <form action="{{route('login.comprobando')}}" method="post">
         @csrf
         <label for="">Correo</label>
-        <input type="email" name="correo" id="correo" min="3">
+        <input type="email" name="correo" id="correo" minlength="3" maxlength="255">
         <label for="">Contraseña</label>
-        <input type="password" name="contrasenia" id="contrasenia">
+        <input type="password" name="contrasenia" id="contrasenia" minlength="3" maxlength="255">
         <button>Iniciar sesion</button>
         @error('email')
             <h4>{{$message}}</h4>
