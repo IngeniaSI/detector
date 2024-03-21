@@ -38,3 +38,9 @@ Route::get('/simpatizantes/inicializar', [tablaSimpatizantesController::class, '
 Route::get('/simpatizantes/agregar', [formularioSimpatizanteController::class, 'index'])->name('agregarSimpatizante.index')->middleware('auth');
 Route::get('/simpatizantes/agregar/inicializar', [formularioSimpatizanteController::class, 'inicializar'])->name('agregarSimpatizante.inicializar')->middleware('auth');
 Route::post('/simpatizantes/agregar/agregando', [formularioSimpatizanteController::class, 'agregandoSimpatizante'])->name('agregarSimpatizante.agregandoSimpatizante')->middleware('auth');
+
+
+//Vista
+Route::get('/bitacora', [tablaSimpatizantesController::class, 'index'])->name('bitacora.index')->middleware('auth');
+Route::get('/estadistica', [tablaSimpatizantesController::class, 'index'])->name('estadistica.index')->middleware('auth');
+Route::get('/mapa', [tablaSimpatizantesController::class, 'index'])->name('mapa.index')->middleware('auth');

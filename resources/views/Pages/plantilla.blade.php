@@ -53,28 +53,28 @@
                     <div class="sb-sidenav-menu">
                         <div class="nav">
                             <div class="sb-sidenav-menu-heading">Menú</div>
-                            <a class="nav-link" href="index.html">
+                            <a class="nav-link" href="/estadistica">
                                 <div class="sb-nav-link-icon"><i class="fas fa-chart-bar"></i></div>
                                 Estadística
                             </a>
-                            <a class="nav-link" href="encuesta.html">
+                            <a class="nav-link" href="/simpatizantes/agregar">
                                 <div class="sb-nav-link-icon"><i class="fas fa-file"></i></div>
-                                Encuesta
+                                Agregar Simpatizantes
                             </a>
-                            <a class="nav-link" href="tablaEncuesta.html">
+                            <a class="nav-link" href="/simpatizantes">
                                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                Tabla de Encuestas
+                                Tabla de Simpatizantes
                             </a>
-                            <a class="nav-link" href="mapa.html">
+                            <a class="nav-link" href="/mapa">
                                 <div class="sb-nav-link-icon"><i class="fas fa-map"></i></div>
                                 Mapa Geoespacial
                             </a>
                             
-                            <a class="nav-link" href="usuarios.html">
+                            <a class="nav-link" href="/gestor-usuarios">
                                 <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
-                                Usuarios
+                                Usuarios del Sistema
                             </a>
-                            <a class="nav-link" href="bitacora.html">
+                            <a class="nav-link" href="/bitacora">
                                 <div class="sb-nav-link-icon"><i class="fas fa-info"></i></div>
                                 Bitácora
                             </a>
@@ -88,7 +88,9 @@
             </div>
             <div id="layoutSidenav_content">
                 <main>
+                   
                     @yield('cuerpo')
+                    
                 </main>
 
             </div>    

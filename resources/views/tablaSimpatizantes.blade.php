@@ -1,37 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>CRUD simpatizantes</title>
-    <style>
-        table {
-          font-family: arial, sans-serif;
-          border-collapse: collapse;
-          width: 100%;
-        }
+@extends('Pages.plantilla')
 
-        td, th {
-          border: 1px solid #dddddd;
-          text-align: left;
-          padding: 8px;
-        }
+@section('tittle')
+Tabla de Simpatizantes
+@endsection
 
-        tr:nth-child(even) {
-          background-color: #dddddd;
-        }
-        </style>
-</head>
-<body>
-    @if (session()->has('mensaje'))
+@section('cuerpo')
+@if (session()->has('mensaje'))
         <script>
             alert('{{session("mensaje")}}');
         </script>
     @endif
+    <br>
+    <center>
+
     <a href="{{route('agregarSimpatizante.index')}}">
-        <button>Agregar simpatizante</button>
+        <button class="btn btn-primary">Agregar Simpatizante</button>
     </a>
+    </center>
+    <br>
     {{-- TABLA DE USUARIOS --}}
     <table id="tablaUsuarios">
         <thead>
@@ -46,15 +32,26 @@
     @error('errorBorrar')
         <h5>{{$message}}</h5>
     @enderror
+@endsection
 
-    <hr>
-    <form action="{{route('logout')}}" method="post">
-        @csrf
-        <button>Cerrar sesion</button>
-    </form>
-    {{-- PASAR LIBRERIAS A PLANTILLA --}}
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <script text="text/javascript">
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="{{ asset('Plantilla/js/scripts.js') }}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+        <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.bootstrap4.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+        <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.colVis.min.js"></script>
+        <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+        <script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.min.js"></script>
+<script text="text/javascript">
 
     // FUNCION PARA CARGAR TABLA DE USUARIOS
     $(document).ready(function () {
@@ -101,8 +98,18 @@
         ).then(
             function( data, textStatus, jqXHR ) {
         });
-
+       
+            var table = $('#tablaUsuarios').DataTable( {
+            lengthChange: true,
+            language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.13.5/i18n/es-ES.json',
+            },
+            buttons: [ 'copy', 'excel', 'csv', 'pdf', 'colvis' ]
+            } );
+            
+            table.buttons().container()
+            .appendTo( '#example_wrapper .col-md-6:eq(0)' );
+            
     });
     </script>
-</body>
-</html>
+@endsection
