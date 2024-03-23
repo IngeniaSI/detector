@@ -18,7 +18,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Detector</title>
+        <title>Detector de Intención del Voto (VEVO)</title>
         <link href="{{ asset('Plantilla/css/styles.css') }}" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     </head>
@@ -39,7 +39,7 @@
                         <div class="row justify-content-center">
                             <div class="col-lg-5">
                                 <div class="card shadow-lg border-0 rounded-lg mt-5">
-                                    <div class="card-header"><h3 class="text-center font-weight-light my-4">Detector</h3></div>
+                                    <div class="card-header"><h4 class="text-center font-weight-light my-4">Detector de Intención del Voto (VEVO)</h4></div>
                                     <div class="card-body">
                                     <form action="{{route('login.comprobando')}}" method="post" class="form-floating mb-3">
                                         @csrf
