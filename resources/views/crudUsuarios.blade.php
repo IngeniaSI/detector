@@ -74,10 +74,10 @@
                         <h5>{{$message}}</h5>
                         @enderror
                         <div>
-                       
+
                         </div>
-                        
-                       
+
+
             </div>
             <div class="modal-footer">
             <button class="btn btn-primary">Crear</button>
@@ -98,7 +98,7 @@
             <div class="modal-body">
             {{-- FORMULARIO DE MODIFICAR USUARIO --}}
         <form id="formularioModificarUsuario" action="@if (session()->has('formularioModificarErrores')) {{route('crudUsuario.editar', session('usuarioAModificar'))}} @endif " method="post" style=" @if (!session()->has('formularioModificarErrores')) display:none; @endif ">
-            
+
         @csrf
             <h4>Nombre</h4>
             <input type="text" class="form-control" id="modificarNombre" name="nombre" value="{{old('nombre')}}" minlength="3" maxlength="255">
@@ -138,7 +138,7 @@
             <h5>{{$message}}</h5>
             @enderror
             <h4>Nivel de acceso</h4>
-                <select name="nivelAcceso">
+                <select id="modificarNivelAcceso" name="nivelAcceso">
                     <option value="-1">Seleccionar un nivel de acceso</option>
                     <option value="ENTIDAD">Entidad</option>
                     <option value="DISTRITO FEDERAL">Distrito Federal</option>
@@ -154,7 +154,7 @@
             @error('errorValidacion')
             <h5>{{$message}}</h5>
             @enderror
-              
+
             </div>
             <div class="modal-footer">
             <button class="btn btn-primary">Modificar</button>
@@ -175,7 +175,22 @@
             </div>
             <div class="card-body">
 
-                <table id="tablaUsuarios" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
+                {{-- <table id="tablaUsuarios" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Nombre Completo</th>
+                            <th>Correo</th>
+                            <th>Rol</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table> --}}
+
+                <table id="tablaUsuarios2" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
                     <thead>
                         <tr>
                             <th>Id</th>
@@ -189,20 +204,8 @@
 
                     </tbody>
                 </table>
-                {{-- VER PORQUE ESTA OCULTA
-                <table id="tablaUsuarios2" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%" hidden>
-                    <thead>
-                        <tr>
-                                <th>Correo</th>
-                                <th>Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                           
-                    </tbody>
-                </table>
-                --}}
-        
+
+
 
 
 
@@ -213,7 +216,7 @@
 <footer class="py-4 bg-light mt-auto">
     <div class="container-fluid px-4">
         <div class="d-flex align-items-center justify-content-between small">
-            <div class="text-muted">Copyright &copy; IngeniaIS 2024</div>
+            <div class="text-muted">Copyright &copy; IngeniaSI 2024</div>
 
         </div>
     </div>
@@ -232,7 +235,7 @@
 @section('scripts')
 <script>
     $(document).ready(function() {
-    var table = $('#tablaUsuarios').DataTable( {
+    var table = $('#tablaUsuarios2').DataTable( {
     lengthChange: true,
     language: {
     url: 'https://cdn.datatables.net/plug-ins/1.13.5/i18n/es-ES.json',
@@ -278,22 +281,22 @@
         }
         $.each(response, function (index, elemento) {
             var apellidoMaterno = (elemento.apellido_materno != null) ? elemento.apellido_materno : '';
-            var nuevaFila = $('<tr>').append(
-                $('<td>').text(elemento.id),
-                $('<td>').text(elemento.nombre + ' ' + elemento.apellido_paterno + ' ' + apellidoMaterno),
-                $('<td>').text(elemento.email),
-                $('<td>').text(elemento.name),
-                $('<td>').append(
-                    $('<button>').attr('id', 'btnModificarUsuario_' + elemento.id).attr('class', 'btn btn-success').html('<i class="fas fa-edit me-1"></i>Editar'),
-                    $('<form>').attr('action', "{{url('/')}}/gestor-usuarios/borrar-usuario-" + elemento.id).attr('method','post').append(
-                        $('<input>').attr('type', 'hidden').attr('name', '_token').val('{{csrf_token()}}'),
-                        $('<button>').attr('id', 'btnBorrarCuenta_' + elemento.id).attr('class', 'btn btn-danger').html('<i class="fas fa-close me-1"></i>Borrar')
-                    )
-                )
-            );
-            $('#tablaUsuarios2 tbody').append(nuevaFila);
-            $('#tablaUsuarios').DataTable().row.add([
-                elemento.email, '<button id="btnModificarUsuario_'+elemento.id+'" class ="btn btn-success" data-bs-toggle="modal" data-bs-target="#ModificarModal" ><i class="fas fa-edit me-1"></i>Editar</button><a onclick="clickBorrar('+elemento.id+')" type="button" class="btn btn btn-danger"><i class="fas fa-close me-1"></i>Borrar</a>'
+            // var nuevaFila = $('<tr>').append(
+            //     $('<td>').text(elemento.id),
+            //     $('<td>').text(elemento.nombre + ' ' + elemento.apellido_paterno + ' ' + apellidoMaterno),
+            //     $('<td>').text(elemento.email),
+            //     $('<td>').text(elemento.name),
+            //     $('<td>').append(
+            //         $('<button>').attr('id', 'btnModificarUsuario_' + elemento.id).attr('class', 'btn btn-success').html('<i class="fas fa-edit me-1"></i>Editar'),
+            //         $('<form>').attr('action', "{{url('/')}}/gestor-usuarios/borrar-usuario-" + elemento.id).attr('method','post').append(
+            //             $('<input>').attr('type', 'hidden').attr('name', '_token').val('{{csrf_token()}}'),
+            //             $('<button>').attr('id', 'btnBorrarCuenta_' + elemento.id).attr('class', 'btn btn-danger').html('<i class="fas fa-close me-1"></i>Borrar')
+            //         )
+            //     )
+            // );
+            // $('#tablaUsuarios tbody').append(nuevaFila);
+            $('#tablaUsuarios2').DataTable().row.add([
+                elemento.id, elemento.nombre + ' ' + elemento.apellido_paterno + ' ' + apellidoMaterno, elemento.email, elemento.name, '<button id="btnModificarUsuario_'+elemento.id+'" class ="btn btn-success" data-bs-toggle="modal" data-bs-target="#ModificarModal" ><i class="fas fa-edit me-1"></i>Editar</button><a onclick="clickBorrar('+elemento.id+')" type="button" class="btn btn btn-danger"><i class="fas fa-close me-1"></i>Borrar</a>'
             ]).draw();
         });
         $('[id^="btnModificarUsuario"]').click(cargarFormularioModificar);
@@ -402,13 +405,13 @@
         }).then((result) => {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
-            
+
         } else if (result.isDenied) {
             $("#btnBorrarCuenta_"+id).click()
         }
         });
-       
-        
+
+
     }
     </script>
 @endsection

@@ -47,20 +47,20 @@
                                             <input class="form-control" type="email" name="correo" id="correo" min="3"  />
                                             <label for="inputEmail">Correo Electronico</label>
                                         </div>
-                                        
+
 
                                         <div class="form-floating mb-3">
                                                 <input class="form-control" type="password" name="contrasenia" id="contrasenia"  />
                                                 <label for="inputPassword">Contraseña</label>
                                         </div>
-                                        
-                                        
+
+
                                         <center><button class="btn btn-primary">Iniciar sesion</button></center>
                                         @error('email')
                                             <h4>{{$message}}</h4>
                                         @enderror
                                     </form>
-                                        
+
                                     </div>
                                     <!-- <div class="card-footer text-center py-3">
                                         <div class="small"><a href="register.html">Need an account? Sign up!</a></div>
@@ -75,8 +75,8 @@
                 <footer class="py-4 bg-light mt-auto">
                     <div class="container-fluid px-4">
                         <div class="d-flex align-items-center justify-content-between small">
-                            <div class="text-muted">Copyright &copy; IngeniaIS 2024</div>
-                            
+                            <div class="text-muted">Copyright &copy; IngeniaSI 2024</div>
+
                         </div>
                     </div>
                 </footer>

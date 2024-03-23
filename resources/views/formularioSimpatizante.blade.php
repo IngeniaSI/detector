@@ -5,11 +5,6 @@
 @endsection
 
 @section('cuerpo')
-@if (session()->has('mensaje'))
-        <script>
-            alert('{{session("mensaje")}}');
-        </script>
-    @endif
     {{-- FORMULARIO DE AGREGAR USUARIO --}}
     <form id="formularioAgregarSimpatizante" action="{{route('agregarSimpatizante.agregandoSimpatizante')}}" method="post" style="">
         <div class="container">
