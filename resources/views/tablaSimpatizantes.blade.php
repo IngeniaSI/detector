@@ -12,14 +12,14 @@ Tabla de Simpatizantes
     @endif
     <br>
     <div class="container-fluid px-4">
-        <h1 class="mt-4">Tabla de Simpatizantes</h1>
-        
+        <h1 class="mt-4">Tabla de Personas</h1>
+
         <div class="card mb-4">
             <div class="card-header">
             <center>
 
                 <a href="{{route('agregarSimpatizante.index')}}">
-                    <button class="btn btn-primary">Agregar Simpatizante</button>
+                    <button class="btn btn-primary">Agregar Persona</button>
                 </a>
             </center>
             </div>
@@ -42,7 +42,7 @@ Tabla de Simpatizantes
             </div>
             </div>
     </div>
-    
+
     <
 @endsection
 
@@ -75,7 +75,7 @@ Tabla de Simpatizantes
             },
             buttons: [ 'copy', 'excel', 'csv', 'pdf', 'colvis' ]
             } );
-            
+
             table.buttons().container()
             .appendTo( '#example_wrapper .col-md-6:eq(0)' );
 
@@ -94,12 +94,17 @@ Tabla de Simpatizantes
                         $('#tablaUsuarios tbody').append(nuevaFila);
                     }
                     $.each(response, function (index, elemento) {
-                        var nuevaFila = $('<tr>').append(
-                            $('<td>').text(elemento.nombres + ' ' + elemento.apellido_paterno + ' ' + elemento.apellido_materno),
-                            $('<td>').text(elemento.correo),
-                            $('<td>').text(elemento.telefono_celular)
-                        );
-                        $('#tablaUsuarios tbody').append(nuevaFila);
+                        // var nuevaFila = $('<tr>').append(
+                        //     $('<td>').text(elemento.nombres + ' ' + elemento.apellido_paterno + ' ' + elemento.apellido_materno),
+                        //     $('<td>').text(elemento.correo),
+                        //     $('<td>').text(elemento.telefono_celular)
+                        // );
+                        // $('#tablaUsuarios tbody').append(nuevaFila);
+                        $('#tablaUsuarios').DataTable().row.add([
+                            elemento.nombres + ' ' + elemento.apellido_paterno + ' ' + elemento.apellido_materno,
+                            elemento.correo,
+                            elemento.telefono_celular
+                        ]).draw();
                     });
                 },
                 error: function( data, textStatus, jqXHR){
@@ -123,10 +128,10 @@ Tabla de Simpatizantes
         ).then(
             function( data, textStatus, jqXHR ) {
         });
-       
-           
-            
+
+
+
     });
-    
+
 </script>
 @endsection

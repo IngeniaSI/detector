@@ -62,13 +62,13 @@
                             @can('agregarSimpatizante.index')
                                 <a class="nav-link" href="/simpatizantes/agregar">
                                     <div class="sb-nav-link-icon"><i class="fas fa-file"></i></div>
-                                    Agregar Simpatizantes
+                                    Agregar Persona
                                 </a>
                             @endcan
                             @can('crudSimpatizantes.index')
                                 <a class="nav-link" href="/simpatizantes">
                                     <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                    Tabla de Simpatizantes
+                                    Tabla de Persona
                                 </a>
                             @endcan
                             @can('mapa.index')

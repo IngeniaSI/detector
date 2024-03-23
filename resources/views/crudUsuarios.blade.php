@@ -296,8 +296,19 @@
             // );
             // $('#tablaUsuarios tbody').append(nuevaFila);
             $('#tablaUsuarios2').DataTable().row.add([
-                elemento.id, elemento.nombre + ' ' + elemento.apellido_paterno + ' ' + apellidoMaterno, elemento.email, elemento.name, '<button id="btnModificarUsuario_'+elemento.id+'" class ="btn btn-success" data-bs-toggle="modal" data-bs-target="#ModificarModal" ><i class="fas fa-edit me-1"></i>Editar</button><a onclick="clickBorrar('+elemento.id+')" type="button" class="btn btn btn-danger"><i class="fas fa-close me-1"></i>Borrar</a>'
+                elemento.id, elemento.nombre + ' ' + elemento.apellido_paterno + ' ' + apellidoMaterno, elemento.email, elemento.name,
+                '<button id="btnModificarUsuario_'+elemento.id+'" class ="btn btn-success" data-bs-toggle="modal" data-bs-target="#ModificarModal">'+
+                    '<i class="fas fa-edit me-1">'+
+                '</i>Editar'+
+                '</button>'+
+                '<form action="{{url('/')}}/gestor-usuarios/borrar-usuario-' + elemento.id + '" method="post">'+
+                '<a id="borrarUsuario_'+elemento.id+'" type="button" class="btn btn btn-danger">'+
+                '<input type="hidden" value="{{csrf_token()}}" name="_token">'+
+                '<i class="fas fa-close me-1">'+
+                '</i>Borrar</a>'+
+                '</form>'
             ]).draw();
+            $('#borrarUsuario_' + elemento.id).click(clickBorrar);
         });
         $('[id^="btnModificarUsuario"]').click(cargarFormularioModificar);
     },
@@ -394,8 +405,10 @@
     }
     );
 
-    function clickBorrar(id) {
 
+    function clickBorrar() {
+        var boton = $(this);
+        var formulario = $(this).parent();
         Swal.fire({
         title: "¿Seguro que deseas borrar el usuario?",
         showDenyButton: true,
@@ -405,9 +418,8 @@
         }).then((result) => {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
-
         } else if (result.isDenied) {
-            $("#btnBorrarCuenta_"+id).click()
+            formulario.submit();
         }
         });
 

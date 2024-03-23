@@ -5,6 +5,7 @@
 @endsection
 
 @section('cuerpo')
+<BR>
     {{-- FORMULARIO DE AGREGAR USUARIO --}}
     <form id="formularioAgregarSimpatizante" action="{{route('agregarSimpatizante.agregandoSimpatizante')}}" method="post" style="">
         <div class="container">
@@ -121,7 +122,7 @@
             <button class="btn btn-primary">Agregar</button>
             <button class="btn btn-danger" type="button" class="cerrarFormulario">Limpiar</button>
             <a href="{{route('crudSimpatizantes.index')}}">
-                <button class="btn btn-success" type="button">Tabla Simpatizantes</button>
+                <button class="btn btn-success" type="button">Tabla Personas</button>
             </a>
             </center>
         </div>
