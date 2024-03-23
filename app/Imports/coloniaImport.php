@@ -12,7 +12,7 @@ class coloniaImport implements ToModel
     //LLAMAR CON COLONIAS
     public function model(array $row)
     {
-        $colonia = colonia::find($row[0])->first();
+        $colonia = colonia::find($row[0]);
         if(!isset($colonia)){
         return new colonia([
             'id' => $row[0],
@@ -20,7 +20,6 @@ class coloniaImport implements ToModel
             'tipo' => $row[7],
             'codigo_postal' => $row[9],
             'control' => $row[10],
-            'seccion_id' => $row[5],
         ]);
         }
         else{
