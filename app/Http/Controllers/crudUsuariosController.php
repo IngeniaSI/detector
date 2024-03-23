@@ -23,7 +23,7 @@ class crudUsuariosController extends Controller
         $bitacora->user_id = $user->id;
         $bitacora->save();
 
-        $roles = Role::where('name', '!=', 'SUPER_ADMINISTRADOR')->get(['name']);
+        $roles = Role::where('name', '!=', 'SUPER ADMINISTRADOR')->get(['name']);
         return view('crudUsuarios', compact('roles'));
     }
     public function todosUsuarios(Request $formulario){
@@ -36,7 +36,10 @@ class crudUsuariosController extends Controller
         $bitacora->user_id = $user->id;
         $bitacora->save();
 
-        return User::where('deleted_at', null)->get(['id', 'email', 'nombre', 'apellido_paterno', 'apellido_materno']);
+        return User::join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+        ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+        ->where('deleted_at', null)
+        ->get(['users.id', 'email', 'nombre', 'apellido_paterno', 'apellido_materno', 'name']);
     }
     public function obtenerUsuario(Request $formulario, User $usuario){
         $user = auth()->user();
@@ -63,6 +66,7 @@ class crudUsuariosController extends Controller
             'correo' => 'required|email',
             'contrasenia' => 'required',
             'rolUsuario' => 'required|not_in:-1',
+            'nivelAcceso' => 'not_in:-1',
         ]);
 
         $user = auth()->user();
@@ -84,6 +88,7 @@ class crudUsuariosController extends Controller
                 $usuario->apellido_materno = strtoupper($formulario->apellido_materno);
                 $usuario->email = strtoupper($formulario->correo);
                 $usuario->password = Hash::make($formulario->contrasenia);
+                $usuario->nivel_acceso = strtoupper($formulario->nivelAcceso);
                 $usuario->save();
                 $usuario->assignRole($formulario->rolUsuario);
                 DB::commit();
@@ -111,6 +116,7 @@ class crudUsuariosController extends Controller
             'apellido_materno' => 'required',
             'correo' => 'required|email',
             'rolUsuario' => 'not_in:-1',
+            'nivelAcceso' => 'not_in:-1',
             ]);
 
             $user = auth()->user();
@@ -129,6 +135,7 @@ class crudUsuariosController extends Controller
                 $usuario->apellido_paterno = strtoupper($formulario->apellido_paterno);
                 $usuario->apellido_materno = strtoupper($formulario->apellido_materno);
                 $usuario->email = strtoupper($formulario->correo);
+                $usuario->nivel_acceso = strtoupper($formulario->nivelAcceso);
                 if(isset($formulario->contrasenia) && $formulario->contrasenia != ""){
                     $usuario->password = Hash::make($formulario->contrasenia);
                 }
@@ -136,7 +143,7 @@ class crudUsuariosController extends Controller
 
                 $nombreRol = $usuario->getRoleNames()->first();
                 //VALIDAR NO ELIMIAR SUPER USUARIO
-                if($nombreRol != $formulario->rolUsuario && $nombreRol != 'SUPER_ADMINISTRADOR'){
+                if($nombreRol != $formulario->rolUsuario && $nombreRol != 'SUPER ADMINISTRADOR'){
                     $usuario->removeRole($nombreRol);
                     $usuario->assignRole($formulario->rolUsuario);
                 }
@@ -154,7 +161,7 @@ class crudUsuariosController extends Controller
     }
     public function borrarUsuario(Request $formulario, User $usuario){
         $nombreRol = $usuario->getRoleNames()->first();
-        if($nombreRol == 'SUPER_ADMINISTRADOR'){
+        if($nombreRol == 'SUPER ADMINISTRADOR'){
 
             $user = auth()->user();
             $bitacora = new bitacora();

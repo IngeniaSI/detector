@@ -15,8 +15,9 @@
   src="/Plantilla/mapa2.html">
 </iframe>
 
+
 @endsection
 
 @section('scripts')
-  
+
 @endsection
