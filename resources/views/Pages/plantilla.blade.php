@@ -112,6 +112,8 @@
         <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.colVis.min.js"></script>
         <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
         <script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
         @yield('scripts')        
     </body>
    

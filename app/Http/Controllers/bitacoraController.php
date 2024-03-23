@@ -10,7 +10,7 @@ class bitacoraController extends Controller
     public function index(){
         return view('bitacora');
     }
-    public function inicializar(){
-        return persona::where('deleted_at', null)->get();
-    }
+    // public function inicializar(){
+    //     return persona::where('deleted_at', null)->get();
+    // }
 }

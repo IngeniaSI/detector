@@ -27,20 +27,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                            <tr>
-                                <td>13/Marzo/2024 9:55PM</td>
-                                <td>Inicio Sesion Eduardo Reyes Mtz</td>
-                                <td>/Bitacora</td>
-                                <td>192.235.434.222</td>
-                                <td>234</td>
-                            </tr>
-                            <tr>
-                                <td>13/Marzo/2024 10:01PM</td>
-                                <td>Consulto Bitacora</td>
-                                <td>/login</td>
-                                <td>192.235.434.222</td>
-                                <td>234</td>
-                            </tr>
+                           
                     </tbody>
                 </table>
                 
@@ -52,6 +39,7 @@
    $(document).ready(function() {
 	    var table = $('#example').DataTable( {
 	        lengthChange: true,
+            "bDestroy": true,
             language: {
              url: 'https://cdn.datatables.net/plug-ins/1.13.5/i18n/es-ES.json',
          },
@@ -61,5 +49,10 @@
 	    table.buttons().container()
 	        .appendTo( '#example_wrapper .col-md-6:eq(0)' );
 	} );
+
+    @foreach ($query as $rol)
+    $('#example').DataTable().row.add(['{{$rol->created_at}}', '{{$rol->accion}}', '{{$rol->url}}', '{{$rol->ip}}', '{{$rol->user_id}}']).draw();
+    @endforeach
+   
 </script>
 @endsection

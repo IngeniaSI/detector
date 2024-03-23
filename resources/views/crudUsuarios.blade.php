@@ -6,7 +6,7 @@
 
 @section('cuerpo')
      <!-- Modal Agregar Usuario -->
-     <div class="modal fade" id="AgregarModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="AgregarModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
             <div class="modal-header">
@@ -15,57 +15,122 @@
             </div>
             <div class="modal-body">
             {{-- FORMULARIO DE AGREGAR USUARIO --}}
-<form id="formularioCrearUsuario" action="{{route('crudUsuario.crear')}}" method="post" style=" @if (!session()->has('formularioCrearErrores')) display:none; @endif ">
+                        <form id="formularioCrearUsuario" action="{{route('crudUsuario.crear')}}" method="post" style=" @if (!session()->has('formularioCrearErrores')) display:none; @endif ">
 
-@csrf
-<h4>Nombre</h4>
-<input type="text" name="nombre" class="form-control" value="{{old('nombre')}}" minlength="3" maxlength="255">
-@error('nombre')
-<h5>{{$message}}</h5>
-@enderror
-<h4>Apellido paterno</h4>
-<input type="text" name="apellido_paterno" class="form-control" value="{{old('apellido_paterno')}}" minlength="3" maxlength="255">
-@error('apellido_paterno')
-<h5>{{$message}}</h5>
-@enderror
-<h4>Apellido materno</h4>
-<input type="text" name="apellido_materno" class="form-control" value="{{old('apellido_materno')}}" minlength="3" maxlength="255">
-@error('apellido_materno')
-<h5>{{$message}}</h5>
-@enderror
-<h4>Correo</h4>
-<input type="email" name="correo" value="{{old('correo')}}" class="form-control" minlength="3" maxlength="255">
-@error('correo')
-<h5>{{$message}}</h5>
-@enderror
-<h4>Contraseña</h4>
-<input type="password" class="contraseniaRandom" class="form-control" name="contrasenia" value="{{old('contrasenia')}}" minlength="3" maxlength="255">
-@error('contrasenia')
-<h5>{{$message}}</h5>
-@enderror
-<button class="botonRevelarContrasenia" class="btn btn-dark" type="button">Revelar contraseña</button>
-<button class="botonGenerarClaveRandom" type="button">Generar nueva contraseña</button>
-<h4>Roles</h4>
-<select name="rolUsuario">
-<option value="-1">Selecciona un rol</option>
-@foreach ($roles as $rol)
-<option value="{{$rol->name}}">{{str_replace('_', ' ', $rol->name)}}</option>
-@endforeach
-</select>
-@error('rolUsuario')
-<h5>{{$message}}</h5>
-@enderror
-@error('errorValidacion')
-<h5>{{$message}}</h5>
-@enderror
-<div>
-<button>Crear</button>
-<button type="button" class="cerrarFormulario">Cerrar</button>
-</div>
-<hr>
-</form>
+                        @csrf
+                        <h4>Nombre</h4>
+                        <input type="text" name="nombre" class="form-control" value="{{old('nombre')}}" minlength="3" maxlength="255">
+                        @error('nombre')
+                        <h5>{{$message}}</h5>
+                        @enderror
+                        <h4>Apellido paterno</h4>
+                        <input type="text" name="apellido_paterno" class="form-control" value="{{old('apellido_paterno')}}" minlength="3" maxlength="255">
+                        @error('apellido_paterno')
+                        <h5>{{$message}}</h5>
+                        @enderror
+                        <h4>Apellido materno</h4>
+                        <input type="text" name="apellido_materno" class="form-control" value="{{old('apellido_materno')}}" minlength="3" maxlength="255">
+                        @error('apellido_materno')
+                        <h5>{{$message}}</h5>
+                        @enderror
+                        <h4>Correo</h4>
+                        <input type="email" name="correo" value="{{old('correo')}}" class="form-control" minlength="3" maxlength="255">
+                        @error('correo')
+                        <h5>{{$message}}</h5>
+                        @enderror
+                        <h4>Contraseña</h4>
+                        <input type="password" class="contraseniaRandom" class="form-control" name="contrasenia" value="{{old('contrasenia')}}" minlength="3" maxlength="255">
+                        @error('contrasenia')
+                        <h5>{{$message}}</h5>
+                        @enderror
+                        <br>
+                        <button class="botonRevelarContrasenia btn btn-info" type="button">Revelar contraseña</button>
+                        <button class="botonGenerarClaveRandom btn btn-warning" type="button">Generar nueva contraseña</button>
+                        <h4>Roles</h4>
+                        <select name="rolUsuario">
+                        <option value="-1">Selecciona un rol</option>
+                        @foreach ($roles as $rol)
+                        <option value="{{$rol->name}}">{{str_replace('_', ' ', $rol->name)}}</option>
+                        @endforeach
+                        </select>
+                        @error('rolUsuario')
+                        <h5>{{$message}}</h5>
+                        @enderror
+                        @error('errorValidacion')
+                        <h5>{{$message}}</h5>
+                        @enderror
+                        <div>
+                       
+                        </div>
+                        
+                       
             </div>
             <div class="modal-footer">
+            <button class="btn btn-primary">Crear</button>
+            </form>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+    </div>
+     <!-- Modal Modificar Usuario -->
+     <div class="modal fade" id="ModificarModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"> Modificar Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            {{-- FORMULARIO DE MODIFICAR USUARIO --}}
+        <form id="formularioModificarUsuario" action="@if (session()->has('formularioModificarErrores')) {{route('crudUsuario.editar', session('usuarioAModificar'))}} @endif " method="post" style=" @if (!session()->has('formularioModificarErrores')) display:none; @endif ">
+            
+        @csrf
+            <h4>Nombre</h4>
+            <input type="text" class="form-control" id="modificarNombre" name="nombre" value="{{old('nombre')}}" minlength="3" maxlength="255">
+            @error('nombre')
+            <h5>{{$message}}</h5>
+            @enderror
+            <h4>Apellido paterno</h4>
+            <input type="text" class="form-control"  id="modificarApellidoPaterno" name="apellido_paterno" value="{{old('apellido_paterno')}}" minlength="3" maxlength="255">
+            @error('apellido_paterno')
+            <h5>{{$message}}</h5>
+            @enderror
+            <h4>Apellido materno</h4>
+            <input type="text" class="form-control"  id="modificarApellidoMaterno" name="apellido_materno" value="{{old('apellido_materno')}}" minlength="3" maxlength="255">
+            @error('apellido_materno')
+            <h5>{{$message}}</h5>
+            @enderror
+            <h4>Correo</h4>
+            <input type="email" class="form-control"  id="modificarCorreo" name="correo" value="{{old('correo')}}" minlength="3" maxlength="255">
+            @error('correo')
+            <h5>{{$message}}</h5>
+            @enderror
+            <h4>Contraseña</h4>
+            <input type="password" class="form-control"  class="contraseniaRandom" name="contrasenia" value="{{old('contrasenia')}}" minlength="3" maxlength="255">
+            @error('contrasenia')
+            <h5>{{$message}}</h5>
+            @enderror
+            <br>
+            <button class="botonRevelarContrasenia btn btn-info" type="button">Revelar contraseña</button>
+            <button class="botonGenerarClaveRandom btn btn-warning" type="button">Generar nueva contraseña</button>
+            <h4>Roles</h4>
+            <select id="modificarRolUsuario" class="form-control"  name="rolUsuario" @disabled(old('rolUsuario') == null)>
+            @foreach ($roles as $rol)
+            <option value="{{$rol->name}}">{{str_replace('_', ' ', $rol->name)}}</option>
+            @endforeach
+            </select>
+            @error('rolUsuario')
+            <h5>{{$message}}</h5>
+            @enderror
+            @error('errorValidacion')
+            <h5>{{$message}}</h5>
+            @enderror
+              
+            </div>
+            <div class="modal-footer">
+            <button class="btn btn-primary">Modificar</button>
+            </form>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
@@ -93,59 +158,19 @@
                            
                     </tbody>
                 </table>
-        
+                <table id="tablaUsuarios2" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%" hidden>
+                    <thead>
+                        <tr>
+                                <th>Correo</th>
+                                <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                           
+                    </tbody>
+                </table>
 
-{{-- FORMULARIO DE MODIFICAR USUARIO --}}
-<form id="formularioModificarUsuario" action="@if (session()->has('formularioModificarErrores')) {{route('crudUsuario.editar', session('usuarioAModificar'))}} @endif " method="post" style=" @if (!session()->has('formularioModificarErrores')) display:none; @endif ">
-<h3>Modificar usuario</h3>
-@csrf
-<h4>Crear usuario</h4>
-@csrf
-<h4>Nombre</h4>
-<input type="text" id="modificarNombre" name="nombre" value="{{old('nombre')}}" minlength="3" maxlength="255">
-@error('nombre')
-<h5>{{$message}}</h5>
-@enderror
-<h4>Apellido paterno</h4>
-<input type="text" id="modificarApellidoPaterno" name="apellido_paterno" value="{{old('apellido_paterno')}}" minlength="3" maxlength="255">
-@error('apellido_paterno')
-<h5>{{$message}}</h5>
-@enderror
-<h4>Apellido materno</h4>
-<input type="text" id="modificarApellidoMaterno" name="apellido_materno" value="{{old('apellido_materno')}}" minlength="3" maxlength="255">
-@error('apellido_materno')
-<h5>{{$message}}</h5>
-@enderror
-<h4>Correo</h4>
-<input type="email" id="modificarCorreo" name="correo" value="{{old('correo')}}" minlength="3" maxlength="255">
-@error('correo')
-<h5>{{$message}}</h5>
-@enderror
-<h4>Contraseña</h4>
-<input type="password" class="contraseniaRandom" name="contrasenia" value="{{old('contrasenia')}}" minlength="3" maxlength="255">
-@error('contrasenia')
-<h5>{{$message}}</h5>
-@enderror
-<button class="botonRevelarContrasenia" type="button">Revelar contraseña</button>
-<button class="botonGenerarClaveRandom" type="button">Generar nueva contraseña</button>
-<h4>Roles</h4>
-<select id="modificarRolUsuario" name="rolUsuario" @disabled(old('rolUsuario') == null)>
-@foreach ($roles as $rol)
-<option value="{{$rol->name}}">{{str_replace('_', ' ', $rol->name)}}</option>
-@endforeach
-</select>
-@error('rolUsuario')
-<h5>{{$message}}</h5>
-@enderror
-@error('errorValidacion')
-<h5>{{$message}}</h5>
-@enderror
-<div>
-<button>Modificar</button>
-<button type="button" class="cerrarFormulario">Cerrar</button>
-</div>
-<hr>
-</form>
+        
 
 
 
@@ -217,7 +242,7 @@
             var nuevaFila = $('<tr>').append(
                 $('<td>').attr('colspan', 99).text('Sin registros')
             );
-            $('#tablaUsuarios tbody').append(nuevaFila);
+            $('#tablaUsuarios2 tbody').append(nuevaFila);
         }
         $.each(response, function (index, elemento) {
             var nuevaFila = $('<tr>').append(
@@ -226,11 +251,14 @@
                     $('<button>').attr('id', 'btnModificarUsuario_' + elemento.id).attr('class', 'btn btn-success').html('<i class="fas fa-edit me-1"></i>Editar'),
                     $('<form>').attr('action', "{{url('/')}}/gestor-usuarios/borrar-usuario-" + elemento.id).attr('method','post').append(
                         $('<input>').attr('type', 'hidden').attr('name', '_token').val('{{csrf_token()}}'),
-                        $('<button>').attr('class', 'btn btn-danger').html('<i class="fas fa-close me-1"></i>Borrar')
+                        $('<button>').attr('id', 'btnBorrarCuenta_' + elemento.id).attr('class', 'btn btn-danger').html('<i class="fas fa-close me-1"></i>Borrar')
                     )
                 )
             );
-            $('#tablaUsuarios tbody').append(nuevaFila);
+            $('#tablaUsuarios2 tbody').append(nuevaFila);
+            $('#tablaUsuarios').DataTable().row.add([
+                elemento.email, '<button id="btnModificarUsuario_'+elemento.id+'" class ="btn btn-success" data-bs-toggle="modal" data-bs-target="#ModificarModal" ><i class="fas fa-edit me-1"></i>Editar</button><a onclick="clickBorrar('+elemento.id+')" type="button" class="btn btn btn-danger"><i class="fas fa-close me-1"></i>Borrar</a>'
+            ]).draw();
         });
         $('[id^="btnModificarUsuario"]').click(cargarFormularioModificar);
     },
@@ -325,5 +353,25 @@
     $('#formularioModificarUsuario').css('display', 'none');
     }
     );
+
+    function clickBorrar(id) {
+
+        Swal.fire({
+        title: "¿Seguro que deseas borrar el usuario?",
+        showDenyButton: true,
+        showCancelButton: false,
+        confirmButtonText: "Cancelar",
+        denyButtonText: `Borrar`
+        }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+            
+        } else if (result.isDenied) {
+            $("#btnBorrarCuenta_"+id).click()
+        }
+        });
+       
+        
+    }
     </script>
 @endsection
