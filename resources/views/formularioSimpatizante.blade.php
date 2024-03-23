@@ -1,8 +1,7 @@
-Plantilla
 @extends('Pages.plantilla')
 
 @section('tittle')
- Agregar simpatizante
+    Agregar simpatizante
 @endsection
 
 @section('cuerpo')
@@ -14,7 +13,7 @@ Plantilla
     {{-- FORMULARIO DE AGREGAR USUARIO --}}
     <form id="formularioAgregarSimpatizante" action="{{route('agregarSimpatizante.agregandoSimpatizante')}}" method="post" style="">
         <div class="container">
-            
+
             <div class="row">
               <div class="col">
                 @csrf
@@ -73,7 +72,7 @@ Plantilla
                 </div>
                 <div class="col">
                     <h4>Facebook</h4>
-                    <input type="text" class="form-control" name="facebook" value="{{old('facebook')}}" minlength="10" maxlength="255">
+                    <input type="text" class="form-control" name="facebook" value="{{old('facebook')}}" minlength="3" maxlength="255">
                     @error('facebook')
                         <h5>{{$message}}</h5>
                     @enderror
@@ -104,16 +103,24 @@ Plantilla
                     @enderror
                 </div>
                 <div class="col">
-                  
+                    <h4>Clave electoral</h4>
+                    <input type="text" class="form-control" name="claveElectoral" value="{{old('claveElectoral')}}" minlength="18" maxlength="18">
+                    @error('claveElectoral')
+                        <h5>{{$message}}</h5>
+                    @enderror
                 </div>
                 <div class="col">
-                  
+                    <h4>CURP</h4>
+                    <input type="text" class="form-control" name="curp" value="{{old('curp')}}" minlength="18" maxlength="18">
+                    @error('curp')
+                        <h5>{{$message}}</h5>
+                    @enderror
                 </div>
             </div>
 
 
         </div>
-        
+
         <div>
             <center>
             <button class="btn btn-primary">Agregar</button>
@@ -125,7 +132,7 @@ Plantilla
         </div>
     </form>
 
-    
+
     </script>
 @endsection
 
@@ -134,7 +141,7 @@ Plantilla
   <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
   <script text="text/javascript">
     <script>
-      
+
 
     // FUNCION PARA CARGAR TABLA DE USUARIOS
     $(document).ready(function () {

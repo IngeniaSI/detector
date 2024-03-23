@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\bitacora;
+use App\Models\identificacion;
 use App\Models\persona;
 use Exception;
 use Illuminate\Http\Request;
@@ -27,7 +28,9 @@ class formularioSimpatizanteController extends Controller
             'genero' => 'required',
             'telefonoFijo' => 'required',
             'telefonoCelular' => 'required',
-            'escolaridad' => 'required'
+            'escolaridad' => 'required',
+            'claveElectoral' => 'required|regex:/^([A-Z]{6})(\d{8})([B-DF-HJ-NP-TV-Z]{1})(\d{3})$/',
+            'curp' => 'required|regex:/^([A-Z]{4})(\d{6})([HM])([A-Z]{5})([0-9A-Z]{2})$/',
         ]);
         try {
             DB::beginTransaction();
@@ -47,6 +50,13 @@ class formularioSimpatizanteController extends Controller
                 $personaNueva->nombre_en_facebook = $formulario->facebook;
             }
             $personaNueva->save();
+
+            $identificacion = new identificacion();
+            $identificacion->persona_id = $personaNueva->id;
+            $identificacion->curp = strtoupper($formulario->curp);
+            $identificacion->clave_elector = strtoupper($formulario->claveElectoral);
+            $identificacion->seccion_id = 1;
+            $identificacion->save();
 
             $user = auth()->user();
             $bitacora = new bitacora();

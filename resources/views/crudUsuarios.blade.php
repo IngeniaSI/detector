@@ -15,55 +15,68 @@
             </div>
             <div class="modal-body">
             {{-- FORMULARIO DE AGREGAR USUARIO --}}
-<form id="formularioCrearUsuario" action="{{route('crudUsuario.crear')}}" method="post" style=" @if (!session()->has('formularioCrearErrores')) display:none; @endif ">
-
-@csrf
-<h4>Nombre</h4>
-<input type="text" name="nombre" class="form-control" value="{{old('nombre')}}" minlength="3" maxlength="255">
-@error('nombre')
-<h5>{{$message}}</h5>
-@enderror
-<h4>Apellido paterno</h4>
-<input type="text" name="apellido_paterno" class="form-control" value="{{old('apellido_paterno')}}" minlength="3" maxlength="255">
-@error('apellido_paterno')
-<h5>{{$message}}</h5>
-@enderror
-<h4>Apellido materno</h4>
-<input type="text" name="apellido_materno" class="form-control" value="{{old('apellido_materno')}}" minlength="3" maxlength="255">
-@error('apellido_materno')
-<h5>{{$message}}</h5>
-@enderror
-<h4>Correo</h4>
-<input type="email" name="correo" value="{{old('correo')}}" class="form-control" minlength="3" maxlength="255">
-@error('correo')
-<h5>{{$message}}</h5>
-@enderror
-<h4>Contraseña</h4>
-<input type="password" class="contraseniaRandom" class="form-control" name="contrasenia" value="{{old('contrasenia')}}" minlength="3" maxlength="255">
-@error('contrasenia')
-<h5>{{$message}}</h5>
-@enderror
-<button class="botonRevelarContrasenia" class="btn btn-dark" type="button">Revelar contraseña</button>
-<button class="botonGenerarClaveRandom" type="button">Generar nueva contraseña</button>
-<h4>Roles</h4>
-<select name="rolUsuario">
-<option value="-1">Selecciona un rol</option>
-@foreach ($roles as $rol)
-<option value="{{$rol->name}}">{{str_replace('_', ' ', $rol->name)}}</option>
-@endforeach
-</select>
-@error('rolUsuario')
-<h5>{{$message}}</h5>
-@enderror
-@error('errorValidacion')
-<h5>{{$message}}</h5>
-@enderror
-<div>
-<button>Crear</button>
-<button type="button" class="cerrarFormulario">Cerrar</button>
-</div>
-<hr>
-</form>
+                <form id="formularioCrearUsuario" action="{{route('crudUsuario.crear')}}" method="post" style=" @if (!session()->has('formularioCrearErrores')) display:none; @endif ">
+                @csrf
+                <h4>Nombre</h4>
+                <input type="text" name="nombre" class="form-control" value="{{old('nombre')}}" minlength="3" maxlength="255">
+                @error('nombre')
+                <h5>{{$message}}</h5>
+                @enderror
+                <h4>Apellido paterno</h4>
+                <input type="text" name="apellido_paterno" class="form-control" value="{{old('apellido_paterno')}}" minlength="3" maxlength="255">
+                @error('apellido_paterno')
+                <h5>{{$message}}</h5>
+                @enderror
+                <h4>Apellido materno</h4>
+                <input type="text" name="apellido_materno" class="form-control" value="{{old('apellido_materno')}}" minlength="3" maxlength="255">
+                @error('apellido_materno')
+                <h5>{{$message}}</h5>
+                @enderror
+                <h4>Correo</h4>
+                <input type="email" name="correo" value="{{old('correo')}}" class="form-control" minlength="3" maxlength="255">
+                @error('correo')
+                <h5>{{$message}}</h5>
+                @enderror
+                <h4>Contraseña</h4>
+                <input type="password" class="contraseniaRandom" class="form-control" name="contrasenia" value="{{old('contrasenia')}}" minlength="3" maxlength="255">
+                @error('contrasenia')
+                <h5>{{$message}}</h5>
+                @enderror
+                <button class="botonRevelarContrasenia" class="btn btn-dark" type="button">Revelar contraseña</button>
+                <button class="botonGenerarClaveRandom" type="button">Generar nueva contraseña</button>
+                <h4>Roles</h4>
+                <select name="rolUsuario">
+                <option value="-1">Selecciona un rol</option>
+                @foreach ($roles as $rol)
+                <option value="{{$rol->name}}">{{str_replace('_', ' ', $rol->name)}}</option>
+                @endforeach
+                </select>
+                @error('rolUsuario')
+                <h5>{{$message}}</h5>
+                @enderror
+                <h4>Nivel de acceso</h4>
+                <select name="nivelAcceso">
+                    <option value="-1">Seleccionar un nivel de acceso</option>
+                    <option value="ENTIDAD">Entidad</option>
+                    <option value="DISTRITO FEDERAL">Distrito Federal</option>
+                    <option value="DISTRITO LOCAL">Distrito Local</option>
+                    <option value="MUNICIPIO">Municipio</option>
+                    <option value="SECCION">Seccion</option>
+                    <option value="LOCALIDAD">Localidad</option>
+                    <option value="COLONIA">Colonia</option>
+                </select>
+                @error('nivelAcceso')
+                <h5>{{$message}}</h5>
+                @enderror
+                @error('errorValidacion')
+                <h5>{{$message}}</h5>
+                @enderror
+                <div>
+                <button>Crear</button>
+                <button type="button" class="cerrarFormulario">Cerrar</button>
+                </div>
+                <hr>
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -73,7 +86,7 @@
     </div>
     <div class="container-fluid px-4">
         <h1 class="mt-4">Usuarios del Sistema</h1>
-        
+
         <div class="card mb-4">
             <div class="card-header">
                 <center>
@@ -81,19 +94,22 @@
                 </center>
             </div>
             <div class="card-body">
-               
+
                 <table id="tablaUsuarios" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
                     <thead>
                         <tr>
-                                <th>Correo</th>
-                                <th>Acción</th>
+                            <th>Id</th>
+                            <th>Nombre Completo</th>
+                            <th>Correo</th>
+                            <th>Rol</th>
+                            <th>Acción</th>
                         </tr>
                     </thead>
                     <tbody>
-                           
+
                     </tbody>
                 </table>
-        
+
 
 {{-- FORMULARIO DE MODIFICAR USUARIO --}}
 <form id="formularioModificarUsuario" action="@if (session()->has('formularioModificarErrores')) {{route('crudUsuario.editar', session('usuarioAModificar'))}} @endif " method="post" style=" @if (!session()->has('formularioModificarErrores')) display:none; @endif ">
@@ -137,6 +153,20 @@
 @error('rolUsuario')
 <h5>{{$message}}</h5>
 @enderror
+<h4>Nivel de acceso</h4>
+                <select id="modificarNivelAcceso" name="nivelAcceso">
+                    <option value="-1">Seleccionar un nivel de acceso</option>
+                    <option value="ENTIDAD">Entidad</option>
+                    <option value="DISTRITO FEDERAL">Distrito Federal</option>
+                    <option value="DISTRITO LOCAL">Distrito Local</option>
+                    <option value="MUNICIPIO">Municipio</option>
+                    <option value="SECCION">Seccion</option>
+                    <option value="LOCALIDAD">Localidad</option>
+                    <option value="COLONIA">Colonia</option>
+                </select>
+                @error('nivelAcceso')
+                <h5>{{$message}}</h5>
+                @enderror
 @error('errorValidacion')
 <h5>{{$message}}</h5>
 @enderror
@@ -157,7 +187,7 @@
     <div class="container-fluid px-4">
         <div class="d-flex align-items-center justify-content-between small">
             <div class="text-muted">Copyright &copy; IngeniaIS 2024</div>
-            
+
         </div>
     </div>
 </footer>
@@ -182,18 +212,18 @@
     },
     buttons: [ 'copy', 'excel', 'csv', 'pdf', 'colvis' ]
     } );
-    
+
     table.buttons().container()
     .appendTo( '#example_wrapper .col-md-6:eq(0)' );
     }
-    
-    
+
+
     );
     //FUNCION PARA ASIGNAR UNA CLAVE ALEATORIA Y ASIGNARLA EN EL FORMULARIO DE MODIFICAR
     $('.botonGenerarClaveRandom').click(function (e) {
     $('.contraseniaRandom').val(getPassword());
     });
-    
+
     //FUNCION PARA ASIGNAR UNA CLAVE ALEATORIA Y ASIGNARLA EN EL FORMULARIO DE MODIFICAR
     $('.botonRevelarContrasenia').click(function (e) {
     if($('.contraseniaRandom').attr('type') == 'password'){
@@ -203,7 +233,7 @@
     $('.contraseniaRandom').attr('type', 'password')
     }
     });
-    
+
     // FUNCION PARA CARGAR TABLA DE USUARIOS
     $(document).ready(function () {
     $.when(
@@ -220,8 +250,12 @@
             $('#tablaUsuarios tbody').append(nuevaFila);
         }
         $.each(response, function (index, elemento) {
+            var apellidoMaterno = (elemento.apellido_materno != null) ? elemento.apellido_materno : '';
             var nuevaFila = $('<tr>').append(
+                $('<td>').text(elemento.id),
+                $('<td>').text(elemento.nombre + ' ' + elemento.apellido_paterno + ' ' + apellidoMaterno),
                 $('<td>').text(elemento.email),
+                $('<td>').text(elemento.name),
                 $('<td>').append(
                     $('<button>').attr('id', 'btnModificarUsuario_' + elemento.id).attr('class', 'btn btn-success').html('<i class="fas fa-edit me-1"></i>Editar'),
                     $('<form>').attr('action', "{{url('/')}}/gestor-usuarios/borrar-usuario-" + elemento.id).attr('method','post').append(
@@ -255,15 +289,15 @@
     ).then(
     function( data, textStatus, jqXHR ) {
     });
-    
+
     });
-    
+
     // FUNCION ABRIR FORMULARIO CREAR USUARIO
     $('.btnCrearUsuario').click(function (e) {
     $('#formularioCrearUsuario')[0].reset();
     $('#formularioCrearUsuario').css('display', 'block');
     });
-    
+
     // FUNCION CARGAR FORMULARIO MODIFICAR
     function  cargarFormularioModificar(e) {
     var idUsuario = $(this).attr('id').split('_');
@@ -277,19 +311,20 @@
     success: function (response) {
         var ruta = "{{url('/')}}/gestor-usuarios/editar-usuario-"+response[0].id;
         $('#formularioModificarUsuario')[0].reset();
-    
+
         $('#modificarNombre').val(response[0].nombre);
         $('#modificarApellidoPaterno').val(response[0].apellido_paterno);
         $('#modificarApellidoMaterno').val(response[0].apellido_materno);
         $('#modificarCorreo').val(response[0].email);
-        if(response[1] == 'SUPER_ADMINISTRADOR'){
+        if(response[1] == 'SUPER ADMINISTRADOR'){
             $('#modificarRolUsuario').prop('disabled', true);
         }
         else{
             $('#modificarRolUsuario').prop('disabled', false);
         }
         $('#modificarRolUsuario').val(response[1]);
-    
+        $('#modificarNivelAcceso').val(response[0].nivel_acceso);
+
         $('#formularioModificarUsuario').attr('action', ruta);
         $('#formularioModificarUsuario').css('display', 'block');
     },
@@ -315,7 +350,7 @@
     function( data, textStatus, jqXHR ) {
     });
     }
-    
+
     // FUNCION CERRAR FORMULARIO
     $('.cerrarFormulario').click(
     function (e) {

@@ -12,7 +12,7 @@ class distritoFederalImport implements ToModel
     //LLAMAR CON 03_CATALOGO DE SECCIONES CON DISTRITOS ELECTORALES
     public function model(array $row)
     {
-        $distritoFederalNoExiste = distritoFederal::find($row[2])->first();
+        $distritoFederalNoExiste = distritoFederal::find($row[2]);
         if(!isset($distritoFederalNoExiste)){
         return new distritoFederal([
             'id' => $row[2],

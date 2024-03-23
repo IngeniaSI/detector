@@ -12,7 +12,7 @@ class distritoLocalImport implements ToModel
     //LLAMAR CON 03_CATALOGO DE SECCIONES CON DISTRITOS ELECTORALES
     public function model(array $row)
     {
-        $distritoLocal = distritoLocal::find($row[3])->first();
+        $distritoLocal = distritoLocal::find($row[3]);
         if(!isset($distritoLocal)){
         return new distritoLocal([
             'id' => $row[3],

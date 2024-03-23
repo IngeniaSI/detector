@@ -14,7 +14,7 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         //ACCESO A TODO CON CANDADO PARA NO BORRAR
-        $rolSU = Role::create(['name' => 'SUPER_ADMINISTRADOR']);
+        $rolSU = Role::create(['name' => 'SUPER ADMINISTRADOR']);
         //ACCESO A TODO Y ESTADISTICOS
         $rolAdmin = Role::create(['name' => 'ADMINISTRADOR']);
         //CONTROL TOTAL DEL CRUD DE ENCUESTAS
@@ -28,20 +28,10 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'crudUsuarios.edit'])->syncRoles([$rolSU, $rolAdmin]);
         Permission::create(['name' => 'crudUsuarios.delete'])->syncRoles([$rolSU, $rolAdmin]);
 
-        Permission::create(['name' => 'controlUsuarios.index'])->syncRoles([$rolSU, $rolAdmin]);
-        Permission::create(['name' => 'controlUsuarios.create'])->syncRoles([$rolSU, $rolAdmin]);
-        Permission::create(['name' => 'controlUsuarios.edit'])->syncRoles([$rolSU, $rolAdmin]);
-        Permission::create(['name' => 'controlUsuarios.delete'])->syncRoles([$rolSU, $rolAdmin]);
-
-        Permission::create(['name' => 'tablero.index'])->syncRoles([$rolSU, $rolAdmin]);
-        Permission::create(['name' => 'tablero.create'])->syncRoles([$rolSU, $rolAdmin]);
-        Permission::create(['name' => 'tablero.edit'])->syncRoles([$rolSU, $rolAdmin]);
-        Permission::create(['name' => 'tablero.delete'])->syncRoles([$rolSU, $rolAdmin]);
-
-        Permission::create(['name' => 'capturarProspecto.index'])->syncRoles([$rolSU, $rolAdmin, $rolSupervisor, $rolCapturista]);
-        Permission::create(['name' => 'capturarProspecto.create'])->syncRoles([$rolSU, $rolAdmin, $rolSupervisor, $rolCapturista]);
-        Permission::create(['name' => 'capturarProspecto.edit'])->syncRoles([$rolSU, $rolAdmin, $rolSupervisor, $rolCapturista]);
-        Permission::create(['name' => 'capturarProspecto.delete'])->syncRoles([$rolSU, $rolAdmin, $rolSupervisor]);
-
+        Permission::create(['name' => 'crudSimpatizantes.index'])->syncRoles([$rolSU, $rolSupervisor, $rolCapturista]);
+        Permission::create(['name' => 'agregarSimpatizante.index'])->syncRoles([$rolSU, $rolSupervisor, $rolCapturista]);
+        Permission::create(['name' => 'bitacora.index'])->syncRoles([$rolSU, $rolAdmin]);
+        Permission::create(['name' => 'estadistica.index'])->syncRoles([$rolSU, $rolAdmin, $rolSupervisor]);
+        Permission::create(['name' => 'mapa.index'])->syncRoles([$rolSU, $rolAdmin, $rolSupervisor, $rolCapturista]);
     }
 }

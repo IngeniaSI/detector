@@ -20,11 +20,6 @@
             <!-- Navbar Search-->
             <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
                 <div class="input-group">
-                @if (session()->has('mensaje'))
-                    <script>
-                        alert('{{session("mensaje")}}');
-                    </script>
-                @endif
                     <!-- <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
                     <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button> -->
                 </div>
@@ -32,7 +27,7 @@
             <!-- Navbar-->
             <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i> Eduardo Reyes Mtz</a>
+                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i> {{$user->nombre.' '.$user->apellido_paterno.' '.$user->apellido_materno}}</a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                         <!-- <li><a class="dropdown-item" href="#!">Settings</a></li>
                         <li><a class="dropdown-item" href="#!">Activity Log</a></li> -->
@@ -53,49 +48,60 @@
                     <div class="sb-sidenav-menu">
                         <div class="nav">
                             <div class="sb-sidenav-menu-heading">Menú</div>
-                            <a class="nav-link" href="/estadistica">
-                                <div class="sb-nav-link-icon"><i class="fas fa-chart-bar"></i></div>
-                                Estadística
-                            </a>
-                            <a class="nav-link" href="/simpatizantes/agregar">
-                                <div class="sb-nav-link-icon"><i class="fas fa-file"></i></div>
-                                Agregar Simpatizantes
-                            </a>
-                            <a class="nav-link" href="/simpatizantes">
-                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                Tabla de Simpatizantes
-                            </a>
-                            <a class="nav-link" href="/mapa">
-                                <div class="sb-nav-link-icon"><i class="fas fa-map"></i></div>
-                                Mapa Geoespacial
-                            </a>
-                            
-                            <a class="nav-link" href="/gestor-usuarios">
-                                <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
-                                Usuarios del Sistema
-                            </a>
+                            @can('estadistica.index')
+                                <a class="nav-link" href="/estadistica">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-chart-bar"></i></div>
+                                    Estadística
+                                </a>
+                            @endcan
+                            @can('agregarSimpatizante.index')
+                                <a class="nav-link" href="/simpatizantes/agregar">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-file"></i></div>
+                                    Agregar Simpatizantes
+                                </a>
+                            @endcan
+                            @can('crudSimpatizantes.index')
+                                <a class="nav-link" href="/simpatizantes">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                                    Tabla de Simpatizantes
+                                </a>
+                            @endcan
+                            @can('mapa.index')
+                                <a class="nav-link" href="/mapa">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-map"></i></div>
+                                    Mapa Geoespacial
+                                </a>
+                            @endcan
+                            @can('crudUsuarios.index')
+                                <a class="nav-link" href="/gestor-usuarios">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                                    Usuarios del Sistema
+                                </a>
+                            @endcan
+                            @can('bitacora.index')
                             <a class="nav-link" href="/bitacora">
                                 <div class="sb-nav-link-icon"><i class="fas fa-info"></i></div>
                                 Bitácora
                             </a>
+                            @endcan
                         </div>
                     </div>
                     <div class="sb-sidenav-footer">
                         <div class="small">Usuario:</div>
-                        Administrador
+                        {{$role}}
                     </div>
                 </nav>
             </div>
             <div id="layoutSidenav_content">
                 <main>
-                   
+
                     @yield('cuerpo')
-                    
+
                 </main>
 
-            </div>    
-        </div>   
-         
+            </div>
+        </div>
+
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="{{ asset('Plantilla/js/scripts.js') }}"></script>
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
@@ -112,10 +118,10 @@
         <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.colVis.min.js"></script>
         <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
         <script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.min.js"></script>
-        @yield('scripts')        
+        @yield('scripts')
     </body>
-   
-	
 
-    
+
+
+
 </html>

@@ -12,7 +12,7 @@ class municipioImport implements ToModel
     //LLAMAR CON 03_CATALOGO DE SECCIONES CON DISTRITOS ELECTORALES
     public function model(array $row)
     {
-        $municipio = municipio::find($row[4])->first();
+        $municipio = municipio::find($row[4]);
         if(!isset($municipio)){
         return new municipio([
             'id' => $row[4],

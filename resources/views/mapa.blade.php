@@ -73,7 +73,7 @@
     </div>
     <div class="container-fluid px-4">
         <h1 class="mt-4">Usuarios del Sistema</h1>
-        
+
         <div class="card mb-4">
             <div class="card-header">
                 <center>
@@ -81,7 +81,7 @@
                 </center>
             </div>
             <div class="card-body">
-               
+
                 <table id="tablaUsuarios" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
                     <thead>
                         <tr>
@@ -90,10 +90,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                           
+
                     </tbody>
                 </table>
-        
+
 
 {{-- FORMULARIO DE MODIFICAR USUARIO --}}
 <form id="formularioModificarUsuario" action="@if (session()->has('formularioModificarErrores')) {{route('crudUsuario.editar', session('usuarioAModificar'))}} @endif " method="post" style=" @if (!session()->has('formularioModificarErrores')) display:none; @endif ">
@@ -157,7 +157,7 @@
     <div class="container-fluid px-4">
         <div class="d-flex align-items-center justify-content-between small">
             <div class="text-muted">Copyright &copy; IngeniaIS 2024</div>
-            
+
         </div>
     </div>
 </footer>
@@ -182,18 +182,18 @@
     },
     buttons: [ 'copy', 'excel', 'csv', 'pdf', 'colvis' ]
     } );
-    
+
     table.buttons().container()
     .appendTo( '#example_wrapper .col-md-6:eq(0)' );
     }
-    
-    
+
+
     );
     //FUNCION PARA ASIGNAR UNA CLAVE ALEATORIA Y ASIGNARLA EN EL FORMULARIO DE MODIFICAR
     $('.botonGenerarClaveRandom').click(function (e) {
     $('.contraseniaRandom').val(getPassword());
     });
-    
+
     //FUNCION PARA ASIGNAR UNA CLAVE ALEATORIA Y ASIGNARLA EN EL FORMULARIO DE MODIFICAR
     $('.botonRevelarContrasenia').click(function (e) {
     if($('.contraseniaRandom').attr('type') == 'password'){
@@ -203,7 +203,7 @@
     $('.contraseniaRandom').attr('type', 'password')
     }
     });
-    
+
     // FUNCION PARA CARGAR TABLA DE USUARIOS
     $(document).ready(function () {
     $.when(
@@ -255,15 +255,15 @@
     ).then(
     function( data, textStatus, jqXHR ) {
     });
-    
+
     });
-    
+
     // FUNCION ABRIR FORMULARIO CREAR USUARIO
     $('.btnCrearUsuario').click(function (e) {
     $('#formularioCrearUsuario')[0].reset();
     $('#formularioCrearUsuario').css('display', 'block');
     });
-    
+
     // FUNCION CARGAR FORMULARIO MODIFICAR
     function  cargarFormularioModificar(e) {
     var idUsuario = $(this).attr('id').split('_');
@@ -277,19 +277,19 @@
     success: function (response) {
         var ruta = "{{url('/')}}/gestor-usuarios/editar-usuario-"+response[0].id;
         $('#formularioModificarUsuario')[0].reset();
-    
+
         $('#modificarNombre').val(response[0].nombre);
         $('#modificarApellidoPaterno').val(response[0].apellido_paterno);
         $('#modificarApellidoMaterno').val(response[0].apellido_materno);
         $('#modificarCorreo').val(response[0].email);
-        if(response[1] == 'SUPER_ADMINISTRADOR'){
+        if(response[1] == 'SUPER ADMINISTRADOR'){
             $('#modificarRolUsuario').prop('disabled', true);
         }
         else{
             $('#modificarRolUsuario').prop('disabled', false);
         }
         $('#modificarRolUsuario').val(response[1]);
-    
+
         $('#formularioModificarUsuario').attr('action', ruta);
         $('#formularioModificarUsuario').css('display', 'block');
     },
@@ -315,7 +315,7 @@
     function( data, textStatus, jqXHR ) {
     });
     }
-    
+
     // FUNCION CERRAR FORMULARIO
     $('.cerrarFormulario').click(
     function (e) {

@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+
 class iniciarSesionController extends Controller
 {
     public function index(Request $formulario){
@@ -36,7 +37,23 @@ class iniciarSesionController extends Controller
         if (Auth::attempt(['email' => strtoupper($formulario->correo), 'password' => $formulario->contrasenia])) {
             // Obtener el usuario de la sesion
             $user = auth()->user();
-            return redirect()->route('crudUsuario.index');
+            switch ($validarSiEliminado->getRoleNames()->first()) {
+                case 'SUPER ADMINISTRADOR':
+                    return redirect()->route('crudUsuario.index');
+                    break;
+                case 'ADMINISTRADOR':
+                    return redirect()->route('estadistica.index');
+                    break;
+                case 'SUPERVISOR':
+                    return redirect()->route('crudSimpatizantes.index');
+                    break;
+                case 'CAPTURISTA':
+                    return redirect()->route('crudSimpatizantes.index');
+                    break;
+                default:
+                    return back()->withErrors(['email' => 'Ocurrió un error con el usuario ingresado, comuniquese con el administrador del sistema.']);
+                    break;
+            }
 
         } else {
             return back()->withErrors(['email' => 'Credenciales incorrectas']);
