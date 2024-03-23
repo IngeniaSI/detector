@@ -11,27 +11,39 @@ Tabla de Simpatizantes
         </script>
     @endif
     <br>
-    <center>
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Tabla de Simpatizantes</h1>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+            <center>
 
-    <a href="{{route('agregarSimpatizante.index')}}">
-        <button class="btn btn-primary">Agregar Simpatizante</button>
-    </a>
-    </center>
-    <br>
-    {{-- TABLA DE USUARIOS --}}
-    <table id="tablaUsuarios">
-        <thead>
-            <th>Nombre completo</th>
-            <th>Correo</th>
-            <th>Telefono celular</th>
-        </thead>
-        <tbody>
+                <a href="{{route('agregarSimpatizante.index')}}">
+                    <button class="btn btn-primary">Agregar Simpatizante</button>
+                </a>
+            </center>
+            </div>
+            <div class="card-body">
+                    {{-- TABLA DE USUARIOS --}}
+                        <table id="tablaUsuarios" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
+                            <thead>
+                                <th>Nombre completo</th>
+                                <th>Correo</th>
+                                <th>Telefono celular</th>
+                            </thead>
+                            <tbody>
 
-        </tbody>
-    </table>
-    @error('errorBorrar')
-        <h5>{{$message}}</h5>
-    @enderror
+                            </tbody>
+                        </table>
+                        @error('errorBorrar')
+                            <h5>{{$message}}</h5>
+                        @enderror
+            </div>
+            </div>
+            </div>
+    </div>
+    
+    <
 @endsection
 
 @section('scripts')
@@ -55,6 +67,19 @@ Tabla de Simpatizantes
 
     // FUNCION PARA CARGAR TABLA DE USUARIOS
     $(document).ready(function () {
+
+        var table = $('#tablaUsuarios').DataTable( {
+            lengthChange: true,
+            language: {
+            url: 'https://cdn.datatables.net/plug-ins/1.13.5/i18n/es-ES.json',
+            },
+            buttons: [ 'copy', 'excel', 'csv', 'pdf', 'colvis' ]
+            } );
+            
+            table.buttons().container()
+            .appendTo( '#example_wrapper .col-md-6:eq(0)' );
+
+
         $.when(
             $.ajax({
                 type: "get",
@@ -99,17 +124,9 @@ Tabla de Simpatizantes
             function( data, textStatus, jqXHR ) {
         });
        
-            var table = $('#tablaUsuarios').DataTable( {
-            lengthChange: true,
-            language: {
-            url: 'https://cdn.datatables.net/plug-ins/1.13.5/i18n/es-ES.json',
-            },
-            buttons: [ 'copy', 'excel', 'csv', 'pdf', 'colvis' ]
-            } );
-            
-            table.buttons().container()
-            .appendTo( '#example_wrapper .col-md-6:eq(0)' );
+           
             
     });
-    </script>
+    
+</script>
 @endsection

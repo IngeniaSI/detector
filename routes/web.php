@@ -4,7 +4,10 @@ use App\Http\Controllers\crudUsuariosController;
 use App\Http\Controllers\formularioSimpatizanteController;
 use App\Http\Controllers\iniciarSesionController;
 use App\Http\Controllers\tablaSimpatizantesController;
+use App\Models\bitacora;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +44,17 @@ Route::post('/simpatizantes/agregar/agregando', [formularioSimpatizanteControlle
 
 
 //Vista
-Route::get('/bitacora', [tablaSimpatizantesController::class, 'index'])->name('bitacora.index')->middleware(['auth', 'can:bitacora.index']);
-Route::get('/estadistica', [tablaSimpatizantesController::class, 'index'])->name('estadistica.index')->middleware(['auth', 'can:estadistica.index']);
-Route::get('/mapa', [tablaSimpatizantesController::class, 'index'])->name('mapa.index')->middleware(['auth', 'can:mapa.index']);
+// Route::get('/bitacora', [bitacoraController::class, 'index'])->name('bitacora.index')->middleware('auth');
+//Route::get('/estadistica', [tablaSimpatizantesController::class, 'index'])->name('estadistica.index')->middleware('auth');
+//Route::get('/mapa', [tablaSimpatizantesController::class, 'index'])->name('mapa.index')->middleware('auth');
+Route::get('/estadistica', function () {
+    return view('estadistica');
+})->middleware(['auth', 'can:estadistica.index']);
+Route::get('/mapa', function () {
+    return view('mapa');
+})->middleware(['auth', 'can:mapa.index']);
+Route::get('/bitacora', function () {
+    $query = bitacora::where('id', '!=', 'null')->get(['created_at', 'accion', 'url', 'ip', 'user_id']);
+    // $roles = bitacora::where('name', '!=', 'SUPER_ADMINISTRADOR')->get(['name']);
+    return view('bitacora', compact('query'));
+})->middleware(['auth', 'can:bitacora.index']);

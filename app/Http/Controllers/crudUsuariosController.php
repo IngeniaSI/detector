@@ -93,7 +93,7 @@ class crudUsuariosController extends Controller
                 $usuario->assignRole($formulario->rolUsuario);
                 DB::commit();
                 session()->forget('formularioCrearErrores');
-                session()->flash('mensaje', 'Usuario creado con exito');
+                // session()->flash('mensaje', 'Usuario creado con exito');
                 return redirect()->route('crudUsuario.index');
             }
             catch(Exception $e){
@@ -149,7 +149,7 @@ class crudUsuariosController extends Controller
                 }
                 DB::commit();
                 session()->forget('formularioModificarErrores');
-                session()->flash('mensaje', 'Usuario editado con exito');
+                // session()->flash('mensaje', 'Usuario editado con exito');
                 return redirect()->route('crudUsuario.index');
             }
             catch(Exception $e){
@@ -190,7 +190,7 @@ class crudUsuariosController extends Controller
                 $usuario->deleted_at =  Date("Y-m-d H:i:s");
                 $usuario->save();
                 DB::commit();
-                session()->flash('mensaje', 'Usuario eliminado con exito');
+                // session()->flash('mensaje', 'Usuario eliminado con exito');
                 return redirect()->route('crudUsuario.index');
             }
             catch(Exception $e){

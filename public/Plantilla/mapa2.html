@@ -20,12 +20,17 @@
 	<div id="map" style="width: 100%;"></div>
 	
 	<script type="text/javascript">
+		var addressPoints = [
+[24.142289, -110.318098, "Eduardo"],
+[24.13571, -110.308914, "Belizario"],
+[24.130775, -110.316982, "Emilio"],
+[24.141819, -110.312347, "Ivan"]]
 
 		var tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 				maxZoom: 18,
 				attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Points &copy 2012 LINZ'
 			}),
-			latlng = L.latLng(-37.82, 175.24);
+			latlng = L.latLng(24.13571, -110.308914);
 
 		var map = L.map('map', {center: latlng, zoom: 13, layers: [tiles]});
 
