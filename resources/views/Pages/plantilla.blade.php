@@ -74,7 +74,7 @@
                             @can('mapa.index')
                                 <a class="nav-link" href="/mapa">
                                     <div class="sb-nav-link-icon"><i class="fas fa-map"></i></div>
-                                    Mapa Geoespacial
+                                    Mapa
                                 </a>
                             @endcan
                             @can('crudUsuarios.index')
