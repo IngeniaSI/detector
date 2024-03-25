@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('identificacions', function (Blueprint $table) {
             $table->id();
-            $table->string('clave_elector');
-            $table->string('curp');
+            $table->string('clave_elector')->nullable();
+            $table->string('curp')->nullable();
             $table->foreignId('persona_id')->constrained();
             $table->foreignId('seccion_id')->constrained();
             $table->timestamps();
