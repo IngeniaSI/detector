@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class colonia extends Model
 {
     use HasFactory;
+    public function domicilio(){
+        return $this->belongsTo(domicilio::class);
+    }
 }

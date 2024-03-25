@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\bitacoraController;
 use App\Http\Controllers\crudUsuariosController;
 use App\Http\Controllers\formularioSimpatizanteController;
 use App\Http\Controllers\iniciarSesionController;
@@ -37,6 +38,8 @@ Route::post('/gestor-usuarios/borrar-usuario-{usuario}', [crudUsuariosController
 
 Route::get('/simpatizantes', [tablaSimpatizantesController::class, 'index'])->name('crudSimpatizantes.index')->middleware(['auth', 'can:crudSimpatizantes.index']);
 Route::get('/simpatizantes/inicializar', [tablaSimpatizantesController::class, 'inicializar'])->name('crudSimpatizantes.inicializar')->middleware('auth');
+Route::post('/simpatizantes/supervisar-{persona}', [tablaSimpatizantesController::class, 'verificar'])->name('crudSimpatizantes.verificar')->middleware(['auth', 'can:crudSimpatizantes.verificar']);
+Route::post('/simpatizantes/borrar-{persona}', [tablaSimpatizantesController::class, 'borrar'])->name('crudSimpatizantes.borrar')->middleware(['auth', 'can:crudSimpatizantes.borrar']);
 
 Route::get('/simpatizantes/agregar', [formularioSimpatizanteController::class, 'index'])->name('agregarSimpatizante.index')->middleware(['auth', 'can:agregarSimpatizante.index']);
 Route::get('/simpatizantes/agregar/inicializar', [formularioSimpatizanteController::class, 'inicializar'])->name('agregarSimpatizante.inicializar')->middleware('auth');
@@ -44,17 +47,14 @@ Route::post('/simpatizantes/agregar/agregando', [formularioSimpatizanteControlle
 
 
 //Vista
-// Route::get('/bitacora', [bitacoraController::class, 'index'])->name('bitacora.index')->middleware('auth');
 //Route::get('/estadistica', [tablaSimpatizantesController::class, 'index'])->name('estadistica.index')->middleware('auth');
 //Route::get('/mapa', [tablaSimpatizantesController::class, 'index'])->name('mapa.index')->middleware('auth');
 Route::get('/estadistica', function () {
     return view('estadistica');
-})->middleware(['auth', 'can:estadistica.index']);
+})->name('estadistica.index')->middleware(['auth', 'can:estadistica.index']);
 Route::get('/mapa', function () {
     return view('mapa');
 })->middleware(['auth', 'can:mapa.index']);
-Route::get('/bitacora', function () {
-    $query = bitacora::where('id', '!=', 'null')->get(['created_at', 'accion', 'url', 'ip', 'user_id']);
-    // $roles = bitacora::where('name', '!=', 'SUPER_ADMINISTRADOR')->get(['name']);
-    return view('bitacora', compact('query'));
-})->middleware(['auth', 'can:bitacora.index']);
+
+Route::get('/bitacora', [bitacoraController::class, 'index'])->name('bitacora.index')->middleware(['auth', 'can:bitacora.index']);
+

@@ -16,7 +16,6 @@
             <div class="modal-body">
             {{-- FORMULARIO DE AGREGAR USUARIO --}}
                         <form id="formularioCrearUsuario" action="{{route('crudUsuario.crear')}}" method="post" style=" @if (!session()->has('formularioCrearErrores')) display:none; @endif ">
-
                         @csrf
                         <h4>Nombre</h4>
                         <input type="text" name="nombre" class="form-control" value="{{old('nombre')}}" minlength="3" maxlength="255">
