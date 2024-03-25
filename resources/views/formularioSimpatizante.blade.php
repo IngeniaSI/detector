@@ -103,14 +103,14 @@
                     </div>
                     <div class="col">
                         <h4>Clave Electoral</h4>
-                        <input type="text" class="form-control" id="claveElectoral" name="claveElectoral" value="{{old('claveElectoral')}}" minlength="18" maxlength="18" placeholder="ABCDEF12345678A123">
+                        <input type="text" class="form-control" id="claveElectoral" name="claveElectoral" value="{{old('claveElectoral')}}" minlength="18" maxlength="18" placeholder="ABCDEF12345678B123">
                         @error('claveElectoral')
                             <h5>{{$message}}</h5>
                         @enderror
                     </div>
                     <div class="col">
                         <h4>CURP</h4>
-                        <input type="text" class="form-control" id="curp" name="curp" value="{{old('curp')}}" minlength="18" maxlength="18" placeholder="ABCD123456ABCDEF12">
+                        <input type="text" class="form-control" id="curp" name="curp" value="{{old('curp')}}" minlength="18" maxlength="18" placeholder="ABCD123456HBCDEF12">
                         @error('curp')
                             <h5>{{$message}}</h5>
                         @enderror

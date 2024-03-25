@@ -56,7 +56,7 @@
             '{{$registro->accion}}',
             '{{$registro->url}}',
             '{{$registro->ip}}',
-            '{{$registro->user->nombre}} {{$registro->user->apellido_paterno}}'
+            '{{ (isset($registro->user_id)) ? $registro->user->nombre .' '. $registro->user->apellido_paterno : 'Sin Usuario'}}'
         ]).draw();
     @endforeach
 
