@@ -17,7 +17,6 @@ Tabla de Simpatizantes
         <div class="card mb-4">
             <div class="card-header">
             <center>
-
                 <a href="{{route('agregarSimpatizante.index')}}">
                     <button class="btn btn-primary">Agregar Persona</button>
                 </a>
@@ -41,10 +40,8 @@ Tabla de Simpatizantes
                                 <th>Número Ext:</th>
                                 <th>Número Int:</th>
                                 <th>Colonia:</th>
-                                <th>Delegación:</th>
                                 <th>C.P:</th>
-                                <th>Coordenadas:</th>
-                                <th>Estidad Federativa:</th>
+                                <th>Entidad Federativa:</th>
                                 <th>Distrito Federal:</th>
                                 <th>Municipio:</th>
                                 <th>Distrito Local:</th>
@@ -67,7 +64,6 @@ Tabla de Simpatizantes
             </div>
             </div>
     </div>
-
     </div>
     </div>
     </div>
@@ -91,12 +87,6 @@ Tabla de Simpatizantes
 
             table.buttons().container()
             .appendTo( '#example_wrapper .col-md-6:eq(0)' );
-
-            $('#tablaUsuarios').DataTable().row.add([
-                        '<img src="{{ asset('Plantilla/assets/img/mas.png') }}" width="15px" height="15px" >03-05-2024 05:10:58	','Prueba','Prueba','Prueba','Prueba','Prueba','Prueba','Prueba','Prueba','Prueba',
-                        'Prueba','Prueba','Prueba','Prueba','Prueba','Prueba','Prueba','Prueba','Prueba','Prueba',
-                        'Prueba','Prueba','Prueba','Prueba','Prueba','Prueba','Prueba','<button class="btn btn-primary">Editar</button>'
-                    ]).draw();
         $.when(
             $.ajax({
                 type: "get",
@@ -104,25 +94,28 @@ Tabla de Simpatizantes
                 data: [],
                 contentType: "application/x-www-form-urlencoded",
                 success: function (response) {
-                    if(response.length == 0){
-                        // var nuevaFila = $('<tr>').append(
-                        //     $('<td>').attr('colspan', 99).text('Sin registros')
-                        // );
-                        // $('#tablaUsuarios tbody').append(nuevaFila);
-                    }
                     $.each(response, function (index, elemento) {
-                        // var nuevaFila = $('<tr>').append(
-                        //     $('<td>').text(elemento.nombres + ' ' + elemento.apellido_paterno + ' ' + elemento.apellido_materno),
-                        //     $('<td>').text(elemento.correo),
-                        //     $('<td>').text(elemento.telefono_celular)
-                        // );
-                        // $('#tablaUsuarios tbody').append(nuevaFila);
-                    // $('#tablaUsuarios').DataTable().row.add([
-                    //     elemento.nombres + ' ' + elemento.apellido_paterno + ' ' + elemento.apellido_materno,
-                    //     elemento.correo,
-                    //     elemento.telefono_celular
-                    // ]).draw();
-                    
+                        $('#tablaUsuarios').DataTable().row.add([
+                            `<img src="{{ asset('Plantilla/assets/img/mas.png') }}" width="15px" height="15px" > ${elemento.fecha_registro}`,
+                            elemento.folio, `${elemento.nombres} ${elemento.apellido_paterno} ${elemento.apellido_materno}`,
+                            elemento.genero, elemento.fecha_nacimiento, '18 - 99', elemento.telefono_celular,
+                            elemento.telefono_fijo, elemento.correo, elemento.nombre_en_facebook, elemento.calle, elemento.numero_exterior, elemento.numero_interior,
+                            elemento.nombreColonia, elemento.codigo_postal, 'entidadFederativa', 'distritoFederal',
+                            'municipio', 'distritoLocal', elemento.afiliado, elemento.simpatizante, elemento.programa,
+                            elemento.funcion_en_campania, elemento.etiquetas, elemento.observaciones,
+                            @can('crudSimpatizantes.verificar')
+                                `<form action="{{url('/')}}/simpatizantes/supervisar-${elemento.id}" method="post">`+
+                                    '<input type="hidden" name="_token" value="{{csrf_token()}}">'+
+                                    '<button class="btn btn-success">Supervisado</button>'+
+                                '</form>'+
+                                '<button class="btn btn-primary">Editar</button>'+
+                                `<form action="{{url('/')}}/simpatizantes/borrar-${elemento.id}" method="post">`+
+                                    '<input type="hidden" name="_token" value="{{csrf_token()}}">'+
+                                    '<button class="btn btn-danger">Borrar</button>'+
+                                '</form>'+
+                            @endcan
+                            ''
+                        ]).draw();
                     });
                 },
                 error: function( data, textStatus, jqXHR){

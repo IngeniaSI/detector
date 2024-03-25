@@ -20,11 +20,6 @@
             <!-- Navbar Search-->
             <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
                 <div class="input-group">
-                    @if (session()->has('mensaje'))
-                        <script>
-                            Swal.fire('{{session("mensaje")}}');
-                        </script>
-                    @endif
                     <!-- <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
                     <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button> -->
                 </div>
@@ -124,7 +119,15 @@
         <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
         <script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+        @if (session()->has('mensajeExito'))
+            <script>
+                Swal.fire({
+                    'tittle':"Éxito",
+                    'text':"{{session('mensajeExito')}}",
+                    'icon':"success"
+                });
+            </script>
+        @endif
         @yield('scripts')
     </body>
 

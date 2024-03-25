@@ -22,19 +22,20 @@ class iniciarSesionController extends Controller
         return view('inicioSesion');
     }
     public function validarUsuario(Request $formulario){
-        $bitacora = new bitacora();
-        $bitacora->accion = 'Iniciando sesion';
-        $bitacora->url = url()->current();
-        $bitacora->ip = $formulario->ip();
-        $bitacora->tipo = 'post';
-        $bitacora->user_id = null;
-        $bitacora->save();
+
 
         $validarSiEliminado = User::where('email', strtoupper($formulario->correo))->first();
         if(isset($validarSiEliminado) && isset($validarSiEliminado->deleted_at)){
             return back()->withErrors(['email' => 'Credenciales incorrectas']);
         }
         if (Auth::attempt(['email' => strtoupper($formulario->correo), 'password' => $formulario->contrasenia])) {
+            $bitacora = new bitacora();
+            $bitacora->accion = 'Iniciando sesion';
+            $bitacora->url = url()->current();
+            $bitacora->ip = $formulario->ip();
+            $bitacora->tipo = 'post';
+            $bitacora->user_id = null;
+            $bitacora->save();
             // Obtener el usuario de la sesion
             $user = auth()->user();
             switch ($validarSiEliminado->getRoleNames()->first()) {

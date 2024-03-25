@@ -8,4 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class identificacion extends Model
 {
     use HasFactory;
+    public function persona(){
+        return $this->belongsTo(persona::class);
+    }
+
+    public function domicilio(){
+        return $this->hasOne(domicilio::class);
+    }
 }

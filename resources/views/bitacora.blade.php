@@ -8,14 +8,13 @@
 
     <div class="container-fluid px-4">
         <h1 class="mt-4">Bítacora</h1>
-        
+
         <div class="card mb-4">
             <div class="card-header">
                 <i class="fas fa-table me-1"></i>
                 Resultados
             </div>
             <div class="card-body">
-               
                 <table id="example" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
                     <thead>
                         <tr>
@@ -27,10 +26,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                           
+
                     </tbody>
                 </table>
-                
+
 
 @endsection
 
@@ -38,6 +37,7 @@
 <script>
    $(document).ready(function() {
 	    var table = $('#example').DataTable( {
+            order: [[0, 'desc']],
 	        lengthChange: true,
             "bDestroy": true,
             language: {
@@ -45,14 +45,20 @@
          },
 	        buttons: [ 'copy', 'excel', 'csv', 'pdf', 'colvis' ]
 	    } );
-	 
+
 	    table.buttons().container()
 	        .appendTo( '#example_wrapper .col-md-6:eq(0)' );
 	} );
-
-    @foreach ($query as $rol)
-    $('#example').DataTable().row.add(['{{$rol->created_at}}', '{{$rol->accion}}', '{{$rol->url}}', '{{$rol->ip}}', '{{$rol->user_id}}']).draw();
+    console.log(@json($query));
+    @foreach ($query as $registro)
+        $('#example').DataTable().row.add([
+            '{{$registro->created_at}}',
+            '{{$registro->accion}}',
+            '{{$registro->url}}',
+            '{{$registro->ip}}',
+            '{{$registro->user->nombre}} {{$registro->user->apellido_paterno}}'
+        ]).draw();
     @endforeach
-   
+
 </script>
 @endsection

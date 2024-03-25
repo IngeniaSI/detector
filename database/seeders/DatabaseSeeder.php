@@ -52,7 +52,7 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => Date("Y-m-d H:i:s"),
             'nivel_acceso' => 'ENTIDAD',
         ]);
-        $belizario->assignRole('ADMINISTRADOR');
+        $belizario->assignRole('SUPER ADMINISTRADOR');
 
         $eduardo = User::Create([
             'nombre' => 'EDUARDO',

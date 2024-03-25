@@ -24,13 +24,15 @@ return new class extends Migration
             $table->string('correo')->nullable();
             $table->string('nombre_en_facebook')->nullable();
             $table->string('escolaridad')->nullable();
-            $table->boolean('afiliado')->default(0);
-            $table->boolean('simpatizante')->default(0);
+            $table->string('afiliado')->nullable();
+            $table->string('simpatizante')->nullable();
             $table->string('programa')->nullable();
             $table->string('funcion_en_campania')->nullable();
             $table->dateTime('fecha_nacimiento')->nullable();
             $table->string('rango_edad')->nullable();
+            $table->string('observaciones')->nullable();
             $table->string('etiquetas')->nullable();
+            $table->boolean('supervisado')->default(0);
             $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
         });
