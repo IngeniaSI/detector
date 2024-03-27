@@ -173,7 +173,7 @@
                     <h3>Información</h3>
                     <div class="col">
                         <h4>Folio</h4>
-                        <input type="text" class="form-control" name="folio" value="{{old('folio')}}">
+                        <input type="number" class="form-control" name="folio" value="{{old('folio')}}">
                         @error('folio')
                             <h5>{{$message}}</h5>
                         @enderror
@@ -309,7 +309,7 @@
 
 @section('scripts')
   {{-- PASAR LIBRERIAS A PLANTILLA --}}
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+  {{-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"> --}}
 
   <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDg60SDcmNRPnG1tzZNBBGFx02cW2VkWWQ&callback=initMap&v=weekly" defer></script>

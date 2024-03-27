@@ -7,6 +7,7 @@
 @section('cuerpo')
 <div class="container-fluid px-4">
                         <h1 class="mt-4">Estadística</h1>
+                        
                         <div class="row">
                             <div class="col">
                                 <div class="card mb-4">
@@ -27,7 +28,7 @@
                                     </div>
                                     <div class="card-body justify-content">
                                         <center> <input class="form-control" type="date"  /></center>
-                                       
+
                                     </div>
                                 </div>
                             </div>
@@ -41,10 +42,10 @@
                                         <input class="btn btn-primary btn-block" type="button" value="Consultar" />
                                     </div>
                                 </div>
-                                
+
                             </div>
                         </div>
-                        
+
 
 
                         <div class="card mb-4">

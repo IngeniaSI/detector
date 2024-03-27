@@ -27,6 +27,7 @@ Tabla de Simpatizantes
                         <table id="tablaUsuarios" class="table table-striped table-bordered dt-responsive display" style="width:100%">
                             <thead>
                                 <th>Fecha de Registro:</th>
+                                <th>Supervisado:</th>
                                 <th>Folio:</th>
                                 <th>Nombre completo:</th>
                                 <th>Genero:</th>
@@ -51,7 +52,9 @@ Tabla de Simpatizantes
                                 <th>Funciones:</th>
                                 <th>Etiquetas:</th>
                                 <th>Observaciones:</th>
-                                <th>Opciones:</th>
+                                @can('crudSimpatizantes.verificar')
+                                    <th>Opciones:</th>
+                                @endcan
                             </thead>
                             <tbody>
 
@@ -97,24 +100,33 @@ Tabla de Simpatizantes
                     $.each(response, function (index, elemento) {
                         $('#tablaUsuarios').DataTable().row.add([
                             `<img src="{{ asset('Plantilla/assets/img/mas.png') }}" width="15px" height="15px" > ${elemento.fecha_registro}`,
-                            elemento.folio, `${elemento.nombres} ${elemento.apellido_paterno} ${elemento.apellido_materno}`,
+                            (elemento.supervisado) ? 'Sí' : 'No', elemento.folio, `${elemento.nombres} ${elemento.apellido_paterno} ${elemento.apellido_materno}`,
                             elemento.genero, elemento.fecha_nacimiento, '18 - 99', elemento.telefono_celular,
-                            elemento.telefono_fijo, elemento.correo, elemento.nombre_en_facebook, elemento.calle, elemento.numero_exterior, elemento.numero_interior,
-                            elemento.nombreColonia, elemento.codigo_postal, 'entidadFederativa', 'distritoFederal',
-                            'municipio', 'distritoLocal', elemento.afiliado, elemento.simpatizante, elemento.programa,
+                            elemento.telefono_fijo, elemento.correo, elemento.nombre_en_facebook, elemento.calle,
+                            elemento.numero_exterior, elemento.numero_interior, elemento.nombreColonia, elemento.codigo_postal,
+                            'entidadFederativa', 'distritoFederal', 'municipio', 'distritoLocal', elemento.afiliado,
+                            elemento.simpatizante, elemento.programa,
                             elemento.funcion_en_campania, elemento.etiquetas, elemento.observaciones,
                             @can('crudSimpatizantes.verificar')
-                                `<form action="{{url('/')}}/simpatizantes/supervisar-${elemento.id}" method="post">`+
-                                    '<input type="hidden" name="_token" value="{{csrf_token()}}">'+
-                                    '<button class="btn btn-success">Supervisado</button>'+
-                                '</form>'+
-                                '<button class="btn btn-primary">Editar</button>'+
-                                `<form action="{{url('/')}}/simpatizantes/borrar-${elemento.id}" method="post">`+
-                                    '<input type="hidden" name="_token" value="{{csrf_token()}}">'+
-                                    '<button class="btn btn-danger">Borrar</button>'+
-                                '</form>'+
+                                (elemento.supervisado) ?
+                                    '<button class="btn btn-primary">Editar</button>'+
+                                    `<form action="{{url('/')}}/simpatizantes/borrar-${elemento.id}" method="post">`+
+                                        '<input type="hidden" name="_token" value="{{csrf_token()}}">'+
+                                        '<button class="btn btn-danger">Borrar</button>'+
+                                    '</form>'
+
+                                :
+                                    `<form action="{{url('/')}}/simpatizantes/supervisar-${elemento.id}" method="post">`+
+                                        '<input type="hidden" name="_token" value="{{csrf_token()}}">'+
+                                        '<button class="btn btn-success">Supervisado</button>'+
+                                    '</form>'+
+                                    '<button class="btn btn-primary">Editar</button>'+
+                                    `<form action="{{url('/')}}/simpatizantes/borrar-${elemento.id}" method="post">`+
+                                        '<input type="hidden" name="_token" value="{{csrf_token()}}">'+
+                                        '<button class="btn btn-danger">Borrar</button>'+
+                                    '</form>'
+
                             @endcan
-                            ''
                         ]).draw();
                     });
                 },

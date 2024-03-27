@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->dateTime('fecha_registro')->nullable();
             $table->integer('folio')->nullable();
+            $table->foreignId('persona_id')->nullable()->constrained();
             $table->string('nombres');
             $table->string('apellido_paterno');
             $table->string('apellido_materno')->nullable();
@@ -32,6 +33,8 @@ return new class extends Migration
             $table->string('rango_edad')->nullable();
             $table->string('observaciones')->nullable();
             $table->string('etiquetas')->nullable();
+            $table->string('rolEstructura')->nullable();
+            $table->bigInteger('rolNumero')->nullable();
             $table->boolean('supervisado')->default(0);
             $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
