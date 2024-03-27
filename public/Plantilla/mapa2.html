@@ -18,7 +18,7 @@
 <body>
 
 	<div id="map" style="width: 100%;"></div>
-	
+
 	<script type="text/javascript">
 		var addressPoints = [
 [24.142289, -110.318098, "Eduardo"],
@@ -35,7 +35,7 @@
 		var map = L.map('map', {center: latlng, zoom: 13, layers: [tiles]});
 
 		var markers = L.markerClusterGroup();
-		
+
 		for (var i = 0; i < addressPoints.length; i++) {
 			var a = addressPoints[i];
 			var title = a[2];
