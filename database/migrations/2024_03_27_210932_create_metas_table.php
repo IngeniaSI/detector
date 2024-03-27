@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('metas', function (Blueprint $table) {
             $table->id();
             $table->integer('numeroObjetivo');
+            $table->integer('poblacionEstablecida');
             $table->timestamps();
         });
     }
