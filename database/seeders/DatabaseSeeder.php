@@ -117,19 +117,6 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // CARGA INICIAL DISTRITO LOCAL
-        $dataForFirstTable = Excel::toArray(new distritoLocalImport, storage_path('app/Catalogos/03_Cat+ílogo de Secciones con Distritos Electorales LOCALES.xlsx'));
-        foreach ($dataForFirstTable[0] as $row) {
-            $entidadExiste = distritoLocal::find($row[3]);
-            if(isset($entidadExiste)){
-                continue;
-            }
-            distritoLocal::create([
-                'id' => $row[3],
-                'distrito_federal_id' => $row[2],
-            ]);
-        }
-
         // CARGA INICIAL MUNICIPIO
         $dataForFirstTable = Excel::toArray(new municipioImport, storage_path('app/Catalogos/03_Cat+ílogo de Secciones con Distritos Electorales LOCALES.xlsx'));
         foreach ($dataForFirstTable[0] as $row) {
@@ -140,7 +127,20 @@ class DatabaseSeeder extends Seeder
             municipio::create([
                 'id' => $row[4],
                 'nombre' => $row[5],
-                'distrito_local_id' => $row[3],
+                'distrito_federal_id' => $row[2],
+            ]);
+        }
+
+        // CARGA INICIAL DISTRITO LOCAL
+        $dataForFirstTable = Excel::toArray(new distritoLocalImport, storage_path('app/Catalogos/03_Cat+ílogo de Secciones con Distritos Electorales LOCALES.xlsx'));
+        foreach ($dataForFirstTable[0] as $row) {
+            $entidadExiste = distritoLocal::find($row[3]);
+            if(isset($entidadExiste)){
+                continue;
+            }
+            distritoLocal::create([
+                'id' => $row[3],
+                'municipio_id' => $row[4],
             ]);
         }
 
@@ -157,7 +157,7 @@ class DatabaseSeeder extends Seeder
             seccion::create([
                 'id' => $row[5],
                 'tipo' => $row[6],
-                'municipio_id' => $row[3],
+                'distrito_local_id' => 1,
             ]);
         }
 

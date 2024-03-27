@@ -4,6 +4,7 @@ use App\Http\Controllers\bitacoraController;
 use App\Http\Controllers\crudUsuariosController;
 use App\Http\Controllers\formularioSimpatizanteController;
 use App\Http\Controllers\iniciarSesionController;
+use App\Http\Controllers\mapaController;
 use App\Http\Controllers\tablaSimpatizantesController;
 use App\Models\bitacora;
 use Illuminate\Support\Facades\Route;
@@ -52,9 +53,7 @@ Route::post('/simpatizantes/agregar/agregando', [formularioSimpatizanteControlle
 Route::get('/estadistica', function () {
     return view('estadistica');
 })->name('estadistica.index')->middleware(['auth', 'can:estadistica.index']);
-Route::get('/mapa', function () {
-    return view('mapa');
-})->middleware(['auth', 'can:mapa.index']);
+Route::get('/mapa', [mapaController::class, 'index'])->middleware(['auth', 'can:mapa.index']);
 
 Route::get('/bitacora', [bitacoraController::class, 'index'])->name('bitacora.index')->middleware(['auth', 'can:bitacora.index']);
 

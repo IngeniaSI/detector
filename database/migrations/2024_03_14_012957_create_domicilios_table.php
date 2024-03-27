@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('calle');
             $table->integer('numero_exterior');
             $table->integer('numero_interior')->nullable();
-            $table->float('latitud')->nullable();
-            $table->float('longitud')->nullable();
+            $table->float('latitud', 11, 6)->nullable();
+            $table->float('longitud', 11, 6)->nullable();
             $table->foreignId('colonia_id')->constrained();
             $table->foreignId('identificacion_id')->constrained();
             $table->timestamps();

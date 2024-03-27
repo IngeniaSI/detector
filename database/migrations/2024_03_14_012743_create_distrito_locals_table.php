@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('distrito_locals', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('distrito_federal_id')->constrained();
+            $table->foreignId('municipio_id')->constrained();
             $table->timestamps();
         });
     }

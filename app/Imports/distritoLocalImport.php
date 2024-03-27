@@ -16,7 +16,7 @@ class distritoLocalImport implements ToModel
         if(!isset($distritoLocal)){
         return new distritoLocal([
             'id' => $row[3],
-            'distrito_federal_id' => $row[2],
+            'municipio_id' => $row[4],
         ]);
         }
         else{

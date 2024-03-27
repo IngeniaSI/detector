@@ -17,7 +17,7 @@ class municipioImport implements ToModel
         return new municipio([
             'id' => $row[4],
             'nombre' => $row[5],
-            'distrito_local_id' => $row[3],
+            'distrito_federal_id' => $row[2],
         ]);
         }
         else{
