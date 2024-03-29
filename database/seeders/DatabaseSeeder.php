@@ -145,20 +145,30 @@ class DatabaseSeeder extends Seeder
         }
 
         // CARGA INICIAL SECCION
+        $dataForFirstTable = Excel::toArray(new seccionImport, storage_path('app/Catalogos/03_Cat+ílogo de Secciones con Distritos Electorales LOCALES.xlsx'));
+        foreach ($dataForFirstTable[0] as $row) {
+            if($row[6] == null){
+                break;
+            }
+            $entidadExiste = seccion::find($row[6]);
+            if(isset($entidadExiste)){
+                continue;
+            }
+            seccion::create([
+                'id' => $row[6],
+                'distrito_local_id' => $row[3],
+            ]);
+        }
+
+        // CARGA INICIAL SECCION
         $dataForFirstTable = Excel::toArray(new seccionImport, storage_path('app/Catalogos/Catalogo de Colonias.xlsx'));
         foreach ($dataForFirstTable[0] as $row) {
             if($row[5] == null){
                 break;
             }
             $entidadExiste = seccion::find($row[5]);
-            if(isset($entidadExiste)){
-                continue;
-            }
-            seccion::create([
-                'id' => $row[5],
-                'tipo' => $row[6],
-                'distrito_local_id' => 1,
-            ]);
+            $entidadExiste->tipo = $row[6];
+            $entidadExiste->save();
         }
 
         // CARGA INICIAL COLONIA

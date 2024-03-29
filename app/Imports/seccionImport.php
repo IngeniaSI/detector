@@ -16,7 +16,7 @@ class seccionImport implements ToModel
         return new seccion([
             'id' => $row[5],
             'tipo' => $row[6],
-            'distrito_local_id' => 1,
+            'distrito_local_id' => $row[3],
         ]);
         }
         else{

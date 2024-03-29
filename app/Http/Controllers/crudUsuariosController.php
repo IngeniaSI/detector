@@ -62,7 +62,6 @@ class crudUsuariosController extends Controller
         $formulario->validate([
             'nombre' => 'required',
             'apellido_paterno' => 'required',
-            'apellido_materno' => 'required',
             'correo' => 'required|email',
             'contrasenia' => 'required',
             'rolUsuario' => 'required|not_in:-1',
@@ -86,9 +85,11 @@ class crudUsuariosController extends Controller
                 $usuario->nombre = strtoupper($formulario->nombre);
                 $usuario->apellido_paterno = strtoupper($formulario->apellido_paterno);
                 $usuario->apellido_materno = strtoupper($formulario->apellido_materno);
+                $usuario->telefono = $formulario->telefono;
                 $usuario->email = strtoupper($formulario->correo);
                 $usuario->password = Hash::make($formulario->contrasenia);
                 $usuario->nivel_acceso = strtoupper($formulario->nivelAcceso);
+                $usuario->niveles = $formulario->etiquetas;
                 $usuario->save();
                 $usuario->assignRole($formulario->rolUsuario);
                 DB::commit();
@@ -99,11 +100,11 @@ class crudUsuariosController extends Controller
             catch(Exception $e){
                 DB::rollBack();
                 Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
-                return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario']);
+                return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario'])->withInput();
             }
         }
         else{
-            return back()->withErrors(['errorValidacion' => 'El correo ya se encuentra registrado']);
+            return back()->withErrors(['errorValidacion' => 'El correo ya se encuentra registrado'])->withInput();
         }
 
     }
@@ -133,8 +134,10 @@ class crudUsuariosController extends Controller
                 $usuario->nombre = strtoupper($formulario->nombre);
                 $usuario->apellido_paterno = strtoupper($formulario->apellido_paterno);
                 $usuario->apellido_materno = strtoupper($formulario->apellido_materno);
+                $usuario->telefono = $formulario->telefono;
                 $usuario->email = strtoupper($formulario->correo);
                 $usuario->nivel_acceso = strtoupper($formulario->nivelAcceso);
+                $usuario->niveles = $formulario->etiquetas;
                 if(isset($formulario->contrasenia) && $formulario->contrasenia != ""){
                     $usuario->password = Hash::make($formulario->contrasenia);
                 }
@@ -154,7 +157,7 @@ class crudUsuariosController extends Controller
             catch(Exception $e){
                 DB::rollBack();
                 Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
-                return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario']);
+                return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario'])->withInput();
             }
         }
     }

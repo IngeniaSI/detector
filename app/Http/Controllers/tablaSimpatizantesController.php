@@ -16,36 +16,42 @@ class tablaSimpatizantesController extends Controller
         return view('tablaSimpatizantes');
     }
     public function inicializar(){
-        return persona::join('identificacions', 'personas.id', '=', 'identificacions.persona_id')
-        ->join('domicilios', 'domicilios.identificacion_id', '=', 'identificacions.id')
-        ->join('colonias', 'colonias.id', '=', 'domicilios.colonia_id')
-        ->where('deleted_at', null)->get([
-            'personas.id',
-            'fecha_registro',
-            'folio',
-            'nombres',
-            'apellido_paterno',
-            'apellido_materno',
-            'genero',
-            'telefono_celular',
-            'telefono_fijo',
-            'correo',
-            'nombre_en_facebook',
-            'afiliado',
-            'simpatizante',
-            'programa',
-            'funcion_en_campania',
-            'fecha_nacimiento',
-            'rango_edad',
-            'observaciones',
-            'etiquetas',
-            'supervisado',
-            'calle',
-            'numero_exterior',
-            'numero_interior',
-            'colonias.nombre as nombreColonia',
-            'codigo_postal',
-    ]);
+        try {
+            return persona::join('identificacions', 'personas.id', '=', 'identificacions.persona_id')
+            ->join('domicilios', 'domicilios.identificacion_id', '=', 'identificacions.id')
+            ->join('colonias', 'colonias.id', '=', 'domicilios.colonia_id')
+            ->where('deleted_at', null)->get([
+                'personas.id',
+                'fecha_registro',
+                'folio',
+                'nombres',
+                'apellido_paterno',
+                'apellido_materno',
+                'genero',
+                'telefono_celular',
+                'telefono_fijo',
+                'correo',
+                'nombre_en_facebook',
+                'afiliado',
+                'simpatizante',
+                'programa',
+                'funcion_en_campania',
+                'fecha_nacimiento',
+                'edadPromedio',
+                'observaciones',
+                'etiquetas',
+                'supervisado',
+                'calle',
+                'numero_exterior',
+                'numero_interior',
+                'colonias.nombre as nombreColonia',
+                'codigo_postal',
+        ]);
+        } catch (Exception $e) {
+            Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
+            return null;
+        }
+
     }
     public function buscar(persona $persona){
         return $persona;

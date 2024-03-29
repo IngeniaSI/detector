@@ -12,7 +12,7 @@ class mapaController extends Controller
         $domicilioArray = [];
 
         foreach ($puntos as $punto) {
-            $coordenadas = array($punto->latitud, $punto->longitud, 'Persona Registrada');
+            $coordenadas = array($punto->latitud, $punto->longitud);
             $domicilioArray[] = $coordenadas;
         }
 
