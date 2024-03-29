@@ -30,7 +30,7 @@ return new class extends Migration
             $table->string('programa')->nullable();
             $table->string('funcion_en_campania')->nullable();
             $table->dateTime('fecha_nacimiento')->nullable();
-            $table->string('rango_edad')->nullable();
+            $table->string('edadPromedio')->nullable();
             $table->string('observaciones')->nullable();
             $table->string('etiquetas')->nullable();
             $table->string('rolEstructura')->nullable();

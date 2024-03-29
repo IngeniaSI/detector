@@ -7,7 +7,7 @@
     <title>Login</title>
 </head>
 <body>
-   
+
 </body>
 </html>
 <!DOCTYPE html>
@@ -57,7 +57,7 @@
 
                                         <center><button class="btn btn-primary">Iniciar sesion</button></center>
                                         @error('email')
-                                            <h4>{{$message}}</h4>
+                                        <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                                         @enderror
                                     </form>
 

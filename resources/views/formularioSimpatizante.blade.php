@@ -5,7 +5,39 @@
 @endsection
 
 @section('cuerpo')
+<style>
+    h4{
+        font-weight: 400;
+    }
 
+    :root {
+        --purple: #0d6efd;
+        --off-white: #f8f8f8;
+        --off-black: #444444;
+        --shadow: 0 0 30px #cccccc;
+        --xs: 0.2rem;
+        --sm: 0.5rem;
+        --md: 0.8rem;
+        --lg: 1rem;
+        --xlg: 1.5rem;
+        --xxlg: 2rem;
+        --transition: 0.3s linear all;
+    }
+    .tag {
+        background-color: var(--purple);
+        border-radius: 10px;
+        color: var(--off-white);
+        font-size: var(--md);
+        margin-bottom: var(--md);
+        margin-right: var(--md);
+        padding: var(--sm) var(--md);
+    }
+
+    .remove-tag {
+        cursor: pointer;
+        margin-left: 5px;
+    }
+</style>
 <BR>
 <div class="card" class="m-3">
     <div class="card-header">
@@ -16,280 +48,389 @@
         <form id="formularioAgregarSimpatizante" action="{{route('agregarSimpatizante.agregandoSimpatizante')}}" method="post" style="">
             @csrf
             <div class="container">
-                <br><br>
-                <h3>Datos Generales</h3>
-                <div class="row">
-                    <div class="col">
-                        <h4>Nombre(s)</h4>
-                        <input type="text" class="form-control" name="nombre" value="{{old('nombre')}}" minlength="3" maxlength="255">
-                        @error('nombre')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                    <div class="col">
-                        <h4>Apellido paterno</h4>
-                        <input type="text" class="form-control" name="apellido_paterno" value="{{old('apellido_paterno')}}" minlength="3" maxlength="255">
-                        @error('apellido_paterno')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                    <div class="col">
-                        <h4>Apellido materno</h4>
-                        <input type="text" class="form-control" name="apellido_materno" value="{{old('apellido_materno')}}" minlength="3" maxlength="255">
-                        @error('apellido_materno')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <h4>Genero</h4>
-                        <h5><input type="radio" name="genero" value="HOMBRE"> Hombre <input type="radio" name="genero" value="MUJER"> Mujer </h5>
-                        @error('genero')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                    <div class="col">
-                        <h4>Correo</h4>
-                        <input type="email" class="form-control" name="correo" value="{{old('correo')}}" minlength="3" maxlength="255">
-                        @error('correo')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                    <div class="col">
-                        <h4>Telefono Celular</h4>
-                        <input type="text" class="form-control" name="telefonoCelular" value="{{old('telefonoCelular')}}" minlength="10" maxlength="20">
-                        @error('telefonoCelular')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <h4>Telefono Fijo</h4>
-                        <input type="text" class="form-control" name="telefonoFijo" value="{{old('telefonoFijo')}}" minlength="10" maxlength="20">
-                        @error('telefonoFijo')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                    <div class="col">
-                        <h4>Facebook</h4>
-                        <input type="text" class="form-control" name="facebook" value="{{old('facebook')}}" minlength="3" maxlength="255">
-                        @error('facebook')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                    <div class="col">
-                        <h4>Escolaridad</h4>
-                        <select name="escolaridad" class="form-control" value="{{old('escolaridad')}}">
-                            <option value="PRIMARIA">Primaria</option>
-                            <option value="SECUNDARIA">Secundaria</option>
-                            <option value="PREPARATORIA">Preparatoria</option>
-                            <option value="PROFESIONAL">Profesional</option>
-                            <option value="MAESTRIA">Maestria</option>
-                        </select>
-                        @error('escolaridad')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <h4>Fecha de Nacimiento</h4>
-                        <input type="date" class="form-control" name="fechaNacimiento" value="{{old('fechaNacimiento')}}" min="{{date('Y-m-d', strtotime('-100 years'))}}" max="{{date('Y-m-d', strtotime('-18 years'))}}">
-                        @error('fechaNacimiento')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                    <div class="col">
-                        <h4>Clave Electoral</h4>
-                        <input type="text" class="form-control" id="claveElectoral" name="claveElectoral" value="{{old('claveElectoral')}}" minlength="18" maxlength="18" placeholder="ABCDEF12345678B123">
-                        @error('claveElectoral')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                    <div class="col">
-                        <h4>CURP</h4>
-                        <input type="text" class="form-control" id="curp" name="curp" value="{{old('curp')}}" minlength="18" maxlength="18" placeholder="ABCD123456HBCDEF12">
-                        @error('curp')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                </div>
-                <br>
                 @error('errorValidacion')
-                    <h5>{{$message}}</h5>
+                    <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                 @enderror
                 <br>
-                <div class="row">
-                    <h3>Dirección</h3>
-                    <div class="col">
-                        <h4>Calle</h4>
-                        <input type="text" class="form-control" name="calle" value="{{old('calle')}}">
-                        @error('calle')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                    <div class="col">
-                        <h4>Número Externo</h4>
-                        <input type="number" class="form-control" name="numeroExterior" value="{{old('numeroExterior')}}">
-                        @error('numeroExterior')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                    <div class="col">
-                        <h4>Número Interno</h4>
-                        <input type="number" class="form-control" name="numeroInterior" value="{{old('numeroInterior')}}">
-                        @error('numeroInterior')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <h4>Colonia</h4>
-                        <input type="text" class="form-control" name="colonia" value="{{old('colonia')}}">
-                        @error('colonia')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                    <div class="col">
-                        <h4>Municipio o Delegación</h4>
-                        <input type="text" class="form-control" name="municipio" value="{{old('municipio')}}">
-                        @error('municipio')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                    <div class="col">
-                        <h4>Código Postal</h4>
-                        <input type="number" class="form-control" name="codigoPostal" value="{{old('codigoPostal')}}">
-                        @error('codigoPostal')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                </div>
-                <br><br><br><br>
-                <div class="row">
-                    <h3>Información</h3>
-                    <div class="col">
-                        <h4>Folio</h4>
-                        <input type="number" class="form-control" name="folio" value="{{old('folio')}}">
-                        @error('folio')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                    <div class="col">
-                        <h4>Entidad Federativa</h4>
-                        <input type="number" class="form-control" name="entidadFederativa" value="{{old('entidadFederativa')}}">
-                        @error('entidadFederativa')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                    <div class="col">
-                        <h4>Distrito Federal</h4>
-                        <input type="number" class="form-control" name="distritoFederal" value="{{old('distritoFederal')}}">
-                        @error('distritoFederal')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <h4>Distrito local</h4>
-                        <input type="text" class="form-control" name="distritoLocal" value="{{old('distritoLocal')}}">
-                        @error('distritoLocal')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                    <div class="col">
-                        <h4>Sección</h4>
-                        <input type="number" class="form-control" name="seccion" value="{{old('seccion')}}">
-                        @error('seccion')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                    <div class="col">
-                        <h4>Afiliado</h4>
-                        <select class="form-control" name="esAfiliado">
-                            <option select>No</option>
-                            <option>Si</option>
-                        </select>
-                        @error('esAfiliado')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                    <div class="col">
-                        <h4>Simpatizantes</h4>
-                        <select class="form-control" name="esSimpatizante">
-                            <option select>No</option>
-                            <option>Si</option>
-                            <option>Talvez</option>
-                        </select>
-                        @error('esSimpatizante')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <h4>Programas</h4>
-                        <select class="form-control" name="programa">
-                            <option select>Ninguno</option>
-                            <option>Programa 1</option>
-                            <option>Programa 2</option>
-                        </select>
-                        @error('programa')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                    <div class="col">
-                        <h4>Funciones</h4>
-                        <select class="form-control" name="funciones">
-                            <option select>Ninguno</option>
-                            <option>Medicina</option>
-                            <option>Lentes</option>
-                        </select>
-                        @error('funciones')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                    <div class="col">
-                        <h4>Etiquetas(Opcional)</h4>
-                        <input type="text" class="form-control" name="etiquetas">
-                        @error('etiquetas')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                    <div class="col">
-                        <h4>Fecha de registro</h4>
-                        <input type="date" class="form-control" name="fechaRegistro" value="{{old('fechaRegistro')}}" min="{{date('Y-m-d', strtotime('-100 years'))}}" max="{{date('Y-m-d')}}">
-                        @error('fechaRegistro')
-                            <h5>{{$message}}</h5>
-                        @enderror
-                    </div>
-                </div>
-                <br><br>
-                <center>
-                    <h4>Coordenadas</h4>
-                    <input type="hidden" id="coordenadas" name="coordenadas">
-                    <input type="text" class="col-3" id="cordenada" class="form-control" disabled>
-                </center>
-                <center>
-                    <div id="map" style="width:450px;height:300px"></div>
-                    @error('coordenadas')
-                            <h5>{{$message}}</h5>
-                    @enderror
-                </center>
-                <div class="row">
-                    <div class="col">
-                        <h4>Comentarios</h4>
-                        <div class="form-group">
-                            <textarea class="form-control" rows="5" id="comment" name="observaciones"></textarea>
+                <div class="p-4 border rounded-3">
+                    <h3>Datos de control</h3>
+                    <div class="row row-cols-1 row-cols-sm-3">
+                        <div class="col">
+                            <h4>Fecha de registro</h4>
+                            <input type="date" class="form-control" name="fechaRegistro" value="{{old('fechaRegistro')}}" min="{{date('Y-m-d', strtotime('-100 years'))}}" max="{{date('Y-m-d')}}">
+                            @error('fechaRegistro')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                        <div class="col">
+                            <h4>Folio</h4>
+                            <input type="number" class="form-control" name="folio" value="{{old('folio')}}">
+                            @error('folio')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                        <div class="col">
+                            <h4>Rol en estructura</h4>
+                            <select class="form-control selectToo" id="promotores" name="promotor">
+                                <option value="-1" selected>Sin promotor</option>
+                            </select>
+                            @error('promotor')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
                         </div>
                     </div>
                 </div>
+                <br>
+                <div class="p-4 border rounded-3">
+                    <h3>Datos personales</h3>
+                    <div class="row row-cols-1 row-cols-sm-3">
+                        <div class="col">
+                            <h4>Apellido paterno (*)</h4>
+                            <input type="text" class="form-control" name="apellido_paterno" value="{{old('apellido_paterno')}}" minlength="3" maxlength="255">
+                            @error('apellido_paterno')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                        <div class="col">
+                            <h4>Apellido materno (*)</h4>
+                            <input type="text" class="form-control" name="apellido_materno" value="{{old('apellido_materno')}}" minlength="3" maxlength="255">
+                            @error('apellido_materno')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                        <div class="col">
+                            <h4>Nombre(s) (*)</h4>
+                            <input type="text" class="form-control" name="nombre" value="{{old('nombre')}}" minlength="3" maxlength="255">
+                            @error('nombre')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row row-cols-1 row-cols-sm-3">
+                        <div class="col">
+                            <h4>Genero (*)</h4>
+                            <span><input type="radio" name="genero" value="HOMBRE"> Hombre <input type="radio" name="genero" value="MUJER"> Mujer </span>
+                            @error('genero')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                        <div class="col">
+                            <h4>Fecha de Nacimiento</h4>
+                            <input type="date" class="form-control" name="fechaNacimiento" value="{{old('fechaNacimiento')}}" min="{{date('Y-m-d', strtotime('-100 years'))}}" max="{{date('Y-m-d', strtotime('-18 years'))}}">
+                            @error('fechaNacimiento')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                        <div class="col">
+                            <h4>Rango de edad</h4>
+                            <select class="form-control" name="rangoEdad">
+                                <option value="23">18-28</option>
+                                <option value="34">29-39</option>
+                                <option value="45">40-49</option>
+                                <option value="55">50-69</option>
+                                <option value="74">69-adelante</option>
+                            </select>
+                            @error('rangoEdad')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="row row-cols-1 row-cols-sm-3">
+                        <div class="col">
+                            <h4>Escolaridad</h4>
+                            <select class="form-control" name="escolaridad">
+                                <option>SIN ESTUDIOS</option>
+                                <option>PRIMARIA</option>
+                                <option>SECUNDARIA</option>
+                                <option>SECUNDARIA</option>
+                                <option>UNIVERSIDAD</option>
+                                <option>MAESTRIA</option>
+                            </select>
+                            @error('escolaridad')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                        <div class="col">
+                        </div>
+                        <div class="col">
+
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="p-4 border rounded-3">
+                    <h3>Datos de contacto</h3>
+                    <div class="row row-cols-1 row-cols-sm-3">
+                        <div class="col">
+                            <h4>Telefono Celular (*)</h4>
+                            <input type="text" class="form-control" name="telefonoCelular" value="{{old('telefonoCelular')}}" minlength="10" maxlength="20">
+                            @error('telefonoCelular')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                        <div class="col">
+                            <h4>Telefono Fijo</h4>
+                            <input type="text" class="form-control" name="telefonoFijo" value="{{old('telefonoFijo')}}" minlength="10" maxlength="20">
+                            @error('telefonoFijo')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                        <div class="col">
+                            <h4>Correo electronico (*)</h4>
+                            <input type="email" class="form-control" name="correo" value="{{old('correo')}}" minlength="3" maxlength="255">
+                            @error('correo')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row row-cols-1 row-cols-sm-3">
+                        <div class="col">
+                            <h4>Facebook</h4>
+                            <input type="text" class="form-control" name="facebook" value="{{old('facebook')}}" minlength="3" maxlength="255">
+                            @error('facebook')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                        <div class="col">
+
+                        </div>
+                        <div class="col">
+
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="p-4 border rounded-3">
+                    <h3>Datos de domicilio</h3>
+                    <div class="row row-cols-1 row-cols-sm-3">
+                        <div class="col">
+                            <h4>Calle (*)</h4>
+                            <input type="text" class="form-control" name="calle" value="{{old('calle')}}">
+                            @error('calle')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                        <div class="col">
+                            <h4>Número Externo (*)</h4>
+                            <input type="number" class="form-control" name="numeroExterior" value="{{old('numeroExterior')}}">
+                            @error('numeroExterior')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                        <div class="col">
+                            <h4>Número Interno</h4>
+                            <input type="number" class="form-control" name="numeroInterior" value="{{old('numeroInterior')}}">
+                            @error('numeroInterior')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row row-cols-1 row-cols-sm-3">
+                        <div class="col">
+                            <h4>Código Postal (*)</h4>
+                            <input type="number" class="form-control" name="codigoPostal" value="{{old('codigoPostal')}}">
+                            @error('codigoPostal')
+                            <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                        <div class="col">
+                            <h4>Colonia (*)</h4>
+                            <select class="form-control selectToo" id="colonias" name="colonia">
+                            </select>
+                            @error('colonia')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                        <div class="col">
+                            <h4>Municipio o Delegación (*)</h4>
+                            <select class="form-control selectToo" id="municipios" name="municipio">
+                            </select>
+                            @error('municipio')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                    </div>
+                    <br>
+                    <h4>¿Donde vive la persona?</h4>
+                    <center>
+                        <input type="hidden" id="coordenadas" name="coordenadas">
+                        <input type="text" class="col-3 d-none" id="cordenada" class="form-control" disabled>
+                    </center>
+                    <center>
+                        <div id="map" class="mx-auto" style="width:100%;height:400px"></div>
+                        @error('coordenadas')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                        @enderror
+                    </center>
+                </div>
+                <br>
+                <div class="p-4 border rounded-3">
+                    <h3>Datos de identificación</h3>
+                    <div class="row row-cols-1 row-cols-sm-3">
+                        <div class="col">
+                            <h4>Clave Electoral</h4>
+                            <input type="text" class="form-control" id="claveElectoral" name="claveElectoral" value="{{old('claveElectoral')}}" minlength="18" maxlength="18" placeholder="ABCDEF12345678B123">
+                            @error('claveElectoral')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                        <div class="col">
+                            <h4>CURP</h4>
+                            <input type="text" class="form-control" id="curp" name="curp" value="{{old('curp')}}" minlength="18" maxlength="18" placeholder="ABCD123456HBCDEF12">
+                            @error('curp')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                        <div class="col">
+                            <div class="d-flex">
+                                <h4>Sección</h4>
+                                <a class="ms-3" title="Este dato se encuentra en su identificación INE">
+                                    <i class="bi bi-exclamation-circle-fill"></i>
+                                </a>
+                            </div>
+                            <select class="form-control selectToo" id="secciones" name="seccion">
+                            </select>
+                            @error('seccion')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row row-cols-1 row-cols-sm-3">
+                        <div class="col">
+                            <h4>Entidad Federativa</h4>
+                            <select class="form-control selectToo" id="entidades" name="entidadFederativa">
+                            </select>
+                            @error('entidadFederativa')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                        <div class="col">
+                            <h4>Distrito Federal</h4>
+                            <select class="form-control selectToo" id="distritosFederales" name="distritoFederal">
+                            </select>
+                            @error('distritoFederal')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                        <div class="col">
+                            <h4>Distrito local</h4>
+                            <select class="form-control selectToo" id="distritosLocales" name="distritoLocal">
+                            </select>
+                            @error('distritoLocal')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="p-4 border rounded-3">
+                    <h3>Datos de relación</h3>
+                    <div class="row row-cols-1 row-cols-sm-3">
+                        <div class="col">
+                            <h4>Afiliado</h4>
+                            <select class="form-control" name="esAfiliado">
+                                <option select>No</option>
+                                <option>Si</option>
+                            </select>
+                            @error('esAfiliado')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                        <div class="col">
+                            <h4>Simpatizantes</h4>
+                            <select class="form-control" name="esSimpatizante">
+                                <option select>No</option>
+                                <option>Si</option>
+                                <option>Talvez</option>
+                            </select>
+                            @error('esSimpatizante')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                        <div class="col">
+                            <h4>Programas</h4>
+                            <select class="form-control selectToo" name="programa">
+                                <option select>Ninguno</option>
+                                <option>Programa 1</option>
+                                <option>Programa 2</option>
+                            </select>
+                            @error('programa')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="p-4 border rounded-3">
+                    <h3>Datos de estructura</h3>
+                    <div class="row row-cols-1 row-cols-sm-3">
+                        <div class="col">
+                            <h4>Rol en estructura</h4>
+                            <select class="form-control" id="rolEstructura" name="rolEstructura">
+                                <option value="-1">Sin rol en la estructura</option>
+                                <option value="COORDINADOR ESTATAL">COORDINADOR ESTATAL</option>
+                                <option value="COORDINADOR DE DISTRITO LOCAL">COORDINADOR DE DISTRITO LOCAL</option>
+                                <option value="COORDINADOR DE SECCIÓN">COORDINADOR DE SECCIÓN</option>
+                                <option value="PROMOTOR">PROMOTOR</option>
+                            </select>
+                            @error('rolEstructura')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                        <div class="col">
+                            <h4 id="rolNumeroEncabezado">Seleccione un rol en estructura</h4>
+                            <input type="number" class="form-control" id="rolNumero" name="rolNumero" value="{{old('rolNumero')}}" disabled>
+                            @error('rolNumero')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                        <div class="col">
+                            <h4>Función asignada</h4>
+                            <select class="form-control selectToo" name="funciones">
+                                <option select>Ninguno</option>
+                                <option>Medicina</option>
+                                <option>Lentes</option>
+                            </select>
+                            @error('funciones')
+                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="p-4 border rounded-3">
+                    <h3>Otros datos</h3>
+                    <h4>Etiquetas</h4>
+                    <div class="row justify-content-between">
+                        <div class="col-10">
+                            <input type="text" id="inputEtiquetaCrear" class="form-control" placeholder="',' para agregar etiqueta">
+                        </div>
+                        <div class="col-auto">
+                            <button type="button" id="agregarEtiquetaCrear" class="btn btn-primary">Agregar</button>
+                        </div>
+                    </div>
+                    <div class="mt-3 contenedorEtiquetasCrear">
+                        <!-- <span class="tag">oh my God <span class="remove-tag">&#10006;</span></span>
+                        <span class="tag">second tag <span class="remove-tag">&#10006;</span></span>
+                        <span class="tag">tag3 <span class="remove-tag">&#10006;</span></span> -->
+                    </div>
+                    <br>
+                    <div class="row row-cols-1">
+                        <div class="col">
+                            <h4>Observaciones</h4>
+                            <div class="form-group">
+                                <textarea class="form-control" rows="5" id="comment" name="observaciones"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <small>(*) Son campos obligatorios para el formulario</small>
             </div>
-            <br><br>
+            <br>
             <div>
                 <center>
                     <button class="btn btn-primary">Agregar</button>
@@ -311,10 +452,8 @@
   {{-- PASAR LIBRERIAS A PLANTILLA --}}
   {{-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"> --}}
 
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDg60SDcmNRPnG1tzZNBBGFx02cW2VkWWQ&callback=initMap&v=weekly" defer></script>
-
-  <script text="text/javascript">
+<script text="text/javascript">
     function initMap() {
         var marker;
         var marker2;
@@ -367,22 +506,67 @@
     }
 
     window.initMap = initMap;
-
-
     //FIN MAPA
-
 
 
     // FUNCION PARA CARGAR TABLA DE USUARIOS
     $(document).ready(function () {
+        $('.selectToo').select2({
+            language: {
+
+                noResults: function() {
+
+                return "No hay resultado";
+                },
+                searching: function() {
+
+                return "Buscando..";
+                }
+            }
+        });
         $.when(
             $.ajax({
                 type: "get",
-                url: "{{route('crudSimpatizantes.inicializar')}}",
+                url: "{{route('agregarSimpatizante.inicializar')}}",
                 data: [],
                 contentType: "application/x-www-form-urlencoded",
                 success: function (response) {
-
+                    console.log(response);
+                    $.each(response.colonias, function (i, valor) {
+                        $('#colonias').append(
+                            $('<option>').val(valor.id).text(valor.nombre)
+                        );
+                    });
+                    $.each(response.municipios, function (i, valor) {
+                        $('#municipios').append(
+                            $('<option>').val(valor.id).text(valor.nombre)
+                        );
+                    });
+                    $.each(response.secciones, function (i, valor) {
+                        $('#secciones').append(
+                            $('<option>').text(valor.id)
+                        );
+                    });
+                    $.each(response.entidades, function (i, valor) {
+                        $('#entidades').append(
+                            $('<option>').val(valor.id).text(valor.nombre)
+                        );
+                    });
+                    $.each(response.distritosFederales, function (i, valor) {
+                        $('#distritosFederales').append(
+                            $('<option>').text(valor.id)
+                        );
+                    });
+                    $.each(response.distritosLocales, function (i, valor) {
+                        $('#distritosLocales').append(
+                            $('<option>').text(valor.id)
+                        );
+                    });
+                    $.each(response.promotores, function (i, valor) {
+                        $('#promotores').append(
+                            $('<option>').val(valor.id).text(`${valor.nombres} ${valor.apellido_paterno}`)
+                        );
+                    });
                 },
                 error: function( data, textStatus, jqXHR){
                     if (jqXHR.status === 0) {
@@ -408,6 +592,27 @@
 
     });
 
+    $('#rolEstructura').change(function (e) {
+        $('#rolNumero').prop('disabled', false);
+        switch ($(this).val()) {
+            case 'COORDINADOR ESTATAL':
+                $('#rolNumeroEncabezado').text('¿En qué Entidad?');
+                break;
+                case 'COORDINADOR DE DISTRITO LOCAL':
+                $('#rolNumeroEncabezado').text('¿En qué Distrito?');
+                break;
+                case 'COORDINADOR DE SECCIÓN':
+                $('#rolNumeroEncabezado').text('¿En qué Sección?');
+                break;
+                case 'PROMOTOR':
+                $('#rolNumeroEncabezado').text('¿En qué Sección?');
+                break;
+            default:
+                $('#rolNumeroEncabezado').text('Seleccione un rol en estructura');
+                $('#rolNumero').prop('disabled', true);
+                break;
+        }
+    });
 
 
     // FUNCION CERRAR FORMULARIO
@@ -422,6 +627,76 @@
     function soloMayusculas(){
         $(this).val($(this).val().toUpperCase());
     }
+
+    const button = document.querySelector('#agregarEtiquetaCrear');
+    const tagInput = document.querySelector('#inputEtiquetaCrear');
+
+    const tagContainer = document.querySelector('.contenedorEtiquetasCrear');
+    let tags = [];
+
+    const createTag = (tagValue) => {
+        const value = tagValue.trim();
+
+        if (value === '' || tags.includes(value)) return;
+
+        const tag = document.createElement('span');
+        tag.setAttribute('class', 'tag');
+
+        const valor = document.createElement('span');
+        valor.setAttribute('class', 'valor');
+        valor.innerHTML = value;
+        tag.appendChild(valor);
+
+        const close = document.createElement('span');
+        close.setAttribute('class', 'remove-tag');
+        close.innerHTML = '&#10006;';
+        close.onclick = handleRemoveTag;
+
+        tag.appendChild(close);
+        tagContainer.appendChild(tag);
+        tags.push(tag);
+
+        tagInput.value = '';
+        tagInput.focus();
+    };
+
+    const handleRemoveTag = (e) => {
+        const indexEtiqueta = tags.findIndex(function(elemento, i){
+            if(elemento.childNodes[0].innerHTML == e.target.parentElement.childNodes[0].innerHTML){
+                return true;
+            }
+        });
+        e.target.parentElement.remove()
+        if(indexEtiqueta > -1){
+            tags.splice(indexEtiqueta, 1);
+        }
+    };
+
+    tagInput.addEventListener('keyup', (e) => {
+        const { key } = e;
+        if (key === ',') {
+            createTag(tagInput.value.substring(0, tagInput.value.length - 1));
+        }
+    });
+
+    button.addEventListener('click', (e) => {
+        createTag(tagInput.value);
+    });
+    $('#formularioAgregarSimpatizante').submit(function (e) {
+        if($('#formularioAgregarSimpatizante #etiquetas').length == 0){
+            let etiquetas = "";
+            $.each(tags, function (i, value) {
+                etiquetas += `${value.childNodes[0].innerHTML},`;
+                if(etiquetas.length > 0 && tags.length - 1 == i){
+                    etiquetas = etiquetas.slice(0, -1);
+                }
+            });
+            $('#formularioAgregarSimpatizante').append(
+                $('<input>').attr('name', 'etiquetas').attr('id', 'etiquetas').attr('type', 'hidden')
+                .val(etiquetas)
+            );
+        }
+    });
     </script>
 @endsection
 

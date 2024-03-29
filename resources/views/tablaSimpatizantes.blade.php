@@ -5,7 +5,7 @@ Tabla de Simpatizantes
 @endsection
 
 @section('cuerpo')
-@if (session()->has('mensaje'))
+    @if (session()->has('mensaje'))
         <script>
             alert('{{session("mensaje")}}');
         </script>
@@ -13,62 +13,57 @@ Tabla de Simpatizantes
     <br>
     <div class="container-fluid px-4">
         <h1 class="mt-4">Tabla de Personas</h1>
-
         <div class="card mb-4">
             <div class="card-header">
-            <center>
-                <a href="{{route('agregarSimpatizante.index')}}">
-                    <button class="btn btn-primary">Agregar Persona</button>
-                </a>
-            </center>
+                <center>
+                    <a href="{{route('agregarSimpatizante.index')}}">
+                        <button class="btn btn-primary">Agregar Persona</button>
+                    </a>
+                </center>
             </div>
             <div class="card-body">
-                    {{-- TABLA DE USUARIOS --}}
-                        <table id="tablaUsuarios" class="table table-striped table-bordered dt-responsive display" style="width:100%">
-                            <thead>
-                                <th>Fecha de Registro:</th>
-                                <th>Supervisado:</th>
-                                <th>Folio:</th>
-                                <th>Nombre completo:</th>
-                                <th>Genero:</th>
-                                <th>Fecha de Nacimiento:</th>
-                                <th>Rango de Edad:</th>
-                                <th>Teléfono Celular:</th>
-                                <th>Télefono Fijo:</th>
-                                <th>Correo Electronico:</th>
-                                <th>Facebook:</th>
-                                <th>Calle:</th>
-                                <th>Número Ext:</th>
-                                <th>Número Int:</th>
-                                <th>Colonia:</th>
-                                <th>C.P:</th>
-                                <th>Entidad Federativa:</th>
-                                <th>Distrito Federal:</th>
-                                <th>Municipio:</th>
-                                <th>Distrito Local:</th>
-                                <th>Afiliado:</th>
-                                <th>Simpatizante:</th>
-                                <th>Programa:</th>
-                                <th>Funciones:</th>
-                                <th>Etiquetas:</th>
-                                <th>Observaciones:</th>
-                                @can('crudSimpatizantes.verificar')
-                                    <th>Opciones:</th>
-                                @endcan
-                            </thead>
-                            <tbody>
+                {{-- TABLA DE USUARIOS --}}
+                <table id="tablaUsuarios" class="table table-striped table-bordered dt-responsive display" style="width:100%">
+                    <thead>
+                        <th>Fecha de Registro:</th>
+                        <th>Supervisado:</th>
+                        <th>Folio:</th>
+                        <th>Nombre completo:</th>
+                        <th>Genero:</th>
+                        <th>Fecha de Nacimiento:</th>
+                        <th>Rango de Edad:</th>
+                        <th>Teléfono Celular:</th>
+                        <th>Télefono Fijo:</th>
+                        <th>Correo Electronico:</th>
+                        <th>Facebook:</th>
+                        <th>Calle:</th>
+                        <th>Número Ext:</th>
+                        <th>Número Int:</th>
+                        <th>Colonia:</th>
+                        <th>C.P:</th>
+                        <th>Entidad Federativa:</th>
+                        <th>Distrito Federal:</th>
+                        <th>Municipio:</th>
+                        <th>Distrito Local:</th>
+                        <th>Afiliado:</th>
+                        <th>Simpatizante:</th>
+                        <th>Programa:</th>
+                        <th>Funciones:</th>
+                        <th>Etiquetas:</th>
+                        <th>Observaciones:</th>
+                        @can('crudSimpatizantes.verificar')
+                            <th>Opciones:</th>
+                        @endcan
+                    </thead>
+                    <tbody>
 
-                            </tbody>
-                        </table>
-                        @error('errorBorrar')
-                            <h5>{{$message}}</h5>
-                        @enderror
+                    </tbody>
+                </table>
+                @error('errorBorrar')
+                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                @enderror
             </div>
-            </div>
-            </div>
-    </div>
-    </div>
-    </div>
+        </div>
     </div>
 @endsection
 
@@ -114,7 +109,6 @@ Tabla de Simpatizantes
                                         '<input type="hidden" name="_token" value="{{csrf_token()}}">'+
                                         '<button class="btn btn-danger">Borrar</button>'+
                                     '</form>'
-
                                 :
                                     `<form action="{{url('/')}}/simpatizantes/supervisar-${elemento.id}" method="post">`+
                                         '<input type="hidden" name="_token" value="{{csrf_token()}}">'+
@@ -125,7 +119,6 @@ Tabla de Simpatizantes
                                         '<input type="hidden" name="_token" value="{{csrf_token()}}">'+
                                         '<button class="btn btn-danger">Borrar</button>'+
                                     '</form>'
-
                             @endcan
                         ]).draw();
                     });
