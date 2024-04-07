@@ -15,6 +15,7 @@ use App\Models\colonia;
 use App\Models\distritoFederal;
 use App\Models\distritoLocal;
 use App\Models\entidad;
+use App\Models\meta;
 use App\Models\municipio;
 use App\Models\seccion;
 use App\Models\seccionColonia;
@@ -205,5 +206,10 @@ class DatabaseSeeder extends Seeder
                 'colonia_id' => $row[0],
             ]);
         }
+
+        meta::create([
+            'numeroObjetivo' => 100,
+            'poblacionEstablecida' => 10000
+        ]);
     }
 }

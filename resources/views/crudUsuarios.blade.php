@@ -280,9 +280,9 @@
         <h1 class="mt-4">Usuarios del Sistema</h1>
         <div class="card mb-4">
             <div class="card-header">
-                <center>
+                <div class="d-flex justify-content-end">
                     <button class="btnCrearUsuario btn btn-primary" data-bs-toggle="modal" data-bs-target="#AgregarModal" ><i class="fas fa-user me-1"></i> Crear usuario</button>
-                </center>
+                </div>
             </div>
             <div class="card-body">
                 <table id="tablaUsuarios2" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">

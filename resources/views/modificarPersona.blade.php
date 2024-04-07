@@ -1,7 +1,7 @@
 @extends('Pages.plantilla')
 
 @section('tittle')
-    Agregar Persona
+    Modificar Persona
 @endsection
 
 @section('cuerpo')
@@ -41,11 +41,11 @@
 <BR>
 <div class="card" class="m-3">
     <div class="card-header">
-        <h3>Agregar Persona</h3>
+        <h3>Modificar Persona</h3>
     </div>
     <div class="card-body">
         {{-- FORMULARIO DE AGREGAR USUARIO --}}
-        <form id="formularioAgregarSimpatizante" action="{{route('agregarSimpatizante.agregandoSimpatizante')}}" method="post" style="">
+        <form id="formularioAgregarSimpatizante" action="{{route('crudPersonas.modificarPersona', $persona)}}" method="post" style="">
             @csrf
             <div class="container">
                 @error('errorValidacion')
@@ -341,8 +341,8 @@
                         <div class="col">
                             <h4>Afiliado</h4>
                             <select class="form-control" name="esAfiliado">
-                                <option select>No</option>
-                                <option>Si</option>
+                                <option value="NO" select>No</option>
+                                <option value="SI">Si</option>
                             </select>
                             @error('esAfiliado')
                                 <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -351,9 +351,9 @@
                         <div class="col">
                             <h4>Simpatizantes</h4>
                             <select class="form-control" name="esSimpatizante">
-                                <option select>No</option>
-                                <option>Si</option>
-                                <option>Talvez</option>
+                                <option value="NO" select>No</option>
+                                <option value="SI">Si</option>
+                                <option value="TALVEZ">Talvez</option>
                             </select>
                             @error('esSimpatizante')
                                 <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -362,9 +362,9 @@
                         <div class="col">
                             <h4>Programas</h4>
                             <select class="form-control selectToo" name="programa">
-                                <option select>Ninguno</option>
-                                <option>Programa 1</option>
-                                <option>Programa 2</option>
+                                <option  value="NINGUNO" select>Ninguno</option>
+                                <option value="PROGRAMA 1" >Programa 1</option>
+                                <option value="PROGRAMA 2" >Programa 2</option>
                             </select>
                             @error('programa')
                                 <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -399,9 +399,9 @@
                         <div class="col">
                             <h4>Función asignada</h4>
                             <select class="form-control selectToo" name="funciones">
-                                <option select>Ninguno</option>
-                                <option>Medicina</option>
-                                <option>Lentes</option>
+                                <option value="NINGUNO" select>Ninguno</option>
+                                <option value="MEDICINA">Medicina</option>
+                                <option value="LENTES">Lentes</option>
                             </select>
                             @error('funciones')
                                 <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -441,7 +441,7 @@
             <br>
             <div>
                 <center>
-                    <button class="btn btn-primary">Agregar</button>
+                    <button class="btn btn-primary">Modificar</button>
                     <button class="btn btn-danger" type="button" class="cerrarFormulario">Limpiar</button>
                     <a href="{{route('crudSimpatizantes.index')}}">
                         <button class="btn btn-success" type="button">Tabla Personas</button>
@@ -474,11 +474,14 @@
         });
 
         google.maps.event.addListener(map, 'click', function (event) {
-            console.log(event.latLng);
             placeMarker(event.latLng);
             document.getElementById("cordenada").value = event.latLng.lat() + ", " + event.latLng.lng();
             document.getElementById("coordenadas").value = event.latLng.lat() + "," + event.latLng.lng();
         });
+
+        @isset($latitud)
+            placeMarker({lat: {{$latitud}}, lng: {{$longitud}}})
+        @endisset
 
 
         function placeMarker(location) {
@@ -552,7 +555,7 @@
                     });
                     $.each(response.secciones, function (i, valor) {
                         $('#secciones').append(
-                            $('<option>').text(valor.id)
+                            $('<option>').val(valor.id).text(valor.id)
                         );
                     });
                     $.each(response.entidades, function (i, valor) {
@@ -562,12 +565,12 @@
                     });
                     $.each(response.distritosFederales, function (i, valor) {
                         $('#distritosFederales').append(
-                            $('<option>').text(valor.id)
+                            $('<option>').val(valor.id).text(valor.id)
                         );
                     });
                     $.each(response.distritosLocales, function (i, valor) {
                         $('#distritosLocales').append(
-                            $('<option>').text(valor.id)
+                            $('<option>').val(valor.id).text(valor.id)
                         );
                     });
                     $.each(response.promotores, function (i, valor) {
@@ -596,7 +599,105 @@
             })
         ).then(
             function( data, textStatus, jqXHR ) {
+                $.when(
+            $.ajax({
+                type: "get",
+                url: "{{url('/')}}/simpatizantes/modificar/cargarPersona-{{$persona}}",
+                data: [],
+                contentType: "application/x-www-form-urlencoded",
+                success: function (response) {
+                    console.log(response);
+                    $('input[name="fechaRegistro"]').val(response.fecha_registro);
+                    $('input[name="folio"]').val(response.persona.folio);
+                    $('select[name="promotor"]').val(response.persona.persona_id != null ? response.persona.persona_id : 0);
+                    $('select[name="promotor"]').trigger('change');
+                    $('input[name="apellido_paterno"]').val(response.persona.apellido_paterno);
+                    $('input[name="apellido_materno"]').val(response.persona.apellido_materno);
+                    $('input[name="nombre"]').val(response.persona.nombres);
+                    $(`input[name="genero"][value="${response.persona.genero}"]`).prop('checked', true);
+                    $('input[name="fechaNacimiento"]').val(response.persona.fecha_nacimiento);
+                    $('select[name="rangoEdad"]').val(response.persona.edadPromedio);//*
+                    $('select[name="escolaridad"]').val(response.persona.escolaridad);
+                    $('input[name="telefonoCelular"]').val(response.persona.telefono_celular);
+                    $('input[name="telefonoFijo"]').val(response.persona.telefono_fijo);
+                    $('input[name="correo"]').val(response.persona.correo);
+                    $('input[name="facebook"]').val(response.persona.nombre_en_facebook);
+                    $('input[name="calle"]').val(response.domicilio.calle);
+                    $('input[name="numeroExterior"]').val(response.domicilio.numero_exterior);
+                    $('input[name="numeroInterior"]').val(response.domicilio.numer_interior);
+                    $('input[name="codigoPostal"]').val(response.colonia.codigo_postal);
+                    $('select[name="municipio"]').val(response.municipio != null ? response.municipio : 0);
+                    $('select[name="municipio"]').trigger('change');
+                    $('select[name="colonia"]').val(  response.domicilio.colonia_id != null ?   response.domicilio.colonia_id : 0);
+                    $('select[name="colonia"]').trigger('change');
+                    $('input[name="claveElectoral"]').val(response.identificacion.clave_elector);
+                    $('input[name="curp"]').val(response.identificacion.curp);
+                    $('select[name="seccion"]').val(  response.identificacion.seccion_id != null ?   response.identificacion.seccion_id : 0);
+                    $('select[name="seccion"]').trigger('change');
+                    $('select[name="distritoLocal"]').val(  response.distritoLocal != null ?   response.distritoLocal : 0);
+                    $('select[name="distritoLocal"]').trigger('change');
+                    $('select[name="distritoFederal"]').val(  response.distritoFederal != null ?   response.distritoFederal : 0);
+                    $('select[name="distritoFederal"]').trigger('change');
+                    $('select[name="entidadFederativa"]').val(  response.entidad != null ?   response.entidad : 0);
+                    $('select[name="entidadFederativa"]').trigger('change');
+                    $('select[name="esAfiliado"]').val(response.persona.afiliado);
+                    $('select[name="esAfiliado"]').trigger('change');
+                    $('select[name="esSimpatizante"]').val(  response.persona.simpatizante != null ?   response.persona.simpatizante : 0);
+                    $('select[name="esSimpatizante"]').trigger('change');
+                    $('select[name="programa"]').val(  response.persona.programa != null ?   response.persona.programa : 0);
+                    $('select[name="programa"]').trigger('change');
+                    $('select[name="rolEstructura"]').val(  response.persona.rolEstructura != null ?   response.persona.rolEstructura : 0);
+                    $('select[name="rolEstructura"]').trigger('change');
+                    $('input[name="rolNumero"]').val(response.persona.rolNumero);
+                    $('select[name="funciones"]').val(  response.persona.funcion_en_campania != null ?   response.persona.funcion_en_campania : 0);
+                    $('select[name="funciones"]').trigger('change');
+                    $('input[name="observaciones"]').val(response.persona.observaciones);
+                    if(response.domicilio.latitud != null){
+                        $('input[name="coordenadas"]').val(`${response.domicilio.latitud},${response.domicilio.longitud}`);
+                    }
+
+                    let etiquedasPreprocesar = (response.persona.etiquetas != null) ? response.persona.etiquetas.split(',') : [];
+                    $.each(etiquedasPreprocesar, function (i, valor) {
+                        createTag(valor);
+                    });
+                },
+                error: function( data, textStatus, jqXHR){
+                    if (jqXHR.status === 0) {
+                        console.log('Not connect: Verify Network.');
+                    } else if (jqXHR.status == 404) {
+                        console.log('Requested page not found [404]');
+                    } else if (jqXHR.status == 500) {
+                        console.log('Internal Server Error [500].');
+                    } else if (textStatus === 'parsererror') {
+                        console.log('Requested JSON parse failed.');
+                    } else if (textStatus === 'timeout') {
+                        console.log('Time out error.');
+                    } else if (textStatus === 'abort') {
+                        console.log('Ajax request aborted.');
+                    } else {
+                        console.log('Uncaught Error: ' + jqXHR.responseText);
+                    }
+                }
+            })
+        ).then(
+            function( data, textStatus, jqXHR ) {
+                $('#entidades').change(filtrarSecciones);
+                $('#distritosFederales').change(filtrarSecciones);
+                $('#distritosLocales').change(filtrarSecciones);
+                $('#secciones').change(filtrarSecciones);
+
+                $('#municipios').change(filtrarColonia);
+                $('#colonias').change(filtrarColonia);
+                $('#codigoPostal').keyup(function (e) {
+                    console.log($('#codigoPostal').val());
+                    if($('#codigoPostal').val().length == 5){
+                        filtrarColonia();
+                    }
+                });
         });
+        });
+
+
     });
 
     $('#rolEstructura').change(function (e) {
@@ -778,14 +879,7 @@
             function( data, textStatus, jqXHR ) {
         });
     }
-    $('#municipios').change(filtrarColonia);
-    $('#colonias').change(filtrarColonia);
-    $('#codigoPostal').keyup(function (e) {
-        console.log($('#codigoPostal').val());
-        if($('#codigoPostal').val().length == 5){
-            filtrarColonia();
-        }
-    });
+
     function filtrarSecciones(){
         let entidad = $('#entidades').val();
         let distritoFederal = $('#distritosFederales').val();
@@ -891,10 +985,6 @@
         });
     }
 
-    $('#entidades').change(filtrarSecciones);
-    $('#distritosFederales').change(filtrarSecciones);
-    $('#distritosLocales').change(filtrarSecciones);
-    $('#secciones').change(filtrarSecciones);
     </script>
 @endsection
 

@@ -9,6 +9,10 @@ class colonia extends Model
 {
     use HasFactory;
     public function domicilio(){
-        return $this->belongsTo(domicilio::class);
+        return $this->hasMany(domicilio::class);
+    }
+
+    public function seccionColonia() {
+        return $this->hasMany(seccionColonia::class);
     }
 }

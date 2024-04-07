@@ -42,6 +42,127 @@ class formularioSimpatizanteController extends Controller
             'distritosLocales' => $distritosLocales, 'promotores' => $promotores
         ];
     }
+    public function filtrarColonias($municipio, $codigoPostal, $colonia){
+        try{
+            $municipios = municipio::orderBy('id')
+            ->get();
+            if($municipio > 0){
+                $colonias = distritoLocal::join('seccions', 'distrito_locals.id', '=', 'seccions.distrito_local_id')
+                ->join('seccion_colonias', 'seccions.id', '=', 'seccion_colonias.seccion_id')
+                ->join('colonias', 'seccion_colonias.colonia_id', '=', 'colonias.id')
+                ->where('distrito_locals.municipio_id', $municipio)
+                ->distinct()
+                ->orderBy('id')
+                ->get([
+                    'colonias.id',
+                    'colonias.nombre',
+                    'colonias.codigo_postal'
+                ]);
+            }
+            else{
+                $colonias = colonia::orderBy('id')
+                ->get();
+            }
+            if($colonia > 0){
+                $coloniaAux = colonia::find($colonia);
+                $municipio = $coloniaAux->seccionColonia[0]->seccion->distritoLocal->municipio->id;
+            }
+            if(strlen($codigoPostal) == 5){
+                $colonias = colonia::where('codigo_postal', $codigoPostal)->get();
+                $municipio = $colonias[0]->seccionColonia[0]->seccion->distritoLocal->municipio->id;
+            }
+            return [
+                [
+                    'municipios' => $municipios,
+                    'colonias' => $colonias,
+                ],
+                [
+                    'municipio' => $municipio,
+                    'colonia' => $colonia,
+                    'codigoPostal' => $codigoPostal
+                ]
+            ];
+        }
+        catch(Exception $e){
+            Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
+            return null;
+        }
+
+    }
+
+    public function filtrarSecciones($entidad, $distritoFederal, $distritoLocal, $seccion){
+        try {
+            $entidades = entidad::orderBy('id')
+            ->get();
+            if($entidad > 0){
+                $distritosFederales = distritoFederal::orderBy('id')
+                ->where('entidad_id', $entidad)
+                ->get();
+            }
+            else{
+                $distritosFederales = distritoFederal::orderBy('id')
+                ->get();
+            }
+            if($distritoFederal > 0){
+                $municipios = municipio::orderBy('id')
+                ->where('distrito_federal_id', $distritoFederal)
+                ->pluck('id')
+                ->toArray();
+                $municipiosAux = municipio::orderBy('id')
+                ->where('distrito_federal_id', $distritoFederal)
+                ->get();
+
+                $distritosLocales = distritoLocal::orderBy('id')
+                ->whereIn('municipio_id', $municipios)
+                ->get();
+
+                $entidad = $municipiosAux[0]->distritoFederal->entidad->id;
+            }
+            else{
+                $municipios = municipio::orderBy('id')
+                ->get();
+                $distritosLocales = distritoLocal::orderBy('id')
+                ->get();
+            }
+            if($distritoLocal > 0){
+                $secciones = seccion::orderBy('id')
+                ->where('distrito_local_id', $distritoLocal)
+                ->get();
+
+                $entidad = $secciones[0]->distritoLocal->municipio->distritoFederal->entidad->id;
+                $distritoFederal = $secciones[0]->distritoLocal->municipio->distritoFederal->id;
+            }
+            else{
+                $secciones = seccion::orderBy('id')
+                ->get();
+            }
+            if($seccion > 0){
+                $seccionEncotrada = seccion::find($seccion);
+
+                $entidad = $seccionEncotrada->distritoLocal->municipio->distritoFederal->entidad->id;
+                $distritoFederal = $seccionEncotrada->distritoLocal->municipio->distritoFederal->id;
+                $distritoLocal = $seccionEncotrada->distritoLocal->id;
+            }
+
+            return [
+                [
+                    'entidades' => $entidades,
+                    'distritosFederales' => $distritosFederales,
+                    'distritosLocales' => $distritosLocales,
+                    'secciones' => $secciones,
+                ],
+                [
+                    'entidad' => $entidad,
+                    'distritoFederal' => $distritoFederal,
+                    'distritoLocal' => $distritoLocal,
+                    'seccion' => $seccion
+                ]
+            ];
+        } catch (Exception $e) {
+            Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
+            return null;
+        }
+    }
 
     public function agregandoSimpatizante(Request $formulario){
         $formulario->validate([
@@ -52,8 +173,8 @@ class formularioSimpatizanteController extends Controller
             'genero' => 'required',
             'telefonoCelular' => 'required',
             'escolaridad' => 'required',
-            'claveElectoral' => 'regex:/^([A-Z]{6})(\d{8})([B-DF-HJ-NP-TV-Z]{1})(\d{3})$/',
-            'curp' => 'regex:/^([A-Z]{4})(\d{6})([HM])([A-Z]{5})([0-9A-Z]{2})$/',
+            'claveElectoral' => 'nullable|regex:/^([A-Z]{6})(\d{8})([B-DF-HJ-NP-TV-Z]{1})(\d{3})$/',
+            'curp' => 'nullable|regex:/^([A-Z]{4})(\d{6})([HM])([A-Z]{5})([0-9A-Z]{2})$/',
             'esAfiliado' => 'required',
             'esSimpatizante' => 'required',
             'programa' => 'required',
@@ -61,9 +182,9 @@ class formularioSimpatizanteController extends Controller
 
             'calle' => 'required',
             'numeroExterior' => 'required',
-            'colonia' => 'required',
-            'municipio' => 'required',
-            'codigoPostal' => 'required',
+            'colonia' => 'required|not_in:0',
+            'municipio' => 'required|not_in:0',
+            'codigoPostal' => 'required|not_in:0',
         ]);
         $coordenadas = explode(',',$formulario->coordenadas);
         try {
@@ -76,10 +197,10 @@ class formularioSimpatizanteController extends Controller
             $personaNueva->genero = strtoupper($formulario->genero);
             $personaNueva->telefono_celular = strtoupper($formulario->telefonoCelular);
             $personaNueva->correo = strtoupper($formulario->correo);
-            $personaNueva->afiliado = $formulario->esAfiliado;
-            $personaNueva->programa = $formulario->programa;
-            $personaNueva->simpatizante = $formulario->esSimpatizante;
-            $personaNueva->funcion_en_campania = $formulario->funciones;
+            $personaNueva->afiliado = strtoupper($formulario->esAfiliado);
+            $personaNueva->programa = strtoupper($formulario->programa);
+            $personaNueva->simpatizante = strtoupper($formulario->esSimpatizante);
+            $personaNueva->funcion_en_campania = strtoupper($formulario->funciones);
             $personaNueva->telefono_fijo = strtoupper($formulario->telefonoFijo);
             $personaNueva->escolaridad = strtoupper($formulario->escolaridad);
             $personaNueva->edadPromedio = $formulario->rangoEdad;
@@ -135,7 +256,9 @@ class formularioSimpatizanteController extends Controller
             $identificacion->persona_id = $personaNueva->id;
             $identificacion->curp = strtoupper($formulario->curp);
             $identificacion->clave_elector = strtoupper($formulario->claveElectoral);
-            $identificacion->seccion_id = $formulario->seccion;
+            if($formulario->seccion > 0){
+                $identificacion->seccion_id = $formulario->seccion;
+            }
             $identificacion->save();
 
 
@@ -146,8 +269,10 @@ class formularioSimpatizanteController extends Controller
             $domicilio->numero_interior = $formulario->numeroInterior;
             $domicilio->colonia_id = $formulario->colonia;
             $domicilio->identificacion_id = $identificacion->id;
-            $domicilio->latitud = $coordenadas[0];
-            $domicilio->longitud = $coordenadas[1];
+            if(isset($coordenadas) && count($coordenadas) > 1){
+                $domicilio->latitud = $coordenadas[0];
+                $domicilio->longitud = $coordenadas[1];
+            }
             $domicilio->save();
 
             $user = auth()->user();

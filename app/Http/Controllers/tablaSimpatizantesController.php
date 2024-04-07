@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\UsersExport;
 use App\Models\bitacora;
 use App\Models\persona;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 
 class tablaSimpatizantesController extends Controller
 {
@@ -17,36 +20,34 @@ class tablaSimpatizantesController extends Controller
     }
     public function inicializar(){
         try {
-            return persona::join('identificacions', 'personas.id', '=', 'identificacions.persona_id')
-            ->join('domicilios', 'domicilios.identificacion_id', '=', 'identificacions.id')
-            ->join('colonias', 'colonias.id', '=', 'domicilios.colonia_id')
-            ->where('deleted_at', null)->get([
-                'personas.id',
-                'fecha_registro',
+            $persona = persona::where('deleted_at', null)
+            ->get([
+                'id',
                 'folio',
                 'nombres',
                 'apellido_paterno',
                 'apellido_materno',
-                'genero',
-                'telefono_celular',
-                'telefono_fijo',
-                'correo',
-                'nombre_en_facebook',
-                'afiliado',
-                'simpatizante',
-                'programa',
-                'funcion_en_campania',
-                'fecha_nacimiento',
-                'edadPromedio',
-                'observaciones',
-                'etiquetas',
                 'supervisado',
-                'calle',
-                'numero_exterior',
-                'numero_interior',
-                'colonias.nombre as nombreColonia',
-                'codigo_postal',
-        ]);
+            ]);
+            $personas = [];
+            foreach ($persona as $p) {
+                $aux = [
+                    'personaId' => $p->id,
+                    'folio' => $p->folio,
+                    'nombres' => $p->nombres,
+                    'apellido_paterno' => $p->apellido_paterno,
+                    'apellido_materno' => $p->apellido_materno,
+                    'seccionId' => $p->identificacion->seccion_id,
+                    'distritoLocalId' => isset($p->identificacion->seccion) ? $p->identificacion->seccion->distritoLocal->id : null,
+                    'nombreMunicipio' => isset($p->identificacion->seccion) ? $p->identificacion->seccion->distritoLocal->municipio->id : null,
+                    'distritoFederalId' => isset($p->identificacion->seccion) ? $p->identificacion->seccion->distritoLocal->municipio->distritoFederal->id : null,
+                    'nombreEntidad' => isset($p->identificacion->seccion) ? $p->identificacion->seccion->distritoLocal->municipio->distritoFederal->entidad->id : null,
+                    'supervisado' => $p->supervisado,
+                ];
+                array_push($personas, $aux);
+            }
+            return$personas;
+
         } catch (Exception $e) {
             Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
             return null;
@@ -118,5 +119,10 @@ class tablaSimpatizantesController extends Controller
         else{
             return back()->withErrors(['errorBorrar' => 'Ha ocurrido un error al borrar una persona']);
         }
+    }
+
+    public function descargar(){
+        $fechaActual = Carbon::now()->format('d-F');
+        return Excel::download(new UsersExport, 'personas-' . $fechaActual . '.xlsx');
     }
 }

@@ -51,37 +51,37 @@
                         <div class="nav">
                             <div class="sb-sidenav-menu-heading">Menú</div>
                             @can('estadistica.index')
-                                <a class="nav-link" href="/estadistica">
+                                <a class="nav-link" href="{{url('/')}}/estadistica">
                                     <div class="sb-nav-link-icon"><i class="fas fa-chart-bar"></i></div>
                                     Estadística
                                 </a>
                             @endcan
                             @can('agregarSimpatizante.index')
-                                <a class="nav-link" href="/simpatizantes/agregar">
+                                <a class="nav-link" href="{{url('/')}}/simpatizantes/agregar">
                                     <div class="sb-nav-link-icon"><i class="fas fa-file"></i></div>
                                     Agregar Persona
                                 </a>
                             @endcan
                             @can('crudSimpatizantes.index')
-                                <a class="nav-link" href="/simpatizantes">
+                                <a class="nav-link" href="{{url('/')}}/simpatizantes">
                                     <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                     Tabla de Persona
                                 </a>
                             @endcan
                             @can('mapa.index')
-                                <a class="nav-link" href="/mapa">
+                                <a class="nav-link" href="{{url('/')}}/mapa">
                                     <div class="sb-nav-link-icon"><i class="fas fa-map"></i></div>
                                     Mapa
                                 </a>
                             @endcan
                             @can('crudUsuarios.index')
-                                <a class="nav-link" href="/gestor-usuarios">
+                                <a class="nav-link" href="{{url('/')}}/gestor-usuarios">
                                     <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
                                     Usuarios del Sistema
                                 </a>
                             @endcan
                             @can('bitacora.index')
-                            <a class="nav-link" href="/bitacora">
+                            <a class="nav-link" href="{{url('/')}}/bitacora">
                                 <div class="sb-nav-link-icon"><i class="fas fa-info"></i></div>
                                 Bitácora
                             </a>

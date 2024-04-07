@@ -15,4 +15,7 @@ class identificacion extends Model
     public function domicilio(){
         return $this->hasOne(domicilio::class);
     }
+    public function seccion(){
+        return $this->belongsTo(seccion::class);
+    }
 }

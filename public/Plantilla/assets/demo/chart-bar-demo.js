@@ -3,44 +3,44 @@ Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSyste
 Chart.defaults.global.defaultFontColor = '#292b2c';
 
 // Bar Chart Example
-var ctx = document.getElementById("myBarChart");
-var myLineChart = new Chart(ctx, {
-  type: 'bar',
-  data: {
-    labels: [ "Mulegé", "Loreto", "Comondú", "Cabo San Lucas", "La Paz"],
-    datasets: [{
-      label: "Revenue",
-      backgroundColor: "rgba(2,117,216,1)",
-      borderColor: "rgba(2,117,216,1)",
-      data: [45312, 6251, 7841, 9821, 14984],
-    }],
-  },
-  options: {
-    scales: {
-      xAxes: [{
-        time: {
-          unit: 'month'
-        },
-        gridLines: {
-          display: false
-        },
-        ticks: {
-          maxTicksLimit: 6
-        }
-      }],
-      yAxes: [{
-        ticks: {
-          min: 0,
-          max: 15000,
-          maxTicksLimit: 5
-        },
-        gridLines: {
-          display: true
-        }
-      }],
-    },
-    legend: {
-      display: false
-    }
-  }
-});
+// var ctx = document.getElementById("myBarChart");
+// var myLineChart = new Chart(ctx, {
+//   type: 'bar',
+//   data: {
+//     labels: [ "Mulegé", "Loreto", "Comondú", "Cabo San Lucas", "La Paz"],
+//     datasets: [{
+//       label: "Revenue",
+//       backgroundColor: "rgba(2,117,216,1)",
+//       borderColor: "rgba(2,117,216,1)",
+//       data: [45312, 6251, 7841, 9821, 14984],
+//     }],
+//   },
+//   options: {
+//     scales: {
+//       xAxes: [{
+//         time: {
+//           unit: 'month'
+//         },
+//         gridLines: {
+//           display: false
+//         },
+//         ticks: {
+//           maxTicksLimit: 6
+//         }
+//       }],
+//       yAxes: [{
+//         ticks: {
+//           min: 0,
+//           max: 15000,
+//           maxTicksLimit: 5
+//         },
+//         gridLines: {
+//           display: true
+//         }
+//       }],
+//     },
+//     legend: {
+//       display: false
+//     }
+//   }
+// });
