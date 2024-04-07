@@ -59,14 +59,14 @@
                             <h4>Fecha de registro</h4>
                             <input type="date" class="form-control" name="fechaRegistro" value="{{old('fechaRegistro')}}" min="{{date('Y-m-d', strtotime('-100 years'))}}" max="{{date('Y-m-d')}}">
                             @error('fechaRegistro')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="fechaRegistroError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
                             <h4>Folio</h4>
                             <input type="number" class="form-control" name="folio" value="{{old('folio')}}">
                             @error('folio')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="folioError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
@@ -75,7 +75,7 @@
                                 <option value="-1" selected>Sin promotor</option>
                             </select>
                             @error('promotor')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="promotorError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                     </div>
@@ -88,21 +88,21 @@
                             <h4>Apellido paterno (*)</h4>
                             <input type="text" class="form-control" name="apellido_paterno" value="{{old('apellido_paterno')}}" minlength="3" maxlength="255">
                             @error('apellido_paterno')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="apellidoPaternoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
                             <h4>Apellido materno (*)</h4>
                             <input type="text" class="form-control" name="apellido_materno" value="{{old('apellido_materno')}}" minlength="3" maxlength="255">
                             @error('apellido_materno')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="apellidoMaternoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
                             <h4>Nombre(s) (*)</h4>
                             <input type="text" class="form-control" name="nombre" value="{{old('nombre')}}" minlength="3" maxlength="255">
                             @error('nombre')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="nombresError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                     </div>
@@ -112,14 +112,14 @@
                             <h4>Genero (*)</h4>
                             <span><input type="radio" name="genero" value="HOMBRE"> Hombre <input type="radio" name="genero" value="MUJER"> Mujer </span>
                             @error('genero')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="generoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
                             <h4>Fecha de Nacimiento</h4>
                             <input type="date" class="form-control" name="fechaNacimiento" value="{{old('fechaNacimiento')}}" min="{{date('Y-m-d', strtotime('-100 years'))}}" max="{{date('Y-m-d', strtotime('-18 years'))}}">
                             @error('fechaNacimiento')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="fechaNacimientoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
@@ -132,7 +132,7 @@
                                 <option value="74">69-adelante</option>
                             </select>
                             @error('rangoEdad')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="rangoEdadError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                     </div>
@@ -149,7 +149,7 @@
                                 <option>DOCTORADO</option>
                             </select>
                             @error('escolaridad')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="escolaridadError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
@@ -167,21 +167,21 @@
                             <h4>Telefono Celular (*)</h4>
                             <input type="text" class="form-control" name="telefonoCelular" value="{{old('telefonoCelular')}}" minlength="10" maxlength="20">
                             @error('telefonoCelular')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="telefonoCelularError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
                             <h4>Telefono Fijo</h4>
                             <input type="text" class="form-control" name="telefonoFijo" value="{{old('telefonoFijo')}}" minlength="10" maxlength="20">
                             @error('telefonoFijo')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="telefonoFijoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
                             <h4>Correo electronico (*)</h4>
                             <input type="email" class="form-control" name="correo" value="{{old('correo')}}" minlength="3" maxlength="255">
                             @error('correo')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="correoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                     </div>
@@ -191,7 +191,7 @@
                             <h4>Facebook</h4>
                             <input type="text" class="form-control" name="facebook" value="{{old('facebook')}}" minlength="3" maxlength="255">
                             @error('facebook')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="facebookError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
@@ -210,21 +210,21 @@
                             <h4>Calle (*)</h4>
                             <input type="text" class="form-control" name="calle" value="{{old('calle')}}">
                             @error('calle')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="calleError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
                             <h4>Número Externo (*)</h4>
                             <input type="number" class="form-control" name="numeroExterior" value="{{old('numeroExterior')}}">
                             @error('numeroExterior')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="numeroExteriorError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
                             <h4>Número Interno</h4>
                             <input type="number" class="form-control" name="numeroInterior" value="{{old('numeroInterior')}}">
                             @error('numeroInterior')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="numeroInteriorError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                     </div>
@@ -234,7 +234,7 @@
                             <h4>Código Postal (*)</h4>
                             <input type="number" class="form-control" id="codigoPostal" name="codigoPostal" value="{{old('codigoPostal')}}">
                             @error('codigoPostal')
-                            <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            <div id="codigoPostalError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
@@ -243,7 +243,7 @@
                                 <option value="0">- - -</option>
                             </select>
                             @error('municipio')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="municipioError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
@@ -252,7 +252,7 @@
                                 <option value="0">- - -</option>
                             </select>
                             @error('colonia')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="coloniaError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
 
@@ -278,14 +278,14 @@
                             <h4>Clave Electoral</h4>
                             <input type="text" class="form-control" id="claveElectoral" name="claveElectoral" value="{{old('claveElectoral')}}" minlength="18" maxlength="18" placeholder="ABCDEF12345678B123">
                             @error('claveElectoral')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="claveElectoralError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
                             <h4>CURP</h4>
                             <input type="text" class="form-control" id="curp" name="curp" value="{{old('curp')}}" minlength="18" maxlength="18" placeholder="ABCD123456HBCDEF12">
                             @error('curp')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="curpError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
@@ -299,7 +299,7 @@
                                 <option value="0">- - -</option>
                             </select>
                             @error('seccion')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="seccionError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                     </div>
@@ -311,7 +311,7 @@
                                 <option value="0">- - -</option>
                             </select>
                             @error('entidadFederativa')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="entidadFederativaError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
@@ -320,7 +320,7 @@
                                 <option value="0">- - -</option>
                             </select>
                             @error('distritoFederal')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="distritoFederalError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
@@ -329,7 +329,7 @@
                                 <option value="0">- - -</option>
                             </select>
                             @error('distritoLocal')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="distritoLocalError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                     </div>
@@ -345,7 +345,7 @@
                                 <option>Si</option>
                             </select>
                             @error('esAfiliado')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="esAfiliadoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
@@ -356,7 +356,7 @@
                                 <option>Talvez</option>
                             </select>
                             @error('esSimpatizante')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="esSimpatizanteError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
@@ -367,7 +367,7 @@
                                 <option>Programa 2</option>
                             </select>
                             @error('programa')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="programaError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                     </div>
@@ -386,14 +386,14 @@
                                 <option value="PROMOTOR">PROMOTOR</option>
                             </select>
                             @error('rolEstructura')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="rolEstructuraError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
                             <h4 id="rolNumeroEncabezado">Seleccione un rol en estructura</h4>
                             <input type="number" class="form-control" id="rolNumero" name="rolNumero" value="{{old('rolNumero')}}" disabled>
                             @error('rolNumero')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="rolNumeroError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
@@ -404,7 +404,7 @@
                                 <option>Lentes</option>
                             </select>
                             @error('funciones')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                <div id="funcionAsignadaError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                     </div>
