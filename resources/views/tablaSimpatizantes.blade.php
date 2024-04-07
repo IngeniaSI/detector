@@ -11,46 +11,32 @@ Tabla de Simpatizantes
         </script>
     @endif
     <br>
+
     <div class="container-fluid px-4">
         <h1 class="mt-4">Tabla de Personas</h1>
         <div class="card mb-4">
             <div class="card-header">
-                <center>
+                <div class="d-flex justify-content-end">
+                    <a href="{{route('crudSimpatizantes.descargar')}}" target="_blank" class="me-3">
+                        <button class="btn btn-primary">Exportar a Excel</button>
+                    </a>
                     <a href="{{route('agregarSimpatizante.index')}}">
                         <button class="btn btn-primary">Agregar Persona</button>
                     </a>
-                </center>
+                </div>
             </div>
             <div class="card-body">
                 {{-- TABLA DE USUARIOS --}}
                 <table id="tablaUsuarios" class="table table-striped table-bordered dt-responsive display" style="width:100%">
                     <thead>
-                        <th>Fecha de Registro:</th>
-                        <th>Supervisado:</th>
-                        <th>Folio:</th>
-                        <th>Nombre completo:</th>
-                        <th>Genero:</th>
-                        <th>Fecha de Nacimiento:</th>
-                        <th>Rango de Edad:</th>
-                        <th>Teléfono Celular:</th>
-                        <th>Télefono Fijo:</th>
-                        <th>Correo Electronico:</th>
-                        <th>Facebook:</th>
-                        <th>Calle:</th>
-                        <th>Número Ext:</th>
-                        <th>Número Int:</th>
-                        <th>Colonia:</th>
-                        <th>C.P:</th>
-                        <th>Entidad Federativa:</th>
-                        <th>Distrito Federal:</th>
-                        <th>Municipio:</th>
-                        <th>Distrito Local:</th>
-                        <th>Afiliado:</th>
-                        <th>Simpatizante:</th>
-                        <th>Programa:</th>
-                        <th>Funciones:</th>
-                        <th>Etiquetas:</th>
-                        <th>Observaciones:</th>
+                        <th>Id</th>
+                        <th>Folio</th>
+                        <th>Nombre Completo</th>
+                        <th>Sección</th>
+                        <th>Distrito Local</th>
+                        <th>Municipio</th>
+                        <th>Distrito Federal</th>
+                        <th>Entidad</th>
                         @can('crudSimpatizantes.verificar')
                             <th>Opciones:</th>
                         @endcan
@@ -94,28 +80,26 @@ Tabla de Simpatizantes
                 success: function (response) {
                     $.each(response, function (index, elemento) {
                         $('#tablaUsuarios').DataTable().row.add([
-                            `<img src="{{ asset('Plantilla/assets/img/mas.png') }}" width="15px" height="15px" > ${elemento.fecha_registro}`,
-                            (elemento.supervisado) ? 'Sí' : 'No', elemento.folio, `${elemento.nombres} ${elemento.apellido_paterno} ${elemento.apellido_materno}`,
-                            elemento.genero, elemento.fecha_nacimiento, '18 - 99', elemento.telefono_celular,
-                            elemento.telefono_fijo, elemento.correo, elemento.nombre_en_facebook, elemento.calle,
-                            elemento.numero_exterior, elemento.numero_interior, elemento.nombreColonia, elemento.codigo_postal,
-                            'entidadFederativa', 'distritoFederal', 'municipio', 'distritoLocal', elemento.afiliado,
-                            elemento.simpatizante, elemento.programa,
-                            elemento.funcion_en_campania, elemento.etiquetas, elemento.observaciones,
+                            elemento.personaId, elemento.folio, `${elemento.nombres} ${elemento.apellido_paterno} ${elemento.apellido_materno}`,
+                            elemento.seccionId, elemento.distritoLocalId, elemento.nombreMunicipio, elemento.distritoFederalId, elemento.nombreEntidad,
                             @can('crudSimpatizantes.verificar')
                                 (elemento.supervisado) ?
-                                    '<button class="btn btn-primary">Editar</button>'+
-                                    `<form action="{{url('/')}}/simpatizantes/borrar-${elemento.id}" method="post">`+
+                                    `<a href="{{url('/')}}/simpatizantes/modificar-${elemento.personaId}">`+
+                                        `<button class="btn btn-primary">Editar</button>`+
+                                    `</a>`+
+                                    `<form action="{{url('/')}}/simpatizantes/borrar-${elemento.personaId}" method="post">`+
                                         '<input type="hidden" name="_token" value="{{csrf_token()}}">'+
                                         '<button class="btn btn-danger">Borrar</button>'+
                                     '</form>'
                                 :
-                                    `<form action="{{url('/')}}/simpatizantes/supervisar-${elemento.id}" method="post">`+
+                                    `<form action="{{url('/')}}/simpatizantes/supervisar-${elemento.personaId}" method="post">`+
                                         '<input type="hidden" name="_token" value="{{csrf_token()}}">'+
                                         '<button class="btn btn-success">Supervisado</button>'+
                                     '</form>'+
-                                    '<button class="btn btn-primary">Editar</button>'+
-                                    `<form action="{{url('/')}}/simpatizantes/borrar-${elemento.id}" method="post">`+
+                                    `<a href="{{url('/')}}/simpatizantes/modificar-${elemento.personaId}">`+
+                                        `<button class="btn btn-primary">Editar</button>`+
+                                    `</a>`+
+                                    `<form action="{{url('/')}}/simpatizantes/borrar-${elemento.personaId}" method="post">`+
                                         '<input type="hidden" name="_token" value="{{csrf_token()}}">'+
                                         '<button class="btn btn-danger">Borrar</button>'+
                                     '</form>'

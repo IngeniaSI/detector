@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('clave_elector')->nullable();
             $table->string('curp')->nullable();
             $table->foreignId('persona_id')->constrained();
-            $table->foreignId('seccion_id')->constrained();
+            $table->foreignId('seccion_id')->nullable()->constrained();
             $table->timestamps();
         });
     }

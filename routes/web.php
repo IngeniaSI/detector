@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\bitacoraController;
+use App\Http\Controllers\crudPersonasController;
 use App\Http\Controllers\crudUsuariosController;
+use App\Http\Controllers\estadisticaController;
 use App\Http\Controllers\formularioSimpatizanteController;
 use App\Http\Controllers\iniciarSesionController;
 use App\Http\Controllers\mapaController;
@@ -37,23 +39,42 @@ Route::post('/gestor-usuarios/crear-usuario', [crudUsuariosController::class, 'c
 Route::post('/gestor-usuarios/editar-usuario-{usuario}', [crudUsuariosController::class, 'editarUsuario'])->name('crudUsuario.editar')->middleware('auth');
 Route::post('/gestor-usuarios/borrar-usuario-{usuario}', [crudUsuariosController::class, 'borrarUsuario'])->name('crudUsuario.borrar')->middleware('auth');
 
-Route::get('/simpatizantes', [tablaSimpatizantesController::class, 'index'])->name('crudSimpatizantes.index')->middleware(['auth', 'can:crudSimpatizantes.index']);
-Route::get('/simpatizantes/inicializar', [tablaSimpatizantesController::class, 'inicializar'])->name('crudSimpatizantes.inicializar')->middleware('auth');
-Route::post('/simpatizantes/supervisar-{persona}', [tablaSimpatizantesController::class, 'verificar'])->name('crudSimpatizantes.verificar')->middleware(['auth', 'can:crudSimpatizantes.verificar']);
-Route::post('/simpatizantes/borrar-{persona}', [tablaSimpatizantesController::class, 'borrar'])->name('crudSimpatizantes.borrar')->middleware(['auth', 'can:crudSimpatizantes.borrar']);
+Route::get('/simpatizantes',
+[tablaSimpatizantesController::class, 'index'])->name('crudSimpatizantes.index')->middleware(['auth', 'can:crudSimpatizantes.index']);
+Route::get('/simpatizantes/descargar',
+[tablaSimpatizantesController::class, 'descargar'])->name('crudSimpatizantes.descargar')->middleware('auth');
+Route::get('/simpatizantes/inicializar',
+[tablaSimpatizantesController::class, 'inicializar'])->name('crudSimpatizantes.inicializar')->middleware('auth');
+Route::post('/simpatizantes/supervisar-{persona}',
+[tablaSimpatizantesController::class, 'verificar'])->name('crudSimpatizantes.verificar')->middleware(['auth', 'can:crudSimpatizantes.verificar']);
+Route::post('/simpatizantes/borrar-{persona}',
+[tablaSimpatizantesController::class, 'borrar'])->name('crudSimpatizantes.borrar')->middleware(['auth', 'can:crudSimpatizantes.borrar']);
+Route::get('/simpatizantes/filtrarColonias-{municipio}-{codigoPostal}-{colonia}',
+[formularioSimpatizanteController::class, 'filtrarColonias'])->name('crudSimpatizantes.filtrarColonias')->middleware('auth');
+Route::get('/simpatizantes/filtrarSecciones-{entidad}-{distritoFederal}-{distritoLocal}-{seccion}',
+[formularioSimpatizanteController::class, 'filtrarSecciones'])->name('crudSimpatizantes.filtrarSecciones')->middleware('auth');
 
-Route::get('/simpatizantes/agregar', [formularioSimpatizanteController::class, 'index'])->name('agregarSimpatizante.index')->middleware(['auth', 'can:agregarSimpatizante.index']);
-Route::get('/simpatizantes/agregar/inicializar', [formularioSimpatizanteController::class, 'inicializar'])->name('agregarSimpatizante.inicializar')->middleware('auth');
-Route::post('/simpatizantes/agregar/agregando', [formularioSimpatizanteController::class, 'agregandoSimpatizante'])->name('agregarSimpatizante.agregandoSimpatizante')->middleware('auth');
+Route::get('/simpatizantes/agregar',
+[formularioSimpatizanteController::class, 'index'])->name('agregarSimpatizante.index')->middleware(['auth', 'can:agregarSimpatizante.index']);
+Route::get('/simpatizantes/agregar/inicializar',
+[formularioSimpatizanteController::class, 'inicializar'])->name('agregarSimpatizante.inicializar')->middleware('auth');
+Route::post('/simpatizantes/agregar/agregando',
+[formularioSimpatizanteController::class, 'agregandoSimpatizante'])->name('agregarSimpatizante.agregandoSimpatizante')->middleware('auth');
 
+Route::get('/estadistica',
+[estadisticaController::class, 'index'])->name('estadistica.index')->middleware(['auth', 'can:estadistica.index']);
+Route::get('/estadistica/inicializar',
+[estadisticaController::class, 'inicializar'])->name('estadistica.inicializar')->middleware(['auth']);
+Route::post('/estadistica/cargarMeta',
+[estadisticaController::class, 'cargarMeta'])->name('estadistica.cargarMeta')->middleware(['auth']);
 
-//Vista
-//Route::get('/estadistica', [tablaSimpatizantesController::class, 'index'])->name('estadistica.index')->middleware('auth');
-//Route::get('/mapa', [tablaSimpatizantesController::class, 'index'])->name('mapa.index')->middleware('auth');
-Route::get('/estadistica', function () {
-    return view('estadistica');
-})->name('estadistica.index')->middleware(['auth', 'can:estadistica.index']);
 Route::get('/mapa', [mapaController::class, 'index'])->middleware(['auth', 'can:mapa.index']);
 
 Route::get('/bitacora', [bitacoraController::class, 'index'])->name('bitacora.index')->middleware(['auth', 'can:bitacora.index']);
 
+Route::get('/simpatizantes/modificar-{persona}',
+[crudPersonasController::class, 'index'])->name('crudPersonas.index')->middleware(['auth']);
+Route::get('/simpatizantes/modificar/cargarPersona-{persona}',
+[crudPersonasController::class, 'cargarPersona'])->name('crudPersonas.cargarPersona')->middleware(['auth']);
+Route::post('/simpatizantes/modificar/modificarPersona-{persona}',
+[crudPersonasController::class, 'modificarPersona'])->name('crudPersonas.modificarPersona')->middleware(['auth']);

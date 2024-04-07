@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class municipio extends Model
 {
     use HasFactory;
+    public function distritoLocal(){
+        return $this->hasMany(distritoLocal::class);
+    }
+    public function distritoFederal(){
+        return $this->belongsTo(distritoFederal::class);
+    }
 }

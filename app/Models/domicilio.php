@@ -13,6 +13,6 @@ class domicilio extends Model
     }
 
     public function colonia(){
-        return $this->hasOne(colonia::class);
+        return $this->belongsTo(colonia::class);
     }
 }
