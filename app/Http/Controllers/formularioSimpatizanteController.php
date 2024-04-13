@@ -165,6 +165,7 @@ class formularioSimpatizanteController extends Controller
     }
 
     public function agregandoSimpatizante(Request $formulario){
+        session()->flash('validarCamposFormPersona', 'Hay campos erroneos o campos vacios');
         $formulario->validate([
             'nombre' => 'required',
             'apellido_paterno' => 'required',
@@ -284,8 +285,9 @@ class formularioSimpatizanteController extends Controller
             $bitacora->user_id = $user->id;
             $bitacora->save();
             DB::commit();
+            session()->forget('validarCamposFormPersona');
             session()->flash('mensajeExito', 'Usuario creado con éxito');
-            return redirect()->route('agregarSimpatizante.index');
+            return redirect()->route('crudSimpatizantes.index');
         } catch (Exception $e) {
             DB::rollBack();
             Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());

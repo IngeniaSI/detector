@@ -20,15 +20,34 @@ class tablaSimpatizantesController extends Controller
     }
     public function inicializar(){
         try {
-            $persona = persona::where('deleted_at', null)
-            ->get([
-                'id',
-                'folio',
-                'nombres',
-                'apellido_paterno',
-                'apellido_materno',
-                'supervisado',
-            ]);
+            $user = auth()->user();
+            if($user->getRoleNames()->first() == 'SUPER ADMINISTRADOR' || $user->getRoleNames()->first() == 'ADMINISTRADOR'){
+                $persona = persona::where('deleted_at', null)
+                ->get([
+                    'id',
+                    'folio',
+                    'nombres',
+                    'apellido_paterno',
+                    'apellido_materno',
+                    'supervisado',
+                ]);
+            }
+            else{
+                // $user = auth()->user();
+                // // return $user;
+                // $niveles = isset($user->niveles) ? explode( ',', $user->niveles) : null;
+                // return $niveles; //APLICAR TRIM A CADA NIVEL
+
+                $persona = persona::where('deleted_at', null)
+                ->get([
+                    'id',
+                    'folio',
+                    'nombres',
+                    'apellido_paterno',
+                    'apellido_materno',
+                    'supervisado',
+                ]);
+            }
             $personas = [];
             foreach ($persona as $p) {
                 $aux = [
@@ -48,6 +67,7 @@ class tablaSimpatizantesController extends Controller
             }
             return$personas;
 
+
         } catch (Exception $e) {
             Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
             return null;
@@ -59,6 +79,46 @@ class tablaSimpatizantesController extends Controller
     }
     public function modificar(){
 
+    }
+
+    public function ver(persona $persona){
+        return [
+            'fechaRegistro' => $persona->fecha_registro,
+            'folio' => $persona->folio,
+            'promotor' => (isset($persona->promotor)) ? $persona->promotor->nombres . ' ' . $persona->promotor->apellido_paterno . ' ' . $persona->promotor->apellido_materno : '',
+            'nombreCompleto' => $persona->nombres . ' ' . $persona->apellido_paterno . ' ' . $persona->apellido_materno,
+            'genero' => $persona->genero,
+            'fechaNacimiento' => $persona->fecha_nacimiento,
+            'rangoEdad' => $persona->edadPromedio,
+            'escolaridad' => $persona->escolaridad,
+            'telefonoCelular' => $persona->telefono_celular,
+            'telefonoFijo' => $persona->telefono_fijo,
+            'correo' => $persona->correo,
+            'facebook' => $persona->nombre_en_facebook,
+            'calle' => $persona->identificacion->domicilio->calle,
+            'numeroExterior' => $persona->identificacion->domicilio->numero_exterior,
+            'numeroInterior' => $persona->identificacion->domicilio->numero_interior,
+            'codigoPostal' => $persona->identificacion->domicilio->colonia->codigo_postal,
+            'municipio' => (isset($persona->identificacion->seccion)) ? $persona->identificacion->seccion->distritoLocal->municipio->distritoFederal->entidad->nombre : '',
+            'colonia' => $persona->identificacion->domicilio->colonia->nombre,
+            'latitud' => $persona->identificacion->domicilio->latitud,
+            'longitud' => $persona->identificacion->domicilio->longitud,
+            'claveElectoral' => $persona->identificacion->clave_elector,
+            'curp' => $persona->identificacion->curp,
+            'seccion' => (isset($persona->identificacion->seccion)) ? $persona->identificacion->seccion->id : '',
+            'distritoLocal' => (isset($persona->identificacion->seccion)) ? $persona->identificacion->seccion->distritoLocal->id : '',
+            'municipio' => (isset($persona->identificacion->seccion)) ? $persona->identificacion->seccion->distritoLocal->municipio->nombre : '',
+            'distritoFederal' => (isset($persona->identificacion->seccion)) ? $persona->identificacion->seccion->distritoLocal->municipio->distritoFederal->id : '',
+            'entidadFederativa' => (isset($persona->identificacion->seccion)) ? $persona->identificacion->seccion->distritoLocal->municipio->distritoFederal->entidad->nombre : '',
+            'afiliado' => $persona->afiliado,
+            'simpatizante' => $persona->simpatizante,
+            'programa' => $persona->programa,
+            'rolEstructura' => $persona->rolEstructura,
+            'rolNumerico' => $persona->rolNumero,
+            'funcionAsignada' => $persona->funcion_en_campania,
+            'etiquetas' => $persona->etiquetas,
+            'observaciones' => $persona->observaciones,
+        ];
     }
 
     public function verificar (Request $formulario, persona $persona){
@@ -123,6 +183,12 @@ class tablaSimpatizantesController extends Controller
 
     public function descargar(){
         $fechaActual = Carbon::now()->format('d-F');
-        return Excel::download(new UsersExport, 'personas-' . $fechaActual . '.xlsx');
+        $user = auth()->user();
+        if($user->getRoleNames()->first() == 'SUPER ADMINISTRADOR' || $user->getRoleNames()->first() == 'ADMINISTRADOR'){
+            return Excel::download(new UsersExport, 'personas-' . $fechaActual . '.xlsx');
+        }
+        else{
+            return Excel::download(new UsersExport, 'personas-' . $fechaActual . '.xlsx');
+        }
     }
 }

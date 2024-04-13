@@ -11,4 +11,8 @@ class persona extends Model
     public function identificacion(){
         return $this->hasOne(identificacion::class);
     }
+
+    public function promotor(){
+        return $this->belongsTo(persona::class, 'persona_id');
+    }
 }

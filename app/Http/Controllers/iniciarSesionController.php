@@ -26,7 +26,7 @@ class iniciarSesionController extends Controller
 
         $validarSiEliminado = User::where('email', strtoupper($formulario->correo))->first();
         if(isset($validarSiEliminado) && isset($validarSiEliminado->deleted_at)){
-            return back()->withErrors(['email' => 'Credenciales incorrectas']);
+            return back()->withErrors(['email' => 'El correo ingresado es incorrecto']);
         }
         if (Auth::attempt(['email' => strtoupper($formulario->correo), 'password' => $formulario->contrasenia])) {
             $bitacora = new bitacora();
@@ -57,7 +57,7 @@ class iniciarSesionController extends Controller
             }
 
         } else {
-            return back()->withErrors(['email' => 'Credenciales incorrectas']);
+            return back()->withErrors(['email' => 'La contraseña ingresada es incorrecta']);
         }
     }
     public function cerrarSesion(Request $formulario){

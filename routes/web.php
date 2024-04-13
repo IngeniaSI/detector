@@ -45,6 +45,8 @@ Route::get('/simpatizantes/descargar',
 [tablaSimpatizantesController::class, 'descargar'])->name('crudSimpatizantes.descargar')->middleware('auth');
 Route::get('/simpatizantes/inicializar',
 [tablaSimpatizantesController::class, 'inicializar'])->name('crudSimpatizantes.inicializar')->middleware('auth');
+Route::get('/simpatizantes/ver-{persona}',
+[tablaSimpatizantesController::class, 'ver'])->name('crudSimpatizantes.ver')->middleware('auth');
 Route::post('/simpatizantes/supervisar-{persona}',
 [tablaSimpatizantesController::class, 'verificar'])->name('crudSimpatizantes.verificar')->middleware(['auth', 'can:crudSimpatizantes.verificar']);
 Route::post('/simpatizantes/borrar-{persona}',

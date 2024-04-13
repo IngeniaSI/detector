@@ -71,7 +71,7 @@
                             @can('mapa.index')
                                 <a class="nav-link" href="{{url('/')}}/mapa">
                                     <div class="sb-nav-link-icon"><i class="fas fa-map"></i></div>
-                                    Mapa
+                                    Mapa de Personas
                                 </a>
                             @endcan
                             @can('crudUsuarios.index')
