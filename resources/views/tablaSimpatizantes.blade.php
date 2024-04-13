@@ -27,7 +27,7 @@ Tabla de Simpatizantes
             </div>
             <div class="card-body">
                 {{-- TABLA DE USUARIOS --}}
-                <table id="tablaUsuarios" class="table table-striped table-bordered dt-responsive display" style="width:100%">
+                <table id="tablaUsuarios" class="table table-striped table-bordered" style="width:100%">
                     <thead>
                         <th>Id</th>
                         <th>Folio</th>
@@ -59,75 +59,75 @@ Tabla de Simpatizantes
 
     // FUNCION PARA CARGAR TABLA DE USUARIOS
     $(document).ready(function () {
-
         var table = $('#tablaUsuarios').DataTable( {
+            scrollX: true,
             lengthChange: true,
-            responsive: true,
+            // responsive: true,
             language: {
             url: 'https://cdn.datatables.net/plug-ins/1.13.5/i18n/es-ES.json',
             },
-            buttons: [ 'copy', 'excel', 'csv', 'pdf', 'colvis' ]
+            // buttons: [ 'copy', 'excel', 'csv', 'pdf', 'colvis' ]
             } );
 
-            table.buttons().container()
-            .appendTo( '#example_wrapper .col-md-6:eq(0)' );
-        $.when(
-            $.ajax({
-                type: "get",
-                url: "{{route('crudSimpatizantes.inicializar')}}",
-                data: [],
-                contentType: "application/x-www-form-urlencoded",
-                success: function (response) {
-                    $.each(response, function (index, elemento) {
-                        $('#tablaUsuarios').DataTable().row.add([
-                            elemento.personaId, elemento.folio, `${elemento.nombres} ${elemento.apellido_paterno} ${elemento.apellido_materno}`,
-                            elemento.seccionId, elemento.distritoLocalId, elemento.nombreMunicipio, elemento.distritoFederalId, elemento.nombreEntidad,
-                            @can('crudSimpatizantes.verificar')
-                                (elemento.supervisado) ?
-                                    `<a href="{{url('/')}}/simpatizantes/modificar-${elemento.personaId}">`+
-                                        `<button class="btn btn-primary">Editar</button>`+
-                                    `</a>`+
-                                    `<form action="{{url('/')}}/simpatizantes/borrar-${elemento.personaId}" method="post">`+
-                                        '<input type="hidden" name="_token" value="{{csrf_token()}}">'+
-                                        '<button class="btn btn-danger">Borrar</button>'+
-                                    '</form>'
-                                :
-                                    `<form action="{{url('/')}}/simpatizantes/supervisar-${elemento.personaId}" method="post">`+
-                                        '<input type="hidden" name="_token" value="{{csrf_token()}}">'+
-                                        '<button class="btn btn-success">Supervisado</button>'+
-                                    '</form>'+
-                                    `<a href="{{url('/')}}/simpatizantes/modificar-${elemento.personaId}">`+
-                                        `<button class="btn btn-primary">Editar</button>`+
-                                    `</a>`+
-                                    `<form action="{{url('/')}}/simpatizantes/borrar-${elemento.personaId}" method="post">`+
-                                        '<input type="hidden" name="_token" value="{{csrf_token()}}">'+
-                                        '<button class="btn btn-danger">Borrar</button>'+
-                                    '</form>'
-                            @endcan
-                        ]).draw();
-                    });
-                },
-                error: function( data, textStatus, jqXHR){
-                    if (jqXHR.status === 0) {
-                        console.log('Not connect: Verify Network.');
-                    } else if (jqXHR.status == 404) {
-                        console.log('Requested page not found [404]');
-                    } else if (jqXHR.status == 500) {
-                        console.log('Internal Server Error [500].');
-                    } else if (textStatus === 'parsererror') {
-                        console.log('Requested JSON parse failed.');
-                    } else if (textStatus === 'timeout') {
-                        console.log('Time out error.');
-                    } else if (textStatus === 'abort') {
-                        console.log('Ajax request aborted.');
-                    } else {
-                        console.log('Uncaught Error: ' + jqXHR.responseText);
+            // table.buttons().container()
+            // .appendTo( '#example_wrapper .col-md-6:eq(0)' );
+            $.when(
+                $.ajax({
+                    type: "get",
+                    url: "{{route('crudSimpatizantes.inicializar')}}",
+                    data: [],
+                    contentType: "application/x-www-form-urlencoded",
+                    success: function (response) {
+                        $.each(response, function (index, elemento) {
+                            $('#tablaUsuarios').DataTable().row.add([
+                                elemento.personaId, elemento.folio, `${elemento.nombres} ${elemento.apellido_paterno} ${elemento.apellido_materno}`,
+                                elemento.seccionId, elemento.distritoLocalId, elemento.nombreMunicipio, elemento.distritoFederalId, elemento.nombreEntidad,
+                                @can('crudSimpatizantes.verificar')
+                                    (elemento.supervisado) ?
+                                        `<a href="{{url('/')}}/simpatizantes/modificar-${elemento.personaId}">`+
+                                            `<button class="btn btn-primary">Editar</button>`+
+                                        `</a>`+
+                                        `<form action="{{url('/')}}/simpatizantes/borrar-${elemento.personaId}" method="post">`+
+                                            '<input type="hidden" name="_token" value="{{csrf_token()}}">'+
+                                            '<button class="btn btn-danger">Borrar</button>'+
+                                        '</form>'
+                                    :
+                                        `<form action="{{url('/')}}/simpatizantes/supervisar-${elemento.personaId}" method="post">`+
+                                            '<input type="hidden" name="_token" value="{{csrf_token()}}">'+
+                                            '<button class="btn btn-success">Supervisado</button>'+
+                                        '</form>'+
+                                        `<a href="{{url('/')}}/simpatizantes/modificar-${elemento.personaId}">`+
+                                            `<button class="btn btn-primary">Editar</button>`+
+                                        `</a>`+
+                                        `<form action="{{url('/')}}/simpatizantes/borrar-${elemento.personaId}" method="post">`+
+                                            '<input type="hidden" name="_token" value="{{csrf_token()}}">'+
+                                            '<button class="btn btn-danger">Borrar</button>'+
+                                        '</form>'
+                                @endcan
+                            ]).draw();
+                        });
+                    },
+                    error: function( data, textStatus, jqXHR){
+                        if (jqXHR.status === 0) {
+                            console.log('Not connect: Verify Network.');
+                        } else if (jqXHR.status == 404) {
+                            console.log('Requested page not found [404]');
+                        } else if (jqXHR.status == 500) {
+                            console.log('Internal Server Error [500].');
+                        } else if (textStatus === 'parsererror') {
+                            console.log('Requested JSON parse failed.');
+                        } else if (textStatus === 'timeout') {
+                            console.log('Time out error.');
+                        } else if (textStatus === 'abort') {
+                            console.log('Ajax request aborted.');
+                        } else {
+                            console.log('Uncaught Error: ' + jqXHR.responseText);
+                        }
                     }
-                }
-            })
-        ).then(
-            function( data, textStatus, jqXHR ) {
-        });
+                })
+            ).then(
+                function( data, textStatus, jqXHR ) {
+            });
 
 
 

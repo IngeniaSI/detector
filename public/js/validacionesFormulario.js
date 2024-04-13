@@ -3,10 +3,13 @@ var cumpleFormulario =true;
 $('#fechaRegistro').blur(function(){
     if($('#fechaRegistro').val()==''){
         Swal.fire({
-            title: "Campo Vacio",
-            text: "Verifica el campo",
-            icon: "info"
-            });
+        title: "Campo Vacio",
+        text: "Verifica el campo",
+        icon: "info"
+        });
+    }
+    else{
+        $('#fechaRegistroError').remove();
     }
 });
 $('#folio').blur(function(){
@@ -16,6 +19,45 @@ $('#folio').blur(function(){
             text: "Verifica el campo",
             icon: "info"
             });
+    }
+    else{
+        $('#folioError').remove();
+    }
+});
+$('#colonias').change(function(){
+    if($('#colonias').val() == 0){
+        Swal.fire({
+            title: "Campo sin Seleccionar",
+            text: "Verifica el campo",
+            icon: "info"
+            });
+    }
+    else{
+        $('#coloniaError').remove();
+    }
+});
+$('#codigoPostal').blur(function(){
+    if($('#codigoPostal').val().length != 5){
+        Swal.fire({
+            title: "Campo sin Seleccionar",
+            text: "Verifica el campo",
+            icon: "info"
+            });
+    }
+    else{
+        $('#codigoPostalError').remove();
+    }
+});
+$('#municipios').change(function(){
+    if($('#municipios').val() == 0){
+        Swal.fire({
+            title: "Campo sin Seleccionar",
+            text: "Verifica el campo",
+            icon: "info"
+            });
+    }
+    else{
+        $('#municipioError').remove();
     }
 });
 
@@ -27,6 +69,9 @@ $('#apellido_paterno').blur(function(){
             icon: "info"
             });
     }
+    else{
+        $('#apellidoPaternoError').remove();
+    }
 });
 
 $('#apellido_materno').blur(function(){
@@ -37,6 +82,9 @@ $('#apellido_materno').blur(function(){
             icon: "info"
             });
     }
+    else{
+        $('#apellidoMaternoError').remove();
+    }
 });
 $('#nombre').blur(function(){
     if($('#nombre').val()==''){
@@ -45,6 +93,9 @@ $('#nombre').blur(function(){
             text: "Verifica el campo",
             icon: "info"
             });
+    }
+    else{
+        $('#nombresError').remove();
     }
 });
 $('#telefonoCelular').blur(function(){
@@ -55,6 +106,9 @@ $('#telefonoCelular').blur(function(){
             icon: "info"
             });
     }
+    else{
+        $('#telefonoCelularError').remove();
+    }
 });
 $('#telefonoFijo').blur(function(){
     if($('#telefonoFijo').val()==''){
@@ -63,6 +117,9 @@ $('#telefonoFijo').blur(function(){
             text: "Verifica el campo",
             icon: "info"
             });
+    }
+    else{
+        $('#telefonoFijoError').remove();
     }
 });
 
@@ -74,25 +131,34 @@ $('#correo').blur(function(){
             icon: "info"
             });
     }
+    else{
+        $('#correoError').remove();
+    }
 });
 
 $('#calle').blur(function(){
-    if($('#facebook').val()==''){
+    if($('#calle').val()==''){
         Swal.fire({
             title: "Campo Vacio",
             text: "Verifica el campo",
             icon: "info"
             });
     }
+    else{
+        $('#calleError').remove();
+    }
 });
 
 $('#numeroExterior').blur(function(){
-    if($('#facebook').val()==''){
+    if($('#numeroExterior').val()==''){
         Swal.fire({
             title: "Campo Vacio",
             text: "Verifica el campo",
             icon: "info"
             });
+    }
+    else{
+        $('#numeroExteriorError').remove();
     }
 });
 
@@ -161,9 +227,39 @@ function validarEmail(valor) {
         $("#correo").css({ "background": "red" })
   }
 }
-        
+
+// Validar claveElectoral si esta correcto
+$("#claveElectoral").blur(function () {
+    validarClaveElectoral($("#claveElectoral").val())
+});
+function validarClaveElectoral(valor) {
+    emailRegex = /^([A-Z]{6})(\d{8})([B-DF-HJ-NP-TV-Z]{1})(\d{3})$/i;
+
+    if (emailRegex.test(valor)) {
+        $("#claveElectoral").css({ "background": "rgb(82, 179, 126)" });
+        $('#claveElectoralError').remove();
+  } else {
+        $("#claveElectoral").css({ "background": "red" })
+  }
+}
+
+// Validar curp si esta correcto
+$("#curp").blur(function () {
+    validarCurp($("#curp").val())
+});
+function validarCurp(valor) {
+    emailRegex = /^([A-Z]{4})(\d{6})([HM])([A-Z]{5})([0-9A-Z]{2})$/i;
+
+    if (emailRegex.test(valor)) {
+        $("#curp").css({ "background": "rgb(82, 179, 126)" });
+        $('#curpError').remove();
+  } else {
+        $("#curp").css({ "background": "red" })
+  }
+}
+
 function validar() {
-    
+
     if(cumpleFormulario ==true){
         $("#BotonAgregarPersona").prop("disabled", true);
         $("#BotonValidador").prop("disabled", true);
@@ -174,6 +270,7 @@ function validar() {
         html: "",
         timer: 5000,
         timerProgressBar: true,
+        allowOutsideClick: false,
         didOpen: () => {
             Swal.showLoading();
             const timer = Swal.getPopup().querySelector("b");
@@ -194,16 +291,16 @@ function validar() {
         $("#BotonAgregarPersona").click();
 
     }else{
-       
+
         Swal.fire({
         title: "Varifica los campos",
         text: "",
         icon: "info"
         });
     }
-    
-    
-   
+
+
+
 }
 
 

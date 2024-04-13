@@ -51,9 +51,9 @@ Route::post('/simpatizantes/supervisar-{persona}',
 [tablaSimpatizantesController::class, 'verificar'])->name('crudSimpatizantes.verificar')->middleware(['auth', 'can:crudSimpatizantes.verificar']);
 Route::post('/simpatizantes/borrar-{persona}',
 [tablaSimpatizantesController::class, 'borrar'])->name('crudSimpatizantes.borrar')->middleware(['auth', 'can:crudSimpatizantes.borrar']);
-Route::get('/simpatizantes/filtrarColonias-{municipio}-{codigoPostal}-{colonia}',
+Route::get('/simpatizantes/filtrarColonias-{colonia}',
 [formularioSimpatizanteController::class, 'filtrarColonias'])->name('crudSimpatizantes.filtrarColonias')->middleware('auth');
-Route::get('/simpatizantes/filtrarSecciones-{entidad}-{distritoFederal}-{distritoLocal}-{seccion}',
+Route::get('/simpatizantes/filtrarSecciones-{seccion}',
 [formularioSimpatizanteController::class, 'filtrarSecciones'])->name('crudSimpatizantes.filtrarSecciones')->middleware('auth');
 
 Route::get('/simpatizantes/agregar',

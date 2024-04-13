@@ -285,7 +285,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <table id="tablaUsuarios2" class="table table-striped table-bordered dt-responsive nowrap" style="width:100%">
+                <table id="tablaUsuarios2" class="table table-striped table-bordered " style="width:100%">
                     <thead>
                         <tr>
                             <th>Id</th>
@@ -322,15 +322,16 @@
             modalModificar.show();
         @endif
         var table = $('#tablaUsuarios2').DataTable( {
+            scrollX: true,
             lengthChange: true,
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.13.5/i18n/es-ES.json',
             },
-            buttons: [ 'copy', 'excel', 'csv', 'pdf', 'colvis' ]
+            // buttons: [ 'copy', 'excel', 'csv', 'pdf', 'colvis' ]
         });
 
-        table.buttons().container()
-        .appendTo( '#example_wrapper .col-md-6:eq(0)' );
+        // table.buttons().container()
+        // .appendTo( '#example_wrapper .col-md-6:eq(0)' );
     });
 
     //FUNCION PARA ASIGNAR UNA CLAVE ALEATORIA Y ASIGNARLA EN EL FORMULARIO DE MODIFICAR
