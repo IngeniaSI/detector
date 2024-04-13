@@ -57,14 +57,14 @@
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
                             <h4>Fecha de registro</h4>
-                            <input type="date" class="form-control" name="fechaRegistro" value="{{old('fechaRegistro')}}" min="{{date('Y-m-d', strtotime('-100 years'))}}" max="{{date('Y-m-d')}}">
+                            <input type="date" class="form-control" id="fechaRegistro" name="fechaRegistro" value="{{old('fechaRegistro')}}" min="{{date('Y-m-d', strtotime('-100 years'))}}" max="{{date('Y-m-d')}}">
                             @error('fechaRegistro')
                                 <div id="fechaRegistroError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
                             <h4>Folio</h4>
-                            <input type="number" class="form-control" name="folio" value="{{old('folio')}}">
+                            <input type="number" min="0" maxlength="7" class="form-control" id="folio" name="folio" value="{{old('folio')}}">
                             @error('folio')
                                 <div id="folioError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
@@ -86,21 +86,27 @@
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
                             <h4>Apellido paterno (*)</h4>
-                            <input type="text" class="form-control" name="apellido_paterno" value="{{old('apellido_paterno')}}" minlength="3" maxlength="255">
+                            <input type="text" class="form-control" id="apellido_paterno" name="apellido_paterno" value="{{old('apellido_paterno')}}" minlength="3" maxlength="255" onkeydown="return /[a-z, ]/i.test(event.key)"
+    onblur="if (this.value == '') {this.value = '';}"
+    onfocus="if (this.value == '') {this.value = '';}">
                             @error('apellido_paterno')
                                 <div id="apellidoPaternoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
                             <h4>Apellido materno (*)</h4>
-                            <input type="text" class="form-control" name="apellido_materno" value="{{old('apellido_materno')}}" minlength="3" maxlength="255">
+                            <input type="text" class="form-control" id="apellido_materno" name="apellido_materno" value="{{old('apellido_materno')}}" minlength="3" maxlength="255" onkeydown="return /[a-z, ]/i.test(event.key)"
+    onblur="if (this.value == '') {this.value = '';}"
+    onfocus="if (this.value == '') {this.value = '';}">
                             @error('apellido_materno')
                                 <div id="apellidoMaternoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
                             <h4>Nombre(s) (*)</h4>
-                            <input type="text" class="form-control" name="nombre" value="{{old('nombre')}}" minlength="3" maxlength="255">
+                            <input type="text" class="form-control" id="nombre" name="nombre" value="{{old('nombre')}}" minlength="3" maxlength="255" onkeydown="return /[a-z, ]/i.test(event.key)"
+    onblur="if (this.value == '') {this.value = '';}"
+    onfocus="if (this.value == '') {this.value = '';}">
                             @error('nombre')
                                 <div id="nombresError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
@@ -110,14 +116,16 @@
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
                             <h4>Genero (*)</h4>
-                            <span><input type="radio" name="genero" value="HOMBRE"> Hombre <input type="radio" name="genero" value="MUJER"> Mujer </span>
-                            @error('genero')
-                                <div id="generoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
-                            @enderror
+                            <select name="genero" class="form-control" name="rangoEdad">
+                                <option value="SIN ESPECIFICAR">SIN ESPECIFICAR</option>
+                                <option value="HOMBRE">HOMBRE</option>
+                                <option value="MUJER">MUJER</option>
+                            </select>
+                            
                         </div>
                         <div class="col">
                             <h4>Fecha de Nacimiento</h4>
-                            <input type="date" class="form-control" name="fechaNacimiento" value="{{old('fechaNacimiento')}}" min="{{date('Y-m-d', strtotime('-100 years'))}}" max="{{date('Y-m-d', strtotime('-18 years'))}}">
+                            <input type="date" class="form-control" id="fechaNacimiento" name="fechaNacimiento" value="{{old('fechaNacimiento')}}" min="{{date('Y-m-d', strtotime('-100 years'))}}" max="{{date('Y-m-d', strtotime('-18 years'))}}">
                             @error('fechaNacimiento')
                                 <div id="fechaNacimientoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
@@ -165,21 +173,21 @@
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
                             <h4>Telefono Celular (*)</h4>
-                            <input type="text" class="form-control" name="telefonoCelular" value="{{old('telefonoCelular')}}" minlength="10" maxlength="20">
+                            <input type="number" class="form-control" id="telefonoCelular" name="telefonoCelular" value="{{old('telefonoCelular')}}" minlength="10" maxlength="12">
                             @error('telefonoCelular')
                                 <div id="telefonoCelularError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
                             <h4>Telefono Fijo</h4>
-                            <input type="text" class="form-control" name="telefonoFijo" value="{{old('telefonoFijo')}}" minlength="10" maxlength="20">
+                            <input type="number" class="form-control" id="telefonoFijo" name="telefonoFijo" value="{{old('telefonoFijo')}}" minlength="10" maxlength="12">
                             @error('telefonoFijo')
                                 <div id="telefonoFijoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
                             <h4>Correo electronico (*)</h4>
-                            <input type="email" class="form-control" name="correo" value="{{old('correo')}}" minlength="3" maxlength="255">
+                            <input type="email" style="text-transform: uppercase; color: black"  class="form-control" id="correo" name="correo" value="{{old('correo')}}" minlength="3" maxlength="255">
                             @error('correo')
                                 <div id="correoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
@@ -189,7 +197,7 @@
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
                             <h4>Facebook</h4>
-                            <input type="text" class="form-control" name="facebook" value="{{old('facebook')}}" minlength="3" maxlength="255">
+                            <input type="text" class="form-control" id="facebook" name="facebook" value="{{old('facebook')}}" minlength="3" maxlength="255" >
                             @error('facebook')
                                 <div id="facebookError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
@@ -208,21 +216,23 @@
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
                             <h4>Calle (*)</h4>
-                            <input type="text" class="form-control" name="calle" value="{{old('calle')}}">
+                            <input type="text" class="form-control" id="calle" name="calle" value="{{old('calle')}}" onkeydown="return /[a-z, ]/i.test(event.key)"
+    onblur="if (this.value == '') {this.value = '';}"
+    onfocus="if (this.value == '') {this.value = '';}">
                             @error('calle')
                                 <div id="calleError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
                             <h4>Número Externo (*)</h4>
-                            <input type="number" class="form-control" name="numeroExterior" value="{{old('numeroExterior')}}">
+                            <input type="number" class="form-control" id="numeroExterior" name="numeroExterior" value="{{old('numeroExterior')}}">
                             @error('numeroExterior')
                                 <div id="numeroExteriorError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
                             <h4>Número Interno</h4>
-                            <input type="number" class="form-control" name="numeroInterior" value="{{old('numeroInterior')}}">
+                            <input type="number" class="form-control" id="numeroInterior" name="numeroInterior" value="{{old('numeroInterior')}}">
                             @error('numeroInterior')
                                 <div id="numeroInteriorError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
@@ -441,8 +451,9 @@
             <br>
             <div>
                 <center>
-                    <button class="btn btn-primary">Agregar</button>
-                    <button class="btn btn-danger" type="button" class="cerrarFormulario">Limpiar</button>
+                    <button id="BotonAgregarPersona"  class="btn btn-primary" hidden></button>
+                    <a id="BotonValidador" onclick="validar()" class="btn btn-primary" >Agregar Persona</a>
+                    <!-- <button class="btn btn-danger" type="button" class="cerrarFormulario">Limpiar</button> -->
                     <a href="{{route('crudSimpatizantes.index')}}">
                         <button class="btn btn-success" type="button">Tabla Personas</button>
                     </a>
@@ -461,6 +472,9 @@
   {{-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"> --}}
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDg60SDcmNRPnG1tzZNBBGFx02cW2VkWWQ&callback=initMap&v=weekly" defer></script>
+<script src="/js/validacionesFormulario.js" text="text/javascript"></script>
+
+
 <script text="text/javascript">
     function initMap() {
         var marker;
