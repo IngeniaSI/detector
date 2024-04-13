@@ -121,7 +121,7 @@
             <div class="card mb-4">
                 <div class="card-header">
                     <i class="fas fa-chart-pie me-1"></i>
-                    Simpatizantes con respecto a objetivo
+                    Registros con respecto a objetivo
                 </div>
                 <div class="card-body"><canvas id="simpatizantesContraObjetivo" width="100%" height="50"></canvas></div>
             </div>

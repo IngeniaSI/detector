@@ -35,6 +35,8 @@ return new class extends Migration
             $table->string('etiquetas')->nullable();
             $table->string('rolEstructura')->nullable();
             $table->bigInteger('rolNumero')->nullable();
+            $table->string('rolEstructuraTemporal')->nullable();
+            $table->bigInteger('rolNumeroTemporal')->nullable();
             $table->boolean('supervisado')->default(0);
             $table->timestamp('deleted_at')->nullable();
             $table->timestamps();

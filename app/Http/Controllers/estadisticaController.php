@@ -64,8 +64,8 @@ class estadisticaController extends Controller
                     $meta->poblacionEstablecida - $numeroPersonas
                 ],
                 [
-                    $numeroSimpatizantes,
-                    $meta->poblacionEstablecida - $numeroSimpatizantes
+                    $numeroPersonas,
+                    $meta->numeroObjetivo - $numeroPersonas
                 ]
             ];
         }
@@ -186,8 +186,8 @@ class estadisticaController extends Controller
                     $meta->poblacionEstablecida - $numeroPersonas
                 ],
                 [
-                    $numeroSimpatizantes,
-                    $meta->poblacionEstablecida - $numeroSimpatizantes
+                    $numeroPersonas,
+                    $meta->numeroObjetivo - $numeroPersonas
                 ]
             ];
         }
@@ -234,8 +234,8 @@ class estadisticaController extends Controller
                     $meta->poblacionEstablecida - $numeroPersonas
                 ],
                 [
-                    $numeroSimpatizantes,
-                    $meta->poblacionEstablecida - $numeroSimpatizantes
+                    $numeroPersonas,
+                    $meta->numeroObjetivo - $numeroPersonas
                 ]
             ];
         }

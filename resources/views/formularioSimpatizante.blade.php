@@ -86,27 +86,28 @@
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
                             <h4>Apellido paterno (*)</h4>
-                            <input type="text" class="form-control" id="apellido_paterno" name="apellido_paterno" value="{{old('apellido_paterno')}}" minlength="3" maxlength="255" onkeydown="return /[a-z, ]/i.test(event.key)"
-    onblur="if (this.value == '') {this.value = '';}"
-    onfocus="if (this.value == '') {this.value = '';}">
+                            <input type="text" class="form-control" id="apellido_paterno" name="apellido_paterno" value="{{old('apellido_paterno')}}"
+                            minlength="3" maxlength="255" onkeydown="return /[a-z, ]/i.test(event.key)"
+                            onblur="if (this.value == '') {this.value = '';}" onfocus="if (this.value == '') {this.value = '';}">
                             @error('apellido_paterno')
                                 <div id="apellidoPaternoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
                             <h4>Apellido materno (*)</h4>
-                            <input type="text" class="form-control" id="apellido_materno" name="apellido_materno" value="{{old('apellido_materno')}}" minlength="3" maxlength="255" onkeydown="return /[a-z, ]/i.test(event.key)"
-    onblur="if (this.value == '') {this.value = '';}"
-    onfocus="if (this.value == '') {this.value = '';}">
+                            <input type="text" class="form-control" id="apellido_materno" name="apellido_materno" value="{{old('apellido_materno')}}"
+                            minlength="3" maxlength="255" onkeydown="return /[a-z, ]/i.test(event.key)"
+                            onblur="if (this.value == '') {this.value = '';}" onfocus="if (this.value == '') {this.value = '';}">
                             @error('apellido_materno')
                                 <div id="apellidoMaternoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
                             <h4>Nombre(s) (*)</h4>
-                            <input type="text" class="form-control" id="nombre" name="nombre" value="{{old('nombre')}}" minlength="3" maxlength="255" onkeydown="return /[a-z, ]/i.test(event.key)"
-    onblur="if (this.value == '') {this.value = '';}"
-    onfocus="if (this.value == '') {this.value = '';}">
+                            <input type="text" class="form-control" id="nombre" name="nombre" value="{{old('nombre')}}" minlength="3" maxlength="255"
+                            onkeydown="return /[a-z, ]/i.test(event.key)"
+                            onblur="if (this.value == '') {this.value = '';}"
+                            onfocus="if (this.value == '') {this.value = '';}">
                             @error('nombre')
                                 <div id="nombresError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
@@ -116,28 +117,31 @@
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
                             <h4>Genero (*)</h4>
-                            <select name="genero" class="form-control" name="rangoEdad">
-                                <option value="SIN ESPECIFICAR">SIN ESPECIFICAR</option>
-                                <option value="HOMBRE">HOMBRE</option>
-                                <option value="MUJER">MUJER</option>
+                            <select name="genero" class="form-control">
+                                <option {{old('genero') == 'SIN ESPECIFICAR' ? 'selected' : ''}} value="SIN ESPECIFICAR">SIN ESPECIFICAR</option>
+                                <option {{old('genero') == 'HOMBRE' ? 'selected' : ''}} value="HOMBRE">HOMBRE</option>
+                                <option {{old('genero') == 'MUJER' ? 'selected' : ''}} value="MUJER">MUJER</option>
                             </select>
-                            
+                            @error('genero')
+                                <div id="generoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
                         </div>
                         <div class="col">
                             <h4>Fecha de Nacimiento</h4>
-                            <input type="date" class="form-control" id="fechaNacimiento" name="fechaNacimiento" value="{{old('fechaNacimiento')}}" min="{{date('Y-m-d', strtotime('-100 years'))}}" max="{{date('Y-m-d', strtotime('-18 years'))}}">
+                            <input type="date" class="form-control" id="fechaNacimiento" name="fechaNacimiento" value="{{old('fechaNacimiento')}}"
+                            min="{{date('Y-m-d', strtotime('-100 years'))}}" max="{{date('Y-m-d', strtotime('-18 years'))}}">
                             @error('fechaNacimiento')
                                 <div id="fechaNacimientoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
                             <h4>Rango de edad</h4>
-                            <select class="form-select" name="rangoEdad">
-                                <option value="23">18-28</option>
-                                <option value="34">29-39</option>
-                                <option value="45">40-49</option>
-                                <option value="55">50-69</option>
-                                <option value="74">69-adelante</option>
+                            <select id="rangoEdad" class="form-select" name="rangoEdad">
+                                <option {{old('rangoEdad') == '23' ? 'selected' : ''}} value="23">18-28</option>
+                                <option {{old('rangoEdad') == '34' ? 'selected' : ''}} value="34">29-39</option>
+                                <option {{old('rangoEdad') == '45' ? 'selected' : ''}} value="45">40-49</option>
+                                <option {{old('rangoEdad') == '55' ? 'selected' : ''}} value="55">50-69</option>
+                                <option {{old('rangoEdad') == '74' ? 'selected' : ''}} value="74">70-adelante</option>
                             </select>
                             @error('rangoEdad')
                                 <div id="rangoEdadError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -148,13 +152,13 @@
                         <div class="col">
                             <h4>Escolaridad</h4>
                             <select class="form-select" name="escolaridad">
-                                <option>SIN ESTUDIOS</option>
-                                <option>PRIMARIA</option>
-                                <option>SECUNDARIA</option>
-                                <option selected>PREPARATORIA</option>
-                                <option>UNIVERSIDAD</option>
-                                <option>MAESTRIA</option>
-                                <option>DOCTORADO</option>
+                                <option {{old('escolaridad') == 'SIN ESTUDIOS' ? 'selected' : ''}}>SIN ESTUDIOS</option>
+                                <option {{old('escolaridad') == 'PRIMARIA' ? 'selected' : ''}}>PRIMARIA</option>
+                                <option {{old('escolaridad') == 'SECUNDARIA' ? 'selected' : ''}}>SECUNDARIA</option>
+                                <option {{old('escolaridad') == 'PREPARATORIA' ? 'selected' : ''}}>PREPARATORIA</option>
+                                <option {{old('escolaridad') == 'UNIVERSIDAD' ? 'selected' : ''}}>UNIVERSIDAD</option>
+                                <option {{old('escolaridad') == 'MAESTRIA' ? 'selected' : ''}}>MAESTRIA</option>
+                                <option {{old('escolaridad') == 'DOCTORADO' ? 'selected' : ''}}>DOCTORADO</option>
                             </select>
                             @error('escolaridad')
                                 <div id="escolaridadError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -173,21 +177,24 @@
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
                             <h4>Telefono Celular (*)</h4>
-                            <input type="number" class="form-control" id="telefonoCelular" name="telefonoCelular" value="{{old('telefonoCelular')}}" minlength="10" maxlength="12">
+                            <input type="number" class="form-control" id="telefonoCelular" name="telefonoCelular" value="{{old('telefonoCelular')}}"
+                            minlength="10" maxlength="12">
                             @error('telefonoCelular')
                                 <div id="telefonoCelularError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
                             <h4>Telefono Fijo</h4>
-                            <input type="number" class="form-control" id="telefonoFijo" name="telefonoFijo" value="{{old('telefonoFijo')}}" minlength="10" maxlength="12">
+                            <input type="number" class="form-control" id="telefonoFijo" name="telefonoFijo" value="{{old('telefonoFijo')}}"
+                            minlength="10" maxlength="12">
                             @error('telefonoFijo')
                                 <div id="telefonoFijoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
                             <h4>Correo electronico (*)</h4>
-                            <input type="email" style="text-transform: uppercase; color: black"  class="form-control" id="correo" name="correo" value="{{old('correo')}}" minlength="3" maxlength="255">
+                            <input type="email" style="text-transform: uppercase; color: black"  class="form-control" id="correo" name="correo"
+                            value="{{old('correo')}}" minlength="3" maxlength="255">
                             @error('correo')
                                 <div id="correoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
@@ -197,7 +204,8 @@
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
                             <h4>Facebook</h4>
-                            <input type="text" class="form-control" id="facebook" name="facebook" value="{{old('facebook')}}" minlength="3" maxlength="255" >
+                            <input type="text" class="form-control" id="facebook" name="facebook" value="{{old('facebook')}}" minlength="3"
+                            maxlength="255">
                             @error('facebook')
                                 <div id="facebookError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
@@ -216,9 +224,10 @@
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
                             <h4>Calle (*)</h4>
-                            <input type="text" class="form-control" id="calle" name="calle" value="{{old('calle')}}" onkeydown="return /[a-z, ]/i.test(event.key)"
-    onblur="if (this.value == '') {this.value = '';}"
-    onfocus="if (this.value == '') {this.value = '';}">
+                            <input type="text" class="form-control" id="calle" name="calle" value="{{old('calle')}}"
+                            onkeydown="return /[a-z, ]/i.test(event.key)"
+                            onblur="if (this.value == '') {this.value = '';}"
+                            onfocus="if (this.value == '') {this.value = '';}">
                             @error('calle')
                                 <div id="calleError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
@@ -241,6 +250,15 @@
                     <br>
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
+                            <h4>Colonia (*)</h4>
+                            <select class="form-select selectToo" id="colonias" name="colonia">
+                                <option value="0">Seleccione una colonia</option>
+                            </select>
+                            @error('colonia')
+                                <div id="coloniaError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                        <div class="col">
                             <h4>Código Postal (*)</h4>
                             <input type="number" class="form-control" id="codigoPostal" name="codigoPostal" value="{{old('codigoPostal')}}">
                             @error('codigoPostal')
@@ -250,28 +268,20 @@
                         <div class="col">
                             <h4>Municipio o Delegación (*)</h4>
                             <select class="form-select selectToo" id="municipios" name="municipio">
-                                <option value="0">- - -</option>
+                                <option value="0">Seleccione un municipio</option>
                             </select>
                             @error('municipio')
                                 <div id="municipioError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
-                        <div class="col">
-                            <h4>Colonia (*)</h4>
-                            <select class="form-select selectToo" id="colonias" name="colonia">
-                                <option value="0">- - -</option>
-                            </select>
-                            @error('colonia')
-                                <div id="coloniaError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
-                            @enderror
-                        </div>
+
 
                     </div>
                     <br>
                     <h4>¿Donde vive la persona?</h4>
                     <center>
-                        <input type="hidden" id="coordenadas" name="coordenadas">
-                        <input type="text" class="col-3 d-none" id="cordenada" class="form-control" disabled>
+                        <input type="hidden" id="coordenadas" name="coordenadas" value="{{old('coordenadas')}}">
+                        <input type="text" class="col-3 d-none" id="cordenada" class="form-control" value="{{old('coordenadas')}}" disabled>
                     </center>
                     <center>
                         <div id="map" class="mx-auto" style="width:100%;height:400px"></div>
@@ -286,14 +296,16 @@
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
                             <h4>Clave Electoral</h4>
-                            <input type="text" class="form-control" id="claveElectoral" name="claveElectoral" value="{{old('claveElectoral')}}" minlength="18" maxlength="18" placeholder="ABCDEF12345678B123">
+                            <input type="text" style="text-transform: uppercase; color: black" class="form-control" id="claveElectoral" name="claveElectoral" value="{{old('claveElectoral')}}"
+                            minlength="18" maxlength="18" placeholder="ABCDEF12345678B123">
                             @error('claveElectoral')
                                 <div id="claveElectoralError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
                             <h4>CURP</h4>
-                            <input type="text" class="form-control" id="curp" name="curp" value="{{old('curp')}}" minlength="18" maxlength="18" placeholder="ABCD123456HBCDEF12">
+                            <input type="text" style="text-transform: uppercase; color: black" class="form-control" id="curp" name="curp" value="{{old('curp')}}" minlength="18" maxlength="18"
+                            placeholder="ABCD123456HBCDEF12">
                             @error('curp')
                                 <div id="curpError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
@@ -306,7 +318,7 @@
                                 </a>
                             </div>
                             <select class="form-select selectToo" id="secciones" name="seccion">
-                                <option value="0">- - -</option>
+                                <option value="0">Seleccione una sección</option>
                             </select>
                             @error('seccion')
                                 <div id="seccionError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -318,7 +330,7 @@
                         <div class="col">
                             <h4>Entidad Federativa</h4>
                             <select class="form-select selectToo" id="entidades" name="entidadFederativa">
-                                <option value="0">- - -</option>
+                                <option value="0">Seleccione una entidad federativa</option>
                             </select>
                             @error('entidadFederativa')
                                 <div id="entidadFederativaError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -327,7 +339,7 @@
                         <div class="col">
                             <h4>Distrito Federal</h4>
                             <select class="form-select selectToo" id="distritosFederales" name="distritoFederal">
-                                <option value="0">- - -</option>
+                                <option value="0">Seleccione un distrito federal</option>
                             </select>
                             @error('distritoFederal')
                                 <div id="distritoFederalError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -336,7 +348,7 @@
                         <div class="col">
                             <h4>Distrito local</h4>
                             <select class="form-select selectToo" id="distritosLocales" name="distritoLocal">
-                                <option value="0">- - -</option>
+                                <option value="0">Seleccione un distrito local</option>
                             </select>
                             @error('distritoLocal')
                                 <div id="distritoLocalError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -351,8 +363,8 @@
                         <div class="col">
                             <h4>Afiliado</h4>
                             <select class="form-select" name="esAfiliado">
-                                <option select>No</option>
-                                <option>Si</option>
+                                <option {{old('esAfiliado') == 'No' ? 'selected' : ''}}>No</option>
+                                <option {{old('esAfiliado') == 'Si' ? 'selected' : ''}}>Si</option>
                             </select>
                             @error('esAfiliado')
                                 <div id="esAfiliadoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -361,9 +373,9 @@
                         <div class="col">
                             <h4>Simpatizantes</h4>
                             <select class="form-select" name="esSimpatizante">
-                                <option select>No</option>
-                                <option>Si</option>
-                                <option>Talvez</option>
+                                <option {{old('esSimpatizante') == 'No' ? 'selected' : ''}}>No</option>
+                                <option {{old('esSimpatizante') == 'Si' ? 'selected' : ''}}>Si</option>
+                                <option {{old('esSimpatizante') == 'Talvez' ? 'selected' : ''}}>Talvez</option>
                             </select>
                             @error('esSimpatizante')
                                 <div id="esSimpatizanteError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -389,11 +401,11 @@
                         <div class="col">
                             <h4>Rol en estructura</h4>
                             <select class="form-select" id="rolEstructura" name="rolEstructura">
-                                <option value="-1">Sin rol en la estructura</option>
-                                <option value="COORDINADOR ESTATAL">COORDINADOR ESTATAL</option>
-                                <option value="COORDINADOR DE DISTRITO LOCAL">COORDINADOR DE DISTRITO LOCAL</option>
-                                <option value="COORDINADOR DE SECCIÓN">COORDINADOR DE SECCIÓN</option>
-                                <option value="PROMOTOR">PROMOTOR</option>
+                                <option {{old('rolEstructura') == '-1' ? 'selected' : ''}} value="-1">Sin rol en la estructura</option>
+                                <option {{old('rolEstructura') == 'COORDINADOR ESTATAL' ? 'selected' : ''}} value="COORDINADOR ESTATAL">COORDINADOR ESTATAL</option>
+                                <option {{old('rolEstructura') == 'COORDINADOR DE DISTRITO LOCAL' ? 'selected' : ''}} value="COORDINADOR DE DISTRITO LOCAL">COORDINADOR DE DISTRITO LOCAL</option>
+                                <option {{old('rolEstructura') == 'COORDINADOR DE SECCIÓN' ? 'selected' : ''}} value="COORDINADOR DE SECCIÓN">COORDINADOR DE SECCIÓN</option>
+                                <option {{old('rolEstructura') == 'PROMOTOR' ? 'selected' : ''}} value="PROMOTOR">PROMOTOR</option>
                             </select>
                             @error('rolEstructura')
                                 <div id="rolEstructuraError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -408,15 +420,41 @@
                         </div>
                         <div class="col">
                             <h4>Función asignada</h4>
-                            <select class="form-select selectToo" name="funciones">
-                                <option select>Ninguno</option>
-                                <option>Medicina</option>
-                                <option>Lentes</option>
-                            </select>
+                            <input type="text" class="form-control" id="funciones" name="funciones" value="{{old('funciones')}}">
                             @error('funciones')
                                 <div id="funcionAsignadaError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
+                    </div>
+                    <div class="row row-cols-1 row-cols-sm-3">
+                        <div class="col">
+                            <h4>¿Tiene un rol temporal?</h4>
+                            <select class="form-select" id="tieneRolTemporal" name="tieneRolTemporal">
+                                <option {{old('tieneRolTemporal') == 'NO' ? 'selected' : ''}} value="NO">No</option>
+                                <option {{old('tieneRolTemporal') == 'SI' ? 'selected' : ''}} value="SI">Si</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <h4>Rol en estructura temporal</h4>
+                            <select class="form-select" id="rolEstructuraTemporal" name="rolEstructuraTemporal" disabled>
+                                <option {{old('rolEstructuraTemporal') == '-1' ? 'selected' : ''}} value="-1">Sin rol en la estructura</option>
+                                <option {{old('rolEstructuraTemporal') == 'COORDINADOR ESTATAL' ? 'selected' : ''}} value="COORDINADOR ESTATAL">COORDINADOR ESTATAL</option>
+                                <option {{old('rolEstructuraTemporal') == 'COORDINADOR DE DISTRITO LOCAL' ? 'selected' : ''}} value="COORDINADOR DE DISTRITO LOCAL">COORDINADOR DE DISTRITO LOCAL</option>
+                                <option {{old('rolEstructuraTemporal') == 'COORDINADOR DE SECCIÓN' ? 'selected' : ''}} value="COORDINADOR DE SECCIÓN">COORDINADOR DE SECCIÓN</option>
+                                <option {{old('rolEstructuraTemporal') == 'PROMOTOR' ? 'selected' : ''}} value="PROMOTOR">PROMOTOR</option>
+                            </select>
+                            @error('rolEstructuraTemporal')
+                                <div id="rolEstructuraTemporalError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                        <div class="col">
+                            <h4 id="rolNumeroEncabezadoTemporal">Seleccione un rol en estructura</h4>
+                            <input type="number" class="form-control" id="rolNumeroTemporal" name="rolNumeroTemporal" value="{{old('rolNumeroTemporal')}}" disabled>
+                            @error('rolNumeroTemporal')
+                                <div id="rolNumeroTemporalError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+
                     </div>
                 </div>
                 <br>
@@ -480,9 +518,6 @@
 
 
 <script text="text/javascript">
-    @if (old('fechaRegistro'))
-        $('#fechaRegistro').val("{{old('fechaRegistro')}}");
-    @endif
     function initMap() {
         var marker;
         var marker2;
@@ -493,6 +528,14 @@
             center: myLatLng,
             title: "Ubicación",
         });
+        // service.findPlaceFromQuery(request, (results, status) => {
+        //     if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+        //     for (let i = 0; i < results.length; i++) {
+        //         createMarker(results[i]);
+        //     }
+        //         map.setCenter(results[0].geometry.location);
+        //     }
+        // });
 
         google.maps.event.addListener(map, 'click', function (event) {
             console.log(event.latLng);
@@ -500,7 +543,9 @@
             document.getElementById("cordenada").value = event.latLng.lat() + ", " + event.latLng.lng();
             document.getElementById("coordenadas").value = event.latLng.lat() + "," + event.latLng.lng();
         });
-
+        @if(old('coordenadas'))
+            placeMarker({lat: {{explode(',', old('coordenadas'))[0]}}, lng: {{explode(',', old('coordenadas'))[1]}}})
+        @endif
 
         function placeMarker(location) {
             if (marker == undefined) {
@@ -533,8 +578,38 @@
         }
 
     }
-
     window.initMap = initMap;
+    function buscarUbicacion(nombre) {
+        // Clave de API de Google Maps (reemplaza 'TU_API_KEY' con tu propia clave)
+        var apiKey = 'AIzaSyDg60SDcmNRPnG1tzZNBBGFx02cW2VkWWQ';
+
+        // URL de la API de Geocodificación de Google Maps
+        var url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + encodeURIComponent(nombre) + '&key=' + apiKey;
+
+        // Realizar la solicitud HTTP GET utilizando Fetch API
+        fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            // Verificar si la respuesta tiene resultados
+            if (data.results.length > 0) {
+                // Obtener las coordenadas de la primera ubicación encontrada
+                var ubicacion = data.results[0].geometry.location;
+                var latitud = ubicacion.lat;
+                var longitud = ubicacion.lng;
+
+                // Aquí puedes usar latitud y longitud como desees
+                console.log('Latitud:', latitud);
+                console.log('Longitud:', longitud);
+                placeMarker({lat: latitud, lng: longitud});
+            } else {
+                console.log('No se encontraron resultados para la ubicación:', nombre);
+            }
+        })
+        .catch(error => {
+            console.error('Error al buscar la ubicación:', error);
+        });
+    }
+
 
     //FIN MAPA
 
@@ -596,6 +671,28 @@
                             $('<option>').val(valor.id).text(`${valor.nombres} ${valor.apellido_paterno}`)
                         );
                     });
+
+                    @if(old('colonia'))
+                        $('#colonias').val({{old('colonia')}});
+                    @endif
+                    @if(old('municipio'))
+                        $('#municipios').val({{old('municipio')}});
+                    @endif
+                    @if(old('seccion'))
+                        $('#secciones').val({{old('seccion')}});
+                    @endif
+                    @if(old('entidadFederativa'))
+                        $('#entidades').val({{old('entidadFederativa')}});
+                    @endif
+                    @if(old('distritoFederal'))
+                        $('#distritosFederales').val({{old('distritoFederal')}});
+                    @endif
+                    @if(old('distritoLocal'))
+                        $('#distritosLocales').val({{old('distritoLocal')}});
+                    @endif
+                    @if(old('promotor'))
+                        $('#promotores').val({{old('promotor')}});
+                    @endif
                 },
                 error: function( data, textStatus, jqXHR){
                     if (jqXHR.status === 0) {
@@ -618,8 +715,48 @@
         ).then(
             function( data, textStatus, jqXHR ) {
         });
+        @if (old('fechaRegistro'))
+            $('#fechaRegistro').val("{{old('fechaRegistro')}}");
+        @endif
+        @if (old('etiquetas'))
+            let etiquetasCrudas = @json(old('etiquetas'));
+            let etiquedasPreprocesar = (etiquetasCrudas != null) ? etiquetasCrudas.split(',') : [];
+            $.each(etiquedasPreprocesar, function (i, valor) {
+                createTag(valor);
+            });
+        @endif
+        @if (old('rolEstructura'))
+            $('#rolEstructura').trigger("change");
+        @endif
+        @if (old('rolEstructuraTemporal'))
+            $('#tieneRolTemporal').trigger('change');
+            $('#rolEstructuraTemporal').trigger("change");
+        @endif
+
     });
 
+
+    $('#rolEstructuraTemporal').change(function (e) {
+        $('#rolNumeroTemporal').prop('disabled', false);
+        switch ($(this).val()) {
+            case 'COORDINADOR ESTATAL':
+                $('#rolNumeroEncabezadoTemporal').text('¿En qué Entidad?');
+                break;
+                case 'COORDINADOR DE DISTRITO LOCAL':
+                $('#rolNumeroEncabezadoTemporal').text('¿En qué Distrito?');
+                break;
+                case 'COORDINADOR DE SECCIÓN':
+                $('#rolNumeroEncabezadoTemporal').text('¿En qué Sección?');
+                break;
+                case 'PROMOTOR':
+                $('#rolNumeroEncabezadoTemporal').text('¿En qué Sección?');
+                break;
+            default:
+                $('#rolNumeroEncabezadoTemporal').text('Seleccione un rol en estructura');
+                $('#rolNumeroTemporal').prop('disabled', true);
+                break;
+        }
+    });
     $('#rolEstructura').change(function (e) {
         $('#rolNumero').prop('disabled', false);
         switch ($(this).val()) {
@@ -696,86 +833,51 @@
             tags.splice(indexEtiqueta, 1);
         }
     };
-
     tagInput.addEventListener('keyup', (e) => {
         const { key } = e;
-        if (key === ',') {
+        if (key === ',' || key === 'Enter') {
+            e.preventDefault();
             createTag(tagInput.value.substring(0, tagInput.value.length - 1));
         }
     });
-
     button.addEventListener('click', (e) => {
         createTag(tagInput.value);
     });
     $('#formularioAgregarSimpatizante').submit(function (e) {
-        if($('#formularioAgregarSimpatizante #etiquetas').length == 0){
-            let etiquetas = "";
-            $.each(tags, function (i, value) {
-                etiquetas += `${value.childNodes[0].innerHTML},`;
-                if(etiquetas.length > 0 && tags.length - 1 == i){
-                    etiquetas = etiquetas.slice(0, -1);
-                }
-            });
-            $('#formularioAgregarSimpatizante').append(
-                $('<input>').attr('name', 'etiquetas').attr('id', 'etiquetas').attr('type', 'hidden')
-                .val(etiquetas)
-            );
+        if($('#inputEtiquetaCrear').is(':focus')){
+            return false;
+        }
+        else{
+            if($('#formularioAgregarSimpatizante #etiquetas').length == 0){
+                let etiquetas = "";
+                $.each(tags, function (i, value) {
+                    etiquetas += `${value.childNodes[0].innerHTML},`;
+                    if(etiquetas.length > 0 && tags.length - 1 == i){
+                        etiquetas = etiquetas.slice(0, -1);
+                    }
+                });
+                $('#formularioAgregarSimpatizante').append(
+                    $('<input>').attr('name', 'etiquetas').attr('id', 'etiquetas').attr('type', 'hidden')
+                    .val(etiquetas)
+                );
+            }
         }
     });
 
     function filtrarColonia(){
-        let municipio = $('#municipios').val();
-        let codigoPostal = ($('#codigoPostal').val() != '') ? $('#codigoPostal').val() : 0;
         let colonia = $('#colonias').val();
-        console.log(municipio, codigoPostal, colonia);
         $.when(
         $.ajax({
                 type: "get",
-                url: `{{url('/')}}/simpatizantes/filtrarColonias-${municipio}-${codigoPostal}-${colonia}`,
+                url: `{{url('/')}}/simpatizantes/filtrarColonias-${colonia}`,
                 data: [],
                 contentType: "application/x-www-form-urlencoded",
                 success: function (response) {
                     console.log(response);
-                    $('#municipios').html('');
-                    $('#colonias').html('');
-
-                    $('#municipios').append(
-                        $('<option>').val(0).text('- - -')
-                    );
-                    $('#colonias').append(
-                        $('<option>').val(0).text('- - -')
-                    );
-                    $.each(response[0].municipios, function (i, valor) {
-                        if(response[1].municipio > 0 && response[1].municipio == valor.id){
-                            $('#municipios').append(
-                                $('<option>').val(valor.id).prop('selected', true).text(valor.nombre)
-                            );
-                        }
-                        else{
-                            $('#municipios').append(
-                                $('<option>').val(valor.id).text(valor.nombre)
-                            );
-                        }
-                    });
-
-                    $.each(response[0].colonias, function (i, valor) {
-                        if(response[1].colonia > 0 && response[1].colonia == valor.id){
-                            $('#colonias').append(
-                                $('<option>').val(valor.id).prop('selected', true).text(valor.nombre)
-                            );
-                        }
-                        else{
-                            $('#colonias').append(
-                                $('<option>').val(valor.id).text(valor.nombre)
-                            );
-                        }
-                    });
-
-                    // $.each(response.colonias, function (i, valor) {
-                    //     $('#colonias').append(
-                    //         $('<option>').val(valor.id).text(valor.nombre)
-                    //     );
-                    // });
+                    $('#municipios').val(response.municipio);
+                    $('#municipios').trigger('change');
+                    $('#codigoPostal').val(response.codigoPostal);
+                    // buscarUbicacion(`${colonia}, ${response.nombreColonia}, ${response.nombreMunicipio}`);
                 },
                 error: function( data, textStatus, jqXHR){
                     if (jqXHR.status === 0) {
@@ -799,95 +901,24 @@
             function( data, textStatus, jqXHR ) {
         });
     }
-    $('#municipios').change(filtrarColonia);
     $('#colonias').change(filtrarColonia);
-    $('#codigoPostal').keyup(function (e) {
-        console.log($('#codigoPostal').val());
-        if($('#codigoPostal').val().length == 5){
-            filtrarColonia();
-        }
-    });
+
     function filtrarSecciones(){
-        let entidad = $('#entidades').val();
-        let distritoFederal = $('#distritosFederales').val();
-        let distritoLocal = $('#distritosLocales').val();
         let seccion = $('#secciones').val();
         $.when(
         $.ajax({
                 type: "get",
-                url: `{{url('/')}}/simpatizantes/filtrarSecciones-${entidad}-${distritoFederal}-${distritoLocal}-${seccion}`,
+                url: `{{url('/')}}/simpatizantes/filtrarSecciones-${seccion}`,
                 data: [],
                 contentType: "application/x-www-form-urlencoded",
                 success: function (response) {
-                    $('#entidades').html('');
-                    $('#distritosFederales').html('');
-                    $('#distritosLocales').html('');
-                    $('#secciones').html('');
-
-                    $('#entidades').append(
-                        $('<option>').val(0).text('- - -')
-                    );
-                    $('#distritosFederales').append(
-                        $('<option>').val(0).text('- - -')
-                    );
-                    $('#distritosLocales').append(
-                        $('<option>').val(0).text('- - -')
-                    );
-                    $('#secciones').append(
-                        $('<option>').val(0).text('- - -')
-                    );
-
-                    $.each(response[0].entidades, function (i, valor) {
-                        if(response[1].entidad > 0 && response[1].entidad == valor.id){
-                            $('#entidades').append(
-                                $('<option>').val(valor.id).prop('selected', true).text(valor.nombre)
-                            );
-                        }
-                        else{
-                            $('#entidades').append(
-                                $('<option>').val(valor.id).text(valor.nombre)
-                            );
-                        }
-                    });
-
-                    $.each(response[0].distritosFederales, function (i, valor) {
-                        if(response[1].distritoFederal > 0 && response[1].distritoFederal == valor.id){
-                            $('#distritosFederales').append(
-                                $('<option>').val(valor.id).prop('selected', true).text(valor.id)
-                            );
-                        }
-                        else{
-                            $('#distritosFederales').append(
-                                $('<option>').val(valor.id).text(valor.id)
-                            );
-                        }
-                    });
-
-                    $.each(response[0].distritosLocales, function (i, valor) {
-                        if(response[1].distritoLocal > 0 && response[1].distritoLocal == valor.id){
-                            $('#distritosLocales').append(
-                                $('<option>').val(valor.id).prop('selected', true).text(valor.id)
-                            );
-                        }
-                        else{
-                            $('#distritosLocales').append(
-                                $('<option>').val(valor.id).text(valor.id)
-                            );
-                        }
-                    });
-
-                    $.each(response[0].secciones, function (i, valor) {
-                        if(response[1].seccion > 0 && response[1].seccion == valor.id){
-                            $('#secciones').append(
-                                $('<option>').val(valor.id).prop('selected', true).text(valor.id)
-                            );
-                        }
-                        else{
-                            $('#secciones').append(
-                                $('<option>').val(valor.id).text(valor.id)
-                            );
-                        }
-                    });
+                    console.log(response);
+                    $('#entidades').val(response.entidad);
+                    $('#entidades').trigger('change');
+                    $('#distritosFederales').val(response.distritoFederal);
+                    $('#distritosFederales').trigger('change');
+                    $('#distritosLocales').val(response.distritoLocal);
+                    $('#distritosLocales').trigger('change');
                 },
                 error: function( data, textStatus, jqXHR){
                     if (jqXHR.status === 0) {
@@ -911,11 +942,46 @@
             function( data, textStatus, jqXHR ) {
         });
     }
-
-    $('#entidades').change(filtrarSecciones);
-    $('#distritosFederales').change(filtrarSecciones);
-    $('#distritosLocales').change(filtrarSecciones);
     $('#secciones').change(filtrarSecciones);
+
+    $('#fechaNacimiento').change(function (e) {
+        var fechaNacimiento = new Date($('#fechaNacimiento').val());
+        var hoy = new Date();
+
+        var edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
+        var mes = hoy.getMonth() - fechaNacimiento.getMonth();
+        if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
+            edad--;
+        }
+        if(18 <= edad && edad <= 28){
+            $('#rangoEdad').val(23);
+        }
+        else if(29 <= edad && edad <= 39){
+            $('#rangoEdad').val(34);
+        }
+        else if(40 <= edad && edad <= 49){
+            $('#rangoEdad').val(45);
+        }
+        else if(50 <= edad && edad <= 69){
+            $('#rangoEdad').val(55);
+        }
+        else if(70 <= edad){
+            $('#rangoEdad').val(74);
+        }
+    });
+
+    $('#tieneRolTemporal').change(function (e) {
+        let opcion = $('#tieneRolTemporal').val();
+        if(opcion == 'SI'){
+            $('#rolEstructuraTemporal').prop('disabled', false);
+            $('#rolNumeroTemporal').prop('disabled', false);
+            $('#rolEstructuraTemporal').trigger('change');
+        }
+        else{
+            $('#rolEstructuraTemporal').prop('disabled', true);
+            $('#rolNumeroTemporal').prop('disabled', true);
+        }
+    });
     </script>
 @endsection
 
