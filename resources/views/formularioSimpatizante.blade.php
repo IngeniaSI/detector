@@ -514,7 +514,7 @@
 @endif
   {{-- PASAR LIBRERIAS A PLANTILLA --}}
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDg60SDcmNRPnG1tzZNBBGFx02cW2VkWWQ&callback=initMap&v=weekly" defer></script>
-<script src="/js/validacionesFormulario.js" text="text/javascript"></script>
+<script src="{{url('/')}}/js/validacionesFormulario.js" text="text/javascript"></script>
 
 
 <script text="text/javascript">
@@ -984,4 +984,3 @@
     });
     </script>
 @endsection
-
