@@ -99,7 +99,7 @@ class formularioSimpatizanteController extends Controller
             'telefonoCelular' => 'required',
             'escolaridad' => 'required',
             'claveElectoral' => 'nullable|regex:/^([A-Z]{6})(\d{8})([B-DF-HJ-NP-TV-Z]{1})(\d{3})$/',
-            'curp' => 'nullable|regex:/^([A-Z]{4})(\d{6})([HM])([A-Z]{5})([0-9A-Z]{2})$/',
+            'curp' => 'required|regex:/^([A-Z]{4})(\d{6})([HM])([A-Z]{5})([0-9A-Z]{2})$/',
             'esAfiliado' => 'required',
             'esSimpatizante' => 'required',
             'programa' => 'required',
@@ -242,7 +242,7 @@ class formularioSimpatizanteController extends Controller
             }
             else{
                 DB::rollBack();
-                return back()->withErrors(['curpError' => 'El curp ingresado ya esta registrado'])->withInput();
+                return back()->withErrors(['curp' => 'El curp ingresado ya esta registrado'])->withInput();
 
             }
         } catch (Exception $e) {
