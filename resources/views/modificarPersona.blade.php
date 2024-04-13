@@ -57,7 +57,7 @@
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
                             <h4>Fecha de registro</h4>
-                            <input type="date" class="form-control" name="fechaRegistro" value="{{old('fechaRegistro')}}" min="{{date('Y-m-d', strtotime('-100 years'))}}" max="{{date('Y-m-d')}}">
+                            <input type="date" class="form-control" id="fechaRegistro" name="fechaRegistro" min="{{date('Y-m-d', strtotime('-100 years'))}}" max="{{date('Y-m-d')}}" value="{{date('Y-m-d')}}">
                             @error('fechaRegistro')
                                 <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
@@ -71,7 +71,7 @@
                         </div>
                         <div class="col">
                             <h4>Promotor</h4>
-                            <select class="form-control selectToo" id="promotores" name="promotor">
+                            <select class="form-select selectToo" id="promotores" name="promotor">
                                 <option value="-1" selected>Sin promotor</option>
                             </select>
                             @error('promotor')
@@ -124,7 +124,7 @@
                         </div>
                         <div class="col">
                             <h4>Rango de edad</h4>
-                            <select class="form-control" name="rangoEdad">
+                            <select class="form-select" name="rangoEdad">
                                 <option value="23">18-28</option>
                                 <option value="34">29-39</option>
                                 <option value="45">40-49</option>
@@ -139,7 +139,7 @@
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
                             <h4>Escolaridad</h4>
-                            <select class="form-control" name="escolaridad">
+                            <select class="form-select" name="escolaridad">
                                 <option>SIN ESTUDIOS</option>
                                 <option>PRIMARIA</option>
                                 <option>SECUNDARIA</option>
@@ -239,7 +239,7 @@
                         </div>
                         <div class="col">
                             <h4>Municipio o Delegación (*)</h4>
-                            <select class="form-control selectToo" id="municipios" name="municipio">
+                            <select class="form-select selectToo" id="municipios" name="municipio">
                                 <option value="0">- - -</option>
                             </select>
                             @error('municipio')
@@ -248,7 +248,7 @@
                         </div>
                         <div class="col">
                             <h4>Colonia (*)</h4>
-                            <select class="form-control selectToo" id="colonias" name="colonia">
+                            <select class="form-select selectToo" id="colonias" name="colonia">
                                 <option value="0">- - -</option>
                             </select>
                             @error('colonia')
@@ -295,7 +295,7 @@
                                     <i class="bi bi-exclamation-circle-fill"></i>
                                 </a>
                             </div>
-                            <select class="form-control selectToo" id="secciones" name="seccion">
+                            <select class="form-select selectToo" id="secciones" name="seccion">
                                 <option value="0">- - -</option>
                             </select>
                             @error('seccion')
@@ -307,7 +307,7 @@
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
                             <h4>Entidad Federativa</h4>
-                            <select class="form-control selectToo" id="entidades" name="entidadFederativa">
+                            <select class="form-select selectToo" id="entidades" name="entidadFederativa">
                                 <option value="0">- - -</option>
                             </select>
                             @error('entidadFederativa')
@@ -316,7 +316,7 @@
                         </div>
                         <div class="col">
                             <h4>Distrito Federal</h4>
-                            <select class="form-control selectToo" id="distritosFederales" name="distritoFederal">
+                            <select class="form-select selectToo" id="distritosFederales" name="distritoFederal">
                                 <option value="0">- - -</option>
                             </select>
                             @error('distritoFederal')
@@ -325,7 +325,7 @@
                         </div>
                         <div class="col">
                             <h4>Distrito local</h4>
-                            <select class="form-control selectToo" id="distritosLocales" name="distritoLocal">
+                            <select class="form-select selectToo" id="distritosLocales" name="distritoLocal">
                                 <option value="0">- - -</option>
                             </select>
                             @error('distritoLocal')
@@ -340,7 +340,7 @@
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
                             <h4>Afiliado</h4>
-                            <select class="form-control" name="esAfiliado">
+                            <select class="form-select" name="esAfiliado">
                                 <option value="NO" select>No</option>
                                 <option value="SI">Si</option>
                             </select>
@@ -350,7 +350,7 @@
                         </div>
                         <div class="col">
                             <h4>Simpatizantes</h4>
-                            <select class="form-control" name="esSimpatizante">
+                            <select class="form-select" name="esSimpatizante">
                                 <option value="NO" select>No</option>
                                 <option value="SI">Si</option>
                                 <option value="TALVEZ">Talvez</option>
@@ -361,7 +361,7 @@
                         </div>
                         <div class="col">
                             <h4>Programas</h4>
-                            <select class="form-control selectToo" name="programa">
+                            <select class="form-select selectToo" name="programa">
                                 <option  value="NINGUNO" select>Ninguno</option>
                                 <option value="PROGRAMA 1" >Programa 1</option>
                                 <option value="PROGRAMA 2" >Programa 2</option>
@@ -378,7 +378,7 @@
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
                             <h4>Rol en estructura</h4>
-                            <select class="form-control" id="rolEstructura" name="rolEstructura">
+                            <select class="form-select" id="rolEstructura" name="rolEstructura">
                                 <option value="-1">Sin rol en la estructura</option>
                                 <option value="COORDINADOR ESTATAL">COORDINADOR ESTATAL</option>
                                 <option value="COORDINADOR DE DISTRITO LOCAL">COORDINADOR DE DISTRITO LOCAL</option>
@@ -398,7 +398,7 @@
                         </div>
                         <div class="col">
                             <h4>Función asignada</h4>
-                            <select class="form-control selectToo" name="funciones">
+                            <select class="form-select selectToo" name="funciones">
                                 <option value="NINGUNO" select>Ninguno</option>
                                 <option value="MEDICINA">Medicina</option>
                                 <option value="LENTES">Lentes</option>
@@ -457,11 +457,24 @@
 @endsection
 
 @section('scripts')
+
+@if (session()->has('validarCamposFormPersona'))
+    <script>
+        Swal.fire({
+            'tittle':"Error",
+            'text':"{{session('validarCamposFormPersona')}}",
+            'icon':"error"
+        });
+    </script>
+@endif
   {{-- PASAR LIBRERIAS A PLANTILLA --}}
   {{-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"> --}}
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDg60SDcmNRPnG1tzZNBBGFx02cW2VkWWQ&callback=initMap&v=weekly" defer></script>
 <script text="text/javascript">
+    @if (old('fechaRegistro'))
+        $('#fechaRegistro').val("{{old('fechaRegistro')}}");
+    @endif
     function initMap() {
         var marker;
         var marker2;

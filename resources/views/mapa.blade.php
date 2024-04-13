@@ -1,7 +1,7 @@
 @extends('Pages.plantilla')
 
 @section('tittle')
-    Mapa Geoespacial
+    Mapa de Personas
 @endsection
 
 @section('cuerpo')
@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://leaflet.github.io/Leaflet.markercluster/example/screen.css" />
 <link rel="stylesheet" href="https://leaflet.github.io/Leaflet.markercluster/dist/MarkerCluster.css" />
 	<link rel="stylesheet" href="https://leaflet.github.io/Leaflet.markercluster/dist/MarkerCluster.Default.css" />
-<h1 class="mt-4">Mapa Geoespacial</h1>
+<h1 class="mt-4">Mapa de Personas</h1>
 
     {{-- <iframe style="width: 100%;height: 700px;"
     id="inlineFrameExample"

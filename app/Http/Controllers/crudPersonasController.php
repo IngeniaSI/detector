@@ -33,6 +33,7 @@ class crudPersonasController extends Controller
     }
 
     public function modificarPersona(persona $persona, Request $formulario){
+        session()->flash('validarCamposFormPersona', 'Hay campos erroneos o campos vacios');
         $formulario->validate([
             'nombre' => 'required',
             'apellido_paterno' => 'required',
@@ -149,6 +150,7 @@ class crudPersonasController extends Controller
             $bitacora->user_id = $user->id;
             $bitacora->save();
             DB::commit();
+            session()->forget('validarCamposFormPersona');
             session()->flash('mensajeExito', 'Usuario modificado con éxito');
             return redirect()->route('crudSimpatizantes.index');
         } catch (Exception $e) {

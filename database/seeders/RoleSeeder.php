@@ -28,11 +28,11 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'crudUsuarios.edit'])->syncRoles([$rolSU, $rolAdmin]);
         Permission::create(['name' => 'crudUsuarios.delete'])->syncRoles([$rolSU, $rolAdmin]);
 
-        Permission::create(['name' => 'crudSimpatizantes.index'])->syncRoles([$rolSU, $rolSupervisor, $rolCapturista]);
-        Permission::create(['name' => 'crudSimpatizantes.verificar'])->syncRoles([$rolSU, $rolSupervisor]);
-        Permission::create(['name' => 'crudSimpatizantes.borrar'])->syncRoles([$rolSU, $rolSupervisor]);
+        Permission::create(['name' => 'crudSimpatizantes.index'])->syncRoles([$rolSU, $rolAdmin, $rolSupervisor, $rolCapturista]);
+        Permission::create(['name' => 'crudSimpatizantes.verificar'])->syncRoles([$rolSU, $rolAdmin, $rolSupervisor]);
+        Permission::create(['name' => 'crudSimpatizantes.borrar'])->syncRoles([$rolSU, $rolAdmin, $rolSupervisor]);
 
-        Permission::create(['name' => 'agregarSimpatizante.index'])->syncRoles([$rolSU, $rolSupervisor, $rolCapturista]);
+        Permission::create(['name' => 'agregarSimpatizante.index'])->syncRoles([$rolSU, $rolAdmin, $rolSupervisor, $rolCapturista]);
         Permission::create(['name' => 'bitacora.index'])->syncRoles([$rolSU, $rolAdmin]);
         Permission::create(['name' => 'estadistica.index'])->syncRoles([$rolSU, $rolAdmin, $rolSupervisor]);
         Permission::create(['name' => 'mapa.index'])->syncRoles([$rolSU, $rolAdmin, $rolSupervisor, $rolCapturista]);
