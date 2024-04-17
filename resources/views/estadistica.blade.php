@@ -5,6 +5,13 @@
 @endsection
 
 @section('cuerpo')
+
+<style>
+    .select2-container .select2-selection--multiple {
+    
+    width: 120px;
+}
+</style>
 <!-- Modal Agregar Usuario -->
 <div class="modal fade" id="cargarMeta" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -75,6 +82,46 @@
             </div>
         </div>
         <div class="col">
+            <div class="card ">
+                <div class="card-header">
+                    <i class="fas fa-calendar me-1"></i>
+                   Sección
+                </div>
+                <div class="card-body justify-content">
+                    <center> 
+                    <select id="tipoSeleccion" class="form-control" name="select">
+                        <option value="Todas">Todas</option>
+                        <option value="Separado" >Por Separado </option>
+                    </select>
+                    
+                    </center>
+
+                </div>
+            </div>
+        </div>
+        <div class="col" id="PorSeparado">
+            <div class="card ">
+                <div class="card-header">
+                    <i class="fas fa-calendar me-1"></i>
+                   Selecciona la Sección
+                </div>
+                <div class="card-body justify-content">
+                    <center> 
+                    
+                    <select class="js-example-basic-multiple" styles="width:50px;" name="states[]" multiple="multiple">
+                        <option value="1">Sección 1</option>
+                        <option value="2">Sección 2</option>
+                        <option value="3">Sección 3</option>
+                        <option value="4">Sección 4</option>
+                        <option value="5">Sección 5</option>
+                        <option value="6">Sección 6</option>
+                    </select>
+                    </center>
+
+                </div>
+            </div>
+        </div>
+        <div class="col">
             <div class="card mb-2">
                 <div class="card-header">
                     <i class="fas fa-search me-1"></i>
@@ -85,6 +132,17 @@
                 </div>
             </div>
 
+        </div>
+    </div>
+    <div class="row">
+    <div class="col-lg-12">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-bar me-1"></i>
+                    Sección
+                </div>
+                <div class="card-body"><canvas id="seccionChart" width="100%" height="50"></canvas></div>
+            </div>
         </div>
     </div>
     <div class="row">
@@ -139,11 +197,24 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
         {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.0.0/chartjs-plugin-datalabels.min.js"></script> --}}
         <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.6.0"></script>
+        <link href="vendor/select2/dist/css/select2.min.css" rel="stylesheet" />
+        <script src="vendor/select2/dist/js/select2.min.js"></script>
         <script src="{{ asset('Plantilla/assets/demo/chart-area-demo.js')}}"></script>
         <script src="{{ asset('Plantilla/assets/demo/chart-bar-demo.js')}}"></script>
         <script src="{{ asset('Plantilla/assets/demo/chart-pie-demo.js')}}"></script>
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script>
+            $('#tipoSeleccion').on('change', function() {
+            if( this.value == 'Separado'){
+                $('#PorSeparado').show();
+            }else{
+                $('#PorSeparado').hide();
+            }
+            });
             $(document).ready(function () {
+                $('#PorSeparado').hide();
+                $('.js-example-basic-multiple').select2();
                 $.when(
                 $.ajax({
                     type: "get",
