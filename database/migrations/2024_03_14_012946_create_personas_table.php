@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('nombres');
             $table->string('apellido_paterno');
             $table->string('apellido_materno')->nullable();
-            $table->string('genero');
+            $table->string('genero')->nullable();
             $table->string('telefono_celular')->nullable();
             $table->string('telefono_fijo')->nullable();
             $table->string('correo')->nullable();

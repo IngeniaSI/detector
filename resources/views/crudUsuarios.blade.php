@@ -34,6 +34,9 @@
         cursor: pointer;
         margin-left: 5px;
     }
+    .select2-container--open {
+        z-index: 9999999
+    }
 </style>
     <!-- Modal Agregar Usuario -->
     <div class="modal fade" id="AgregarModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -131,17 +134,13 @@
                         <br>
                         <h4>Niveles asignados</h4>
                         <div class="row justify-content-between">
-                            <div class="col-10">
-                                <input type="text" id="inputEtiquetaCrear" class="form-control" placeholder="',' para agregar etiqueta">
+                            <div class="col">
+                                <select name="niveles[]" class="form-select selectToo" multiple="multiple" style="width:100%">
+                                    <option value="">Opcion 1</option>
+                                    <option value="">Opcion 2</option>
+                                    <option value="">Opcion 3</option>
+                                </select>
                             </div>
-                            <div class="col-auto">
-                                <button type="button" id="agregarEtiquetaCrear" class="btn btn-primary">Agregar</button>
-                            </div>
-                        </div>
-                        <div class="mt-3 contenedorEtiquetasCrear">
-                            <!-- <span class="tag">oh my God <span class="remove-tag">&#10006;</span></span>
-                            <span class="tag">second tag <span class="remove-tag">&#10006;</span></span>
-                            <span class="tag">tag3 <span class="remove-tag">&#10006;</span></span> -->
                         </div>
                         @error('errorValidacion')
                             <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -252,17 +251,13 @@
                         <br>
                         <h4>Niveles asignados</h4>
                         <div class="row justify-content-between">
-                            <div class="col-10">
-                                <input type="text" id="inputEtiquetaModificar" class="form-control" placeholder="',' para agregar etiqueta">
+                            <div class="col">
+                                <select name="niveles[]" class="form-select selectToo" multiple="multiple" style="width:100%">
+                                    <option value="">Opcion 1</option>
+                                    <option value="">Opcion 2</option>
+                                    <option value="">Opcion 3</option>
+                                </select>
                             </div>
-                            <div class="col-auto">
-                                <button type="button" id="agregarEtiquetaModificar" class="btn btn-primary">Agregar</button>
-                            </div>
-                        </div>
-                        <div class="mt-3 contenedorEtiquetasModificar">
-                            <!-- <span class="tag">oh my God <span class="remove-tag">&#10006;</span></span>
-                            <span class="tag">second tag <span class="remove-tag">&#10006;</span></span>
-                            <span class="tag">tag3 <span class="remove-tag">&#10006;</span></span> -->
                         </div>
                         @error('errorValidacion')
                             <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -351,6 +346,19 @@
 
     // FUNCION PARA CARGAR TABLA DE USUARIOS
     $(document).ready(function () {
+        $('.selectToo').select2({
+            language: {
+
+                noResults: function() {
+
+                return "No hay resultado";
+                },
+                searching: function() {
+
+                return "Buscando..";
+                }
+            }
+        });
         $.when(
             $.ajax({
                 type: "get",
@@ -560,7 +568,8 @@
 
     tagInput.addEventListener('keyup', (e) => {
         const { key } = e;
-        if (key === ',') {
+        if (key === ',' || key === 'Enter') {
+            e.preventDefault();
             createTag(tagInput.value.substring(0, tagInput.value.length - 1));
         }
     });

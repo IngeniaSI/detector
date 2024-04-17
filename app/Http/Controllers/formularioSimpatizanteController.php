@@ -93,30 +93,27 @@ class formularioSimpatizanteController extends Controller
         $formulario->validate([
             'nombre' => 'required',
             'apellido_paterno' => 'required',
-            'apellido_materno' => 'required',
-            'correo' => 'required|email',
-            'genero' => 'required',
+            'apellido_materno' => 'nullable',
+            'correo' => 'nullable|email',
+            'genero' => 'nullable',
             'telefonoCelular' => 'required',
-            'escolaridad' => 'required',
+            'escolaridad' => 'nullable',
             'claveElectoral' => 'nullable|regex:/^([A-Z]{6})(\d{8})([B-DF-HJ-NP-TV-Z]{1})(\d{3})$/',
-            'curp' => 'required|regex:/^([A-Z]{4})(\d{6})([HM])([A-Z]{5})([0-9A-Z]{2})$/',
-            'esAfiliado' => 'required',
-            'esSimpatizante' => 'required',
-            'programa' => 'required',
+            'curp' => 'nullable|regex:/^([A-Z]{4})(\d{6})([HM])([A-Z]{5})([0-9A-Z]{2})$/',
+            'esAfiliado' => 'nullable',
+            'esSimpatizante' => 'nullable',
+            'programa' => 'nullable',
             'funciones' => 'nullable',
 
-            'calle' => 'required',
-            'numeroExterior' => 'required',
-            'colonia' => 'required|not_in:0',
-            'municipio' => 'required|not_in:0',
-            'codigoPostal' => 'required|not_in:0',
+            'calle' => 'nullable',
+            'numeroExterior' => 'nullable',
         ]);
         $coordenadas = explode(',',$formulario->coordenadas);
         try {
             DB::beginTransaction();
             //AGREGAR PERSONA
             $curpRepetido = identificacion::where('curp', strtoupper($formulario->curp))->first();
-            if(!isset($curpRepetido)){
+            if(!isset($formulario->curp) || !isset($curpRepetido)){
                 $personaNueva = new persona();
                 $personaNueva->apellido_paterno = strtoupper($formulario->apellido_paterno);
                 $personaNueva->apellido_materno = strtoupper($formulario->apellido_materno);
@@ -198,7 +195,7 @@ class formularioSimpatizanteController extends Controller
                 if(isset($formulario->folio)){
                     $personaNueva->folio = $formulario->folio;
                 }
-                if(isset($formulario->promotor) && $formulario->promotor != -1){
+                if(isset($formulario->promotor) && $formulario->promotor > 0){
                     $personaNueva->persona_id = $formulario->promotor;
                 }
                 $personaNueva->save();
@@ -219,7 +216,9 @@ class formularioSimpatizanteController extends Controller
                 $domicilio->calle = strtoupper($formulario->calle);
                 $domicilio->numero_exterior = $formulario->numeroExterior;
                 $domicilio->numero_interior = $formulario->numeroInterior;
-                $domicilio->colonia_id = $formulario->colonia;
+                if($formulario->colonia > 0){
+                    $domicilio->colonia_id = $formulario->colonia;
+                }
                 $domicilio->identificacion_id = $identificacion->id;
                 if(isset($coordenadas) && count($coordenadas) > 1){
                     $domicilio->latitud = $coordenadas[0];

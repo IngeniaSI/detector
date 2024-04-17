@@ -80,3 +80,5 @@ Route::get('/simpatizantes/modificar/cargarPersona-{persona}',
 [crudPersonasController::class, 'cargarPersona'])->name('crudPersonas.cargarPersona')->middleware(['auth']);
 Route::post('/simpatizantes/modificar/modificarPersona-{persona}',
 [crudPersonasController::class, 'modificarPersona'])->name('crudPersonas.modificarPersona')->middleware(['auth']);
+Route::get('/simpatizantes/consultar-{persona}',
+[crudPersonasController::class, 'consultar'])->name('crudPersonas.consultar')->middleware(['auth']);
