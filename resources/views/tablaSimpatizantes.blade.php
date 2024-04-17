@@ -5,6 +5,14 @@ Tabla de Simpatizantes
 @endsection
 
 @section('cuerpo')
+    <style>
+        /* Estilo para el enlace deshabilitado */
+        .disabled {
+            pointer-events: none; /* Evita que el enlace sea clickeable */
+            opacity: 0.5; /* Aplica opacidad para indicar visualmente que está deshabilitado */
+            cursor: not-allowed; /* Cambia el cursor a 'no permitido' */
+        }
+    </style>
     @if (session()->has('mensaje'))
         <script>
             alert('{{session("mensaje")}}');
@@ -20,26 +28,24 @@ Tabla de Simpatizantes
                     <a href="{{route('crudSimpatizantes.descargar')}}" target="_blank" class="me-3">
                         <button class="btn btn-primary">Exportar a Excel</button>
                     </a>
-                    <a href="{{route('agregarSimpatizante.index')}}">
-                        <button class="btn btn-primary">Agregar Persona</button>
-                    </a>
+                    @can('agregarSimpatizante.index')
+                        <a href="{{route('agregarSimpatizante.index')}}">
+                            <button class="btn btn-primary">Agregar Persona</button>
+                        </a>
+                    @endcan
                 </div>
             </div>
             <div class="card-body">
                 {{-- TABLA DE USUARIOS --}}
                 <table id="tablaUsuarios" class="table table-striped table-bordered" style="width:100%">
                     <thead>
-                        <th>Id</th>
-                        <th>Folio</th>
+                        <th>Consecutivo</th>
+                        <th>Estatus</th>
                         <th>Nombre Completo</th>
+                        <th>Telefono</th>
                         <th>Sección</th>
                         <th>Distrito Local</th>
-                        <th>Municipio</th>
-                        <th>Distrito Federal</th>
-                        <th>Entidad</th>
-                        @can('crudSimpatizantes.verificar')
-                            <th>Opciones:</th>
-                        @endcan
+                        <th>Opciones:</th>
                     </thead>
                     <tbody>
 
@@ -56,10 +62,21 @@ Tabla de Simpatizantes
 @section('scripts')
 <script src="//cdn.datatables.net/2.0.3/css/dataTables.dataTables.min.css"></script>
 <script text="text/javascript">
-
+    @if (session()->has('personaModificarDenegada'))
+    Swal.fire({
+            'title':"Error",
+            'text':"{{session('personaModificarDenegada')}}",
+            'icon':"error"
+        });
+    @endif
     // FUNCION PARA CARGAR TABLA DE USUARIOS
     $(document).ready(function () {
         var table = $('#tablaUsuarios').DataTable( {
+            @if($user->getRoleNames()->first() == 'CAPTURISTA')
+                order: [[1, 'asc']],
+            @else
+                order: [[1, 'desc']],
+            @endif
             scrollX: true,
             lengthChange: true,
             // responsive: true,
@@ -79,32 +96,61 @@ Tabla de Simpatizantes
                     contentType: "application/x-www-form-urlencoded",
                     success: function (response) {
                         $.each(response, function (index, elemento) {
+                            var estatus;
+                            if(elemento.supervisado){
+                                estatus = '<div class="bg-success bg-gradient text-white fw-bold rounded p-3">Supervisado</div>';
+                            }
+                            else{
+                                estatus = '<div class="bg-danger bg-gradient text-white fw-bold rounded p-3"> No Supervisado </div>';
+                            }
                             $('#tablaUsuarios').DataTable().row.add([
-                                elemento.personaId, elemento.folio, `${elemento.nombres} ${elemento.apellido_paterno} ${elemento.apellido_materno}`,
-                                elemento.seccionId, elemento.distritoLocalId, elemento.nombreMunicipio, elemento.distritoFederalId, elemento.nombreEntidad,
-                                @can('crudSimpatizantes.verificar')
-                                    (elemento.supervisado) ?
-                                        `<a href="{{url('/')}}/simpatizantes/modificar-${elemento.personaId}">`+
-                                            `<button class="btn btn-primary">Editar</button>`+
-                                        `</a>`+
-                                        `<form action="{{url('/')}}/simpatizantes/borrar-${elemento.personaId}" method="post">`+
-                                            '<input type="hidden" name="_token" value="{{csrf_token()}}">'+
-                                            '<button class="btn btn-danger">Borrar</button>'+
-                                        '</form>'
-                                    :
-                                        `<form action="{{url('/')}}/simpatizantes/supervisar-${elemento.personaId}" method="post">`+
-                                            '<input type="hidden" name="_token" value="{{csrf_token()}}">'+
-                                            '<button class="btn btn-success">Supervisado</button>'+
-                                        '</form>'+
-                                        `<a href="{{url('/')}}/simpatizantes/modificar-${elemento.personaId}">`+
-                                            `<button class="btn btn-primary">Editar</button>`+
-                                        `</a>`+
-                                        `<form action="{{url('/')}}/simpatizantes/borrar-${elemento.personaId}" method="post">`+
-                                            '<input type="hidden" name="_token" value="{{csrf_token()}}">'+
-                                            '<button class="btn btn-danger">Borrar</button>'+
-                                        '</form>'
+                                elemento.personaId, estatus,
+                                `${elemento.nombres} ${elemento.apellido_paterno} ${elemento.apellido_materno}`,
+                                elemento.telefonoCelular, elemento.seccionId, elemento.distritoLocalId,
+                                @can('crudSimpatizantes.consultar')
+                                    `<a href="{{url('/')}}/simpatizantes/consultar-${elemento.personaId}">`+
+                                        `<button class="btn btn-primary">Ver</button>`+
+                                    `</a>`+
                                 @endcan
+                                @can('crudSimpatizantes.modificar')
+                                    (elemento.supervisado) ?
+                                        @can('crudSimpatizantes.verificar')
+                                            `<form action="{{url('/')}}/simpatizantes/supervisar-${elemento.personaId}" id="formularioSupervisar" method="post">`+
+                                                '<input type="hidden" name="_token" value="{{csrf_token()}}">'+
+                                                '<button id="botonSubmitSupervisar" class="btn btn-danger">Cancelar Supervisado</button>'+
+                                            '</form>'+
+                                        @endcan
+                                        `<a href="{{url('/')}}/simpatizantes/modificar-${elemento.personaId}" class="{{(auth()->user()->getRoleNames()->first() == 'CAPTURISTA') ? 'disabled' : '' }}">`+
+                                            `<button class="btn btn-primary">Editar</button>`+
+                                        `</a>`
+                                        @can('crudSimpatizantes.verificar')
+                                            +`<form action="{{url('/')}}/simpatizantes/borrar-${elemento.personaId}" method="post">`+
+                                                '<input type="hidden" name="_token" value="{{csrf_token()}}">'+
+                                                '<button class="btn btn-danger">Borrar</button>'+
+                                            '</form>'
+                                        @endcan
+                                    :
+                                        @can('crudSimpatizantes.verificar')
+                                            `<form action="{{url('/')}}/simpatizantes/supervisar-${elemento.personaId}" id="formularioSupervisar" method="post">`+
+                                                '<input type="hidden" name="_token" value="{{csrf_token()}}">'+
+                                                '<button id="botonSubmitSupervisar" class="btn btn-success">Supervisado</button>'+
+                                            '</form>'+
+                                        @endcan
+                                        `<a href="{{url('/')}}/simpatizantes/modificar-${elemento.personaId}">`+
+                                            `<button class="btn btn-primary">Editar</button>`+
+                                        `</a>`+
+                                        @can('crudSimpatizantes.verificar')
+                                            `<form action="{{url('/')}}/simpatizantes/borrar-${elemento.personaId}" method="post">`+
+                                                '<input type="hidden" name="_token" value="{{csrf_token()}}">'+
+                                                '<button class="btn btn-danger">Borrar</button>'+
+                                            '</form>'+
+                                        @endcan
+                                @endcan
+                                ''
                             ]).draw();
+                        });
+                        $('#formularioSupervisar').submit(function (e) {
+                            $('#botonSubmitSupervisar').prop('disabled', true);
                         });
                     },
                     error: function( data, textStatus, jqXHR){
@@ -130,8 +176,8 @@ Tabla de Simpatizantes
             });
 
 
+        });
 
-    });
 
 </script>
 @endsection

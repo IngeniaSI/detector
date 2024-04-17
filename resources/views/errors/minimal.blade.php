@@ -53,5 +53,3 @@
         <script src="{{ asset('Plantilla/js/scripts.js') }}"></script>
     </body>
 </html>
-
-

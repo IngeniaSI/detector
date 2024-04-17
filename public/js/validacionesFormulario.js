@@ -2,11 +2,11 @@ var cumpleFormulario =true;
 /////Validar si el campos si esta vacio al perder el foco e
 $('#fechaRegistro').blur(function(){
     if($('#fechaRegistro').val()==''){
-        Swal.fire({
-        title: "Campo Vacio",
-        text: "Verifica el campo",
-        icon: "info"
-        });
+        // Swal.fire({
+        // title: "Campo Vacio",
+        // text: "Verifica el campo",
+        // icon: "info"
+        // });
     }
     else{
         $('#fechaRegistroError').remove();
@@ -14,11 +14,11 @@ $('#fechaRegistro').blur(function(){
 });
 $('#folio').blur(function(){
     if($('#folio').val()==''){
-        Swal.fire({
-            title: "Campo Vacio",
-            text: "Verifica el campo",
-            icon: "info"
-            });
+        // Swal.fire({
+        //     title: "Campo Vacio",
+        //     text: "Verifica el campo",
+        //     icon: "info"
+        //     });
     }
     else{
         $('#folioError').remove();
@@ -26,11 +26,11 @@ $('#folio').blur(function(){
 });
 $('#colonias').change(function(){
     if($('#colonias').val() == 0){
-        Swal.fire({
-            title: "Campo sin Seleccionar",
-            text: "Verifica el campo",
-            icon: "info"
-            });
+        // Swal.fire({
+        //     title: "Campo sin Seleccionar",
+        //     text: "Verifica el campo",
+        //     icon: "info"
+        //     });
     }
     else{
         $('#coloniaError').remove();
@@ -38,11 +38,11 @@ $('#colonias').change(function(){
 });
 $('#codigoPostal').blur(function(){
     if($('#codigoPostal').val().length != 5){
-        Swal.fire({
-            title: "Campo sin Seleccionar",
-            text: "Verifica el campo",
-            icon: "info"
-            });
+        // Swal.fire({
+        //     title: "Campo sin Seleccionar",
+        //     text: "Verifica el campo",
+        //     icon: "info"
+        //     });
     }
     else{
         $('#codigoPostalError').remove();
@@ -50,11 +50,11 @@ $('#codigoPostal').blur(function(){
 });
 $('#municipios').change(function(){
     if($('#municipios').val() == 0){
-        Swal.fire({
-            title: "Campo sin Seleccionar",
-            text: "Verifica el campo",
-            icon: "info"
-            });
+        // Swal.fire({
+        //     title: "Campo sin Seleccionar",
+        //     text: "Verifica el campo",
+        //     icon: "info"
+        //     });
     }
     else{
         $('#municipioError').remove();
@@ -76,11 +76,11 @@ $('#apellido_paterno').blur(function(){
 
 $('#apellido_materno').blur(function(){
     if($('#apellido_materno').val()==''){
-        Swal.fire({
-            title: "Campo Vacio",
-            text: "Verifica el campo",
-            icon: "info"
-            });
+        // Swal.fire({
+        //     title: "Campo Vacio",
+        //     text: "Verifica el campo",
+        //     icon: "info"
+        //     });
     }
     else{
         $('#apellidoMaternoError').remove();
@@ -112,11 +112,11 @@ $('#telefonoCelular').blur(function(){
 });
 $('#telefonoFijo').blur(function(){
     if($('#telefonoFijo').val()==''){
-        Swal.fire({
-            title: "Campo Vacio",
-            text: "Verifica el campo",
-            icon: "info"
-            });
+        // Swal.fire({
+        //     title: "Campo Vacio",
+        //     text: "Verifica el campo",
+        //     icon: "info"
+        //     });
     }
     else{
         $('#telefonoFijoError').remove();
@@ -125,11 +125,11 @@ $('#telefonoFijo').blur(function(){
 
 $('#correo').blur(function(){
     if($('#correo').val()==''){
-        Swal.fire({
-            title: "Campo Vacio",
-            text: "Verifica el campo",
-            icon: "info"
-            });
+        // Swal.fire({
+        //     title: "Campo Vacio",
+        //     text: "Verifica el campo",
+        //     icon: "info"
+        //     });
     }
     else{
         $('#correoError').remove();
@@ -138,11 +138,11 @@ $('#correo').blur(function(){
 
 $('#calle').blur(function(){
     if($('#calle').val()==''){
-        Swal.fire({
-            title: "Campo Vacio",
-            text: "Verifica el campo",
-            icon: "info"
-            });
+        // Swal.fire({
+        //     title: "Campo Vacio",
+        //     text: "Verifica el campo",
+        //     icon: "info"
+        //     });
     }
     else{
         $('#calleError').remove();
@@ -151,11 +151,11 @@ $('#calle').blur(function(){
 
 $('#numeroExterior').blur(function(){
     if($('#numeroExterior').val()==''){
-        Swal.fire({
-            title: "Campo Vacio",
-            text: "Verifica el campo",
-            icon: "info"
-            });
+        // Swal.fire({
+        //     title: "Campo Vacio",
+        //     text: "Verifica el campo",
+        //     icon: "info"
+        //     });
     }
     else{
         $('#numeroExteriorError').remove();
@@ -253,6 +253,13 @@ function validarCurp(valor) {
     if (emailRegex.test(valor)) {
         $("#curp").css({ "background": "rgb(82, 179, 126)" });
         $('#curpError').remove();
+        var fechaNacimiento = $('#fechaNacimiento').val();
+        if(fechaNacimiento == ''){
+            var fecha = new Date(valor.substring(4, 6), (valor.substring(6, 8)) -1, valor.substring(8, 10));
+            var fechaFormato = fecha.toISOString().substring(0, 10);
+            $('#fechaNacimiento').val(fechaFormato);
+            $('#fechaNacimiento').trigger('change');
+        }
   } else {
         $("#curp").css({ "background": "red" })
   }
@@ -268,7 +275,7 @@ function validar() {
         Swal.fire({
         title: "CARGANDO...",
         html: "",
-        timer: 5000,
+        timer: 10000,
         timerProgressBar: true,
         allowOutsideClick: false,
         didOpen: () => {

@@ -22,10 +22,8 @@ class iniciarSesionController extends Controller
         return view('inicioSesion');
     }
     public function validarUsuario(Request $formulario){
-
-
         $validarSiEliminado = User::where('email', strtoupper($formulario->correo))->first();
-        if(isset($validarSiEliminado) && isset($validarSiEliminado->deleted_at)){
+        if(!isset($validarSiEliminado) || isset($validarSiEliminado->deleted_at)){
             return back()->withErrors(['email' => 'El correo ingresado es incorrecto']);
         }
         if (Auth::attempt(['email' => strtoupper($formulario->correo), 'password' => $formulario->contrasenia])) {
@@ -51,6 +49,9 @@ class iniciarSesionController extends Controller
                 case 'CAPTURISTA':
                     return redirect()->route('crudSimpatizantes.index');
                     break;
+                    case 'CONSULTAS':
+                        return redirect()->route('crudSimpatizantes.index');
+                        break;
                 default:
                     return back()->withErrors(['email' => 'Ocurrió un error con el usuario ingresado, comuniquese con el administrador del sistema.']);
                     break;

@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('domicilios', function (Blueprint $table) {
             $table->id();
-            $table->string('calle');
-            $table->integer('numero_exterior');
+            $table->string('calle')->nullable();
+            $table->integer('numero_exterior')->nullable();
             $table->integer('numero_interior')->nullable();
-            $table->float('latitud', 11, 6)->nullable();
-            $table->float('longitud', 11, 6)->nullable();
-            $table->foreignId('colonia_id')->constrained();
+            $table->float('latitud', 20, 15)->nullable();
+            $table->float('longitud', 20, 15)->nullable();
+            $table->foreignId('colonia_id')->nullable()->constrained();
             $table->foreignId('identificacion_id')->constrained();
             $table->timestamps();
         });

@@ -131,7 +131,7 @@
         @if (session()->has('mensajeExito'))
             <script>
                 Swal.fire({
-                    'tittle':"Éxito",
+                    'title':"Éxito",
                     'text':"{{session('mensajeExito')}}",
                     'icon':"success"
                 });

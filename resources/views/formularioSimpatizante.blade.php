@@ -1,7 +1,10 @@
 @extends('Pages.plantilla')
 
 @section('tittle')
-    Agregar Persona
+    {{
+        (explode('/', url()->current()) [count(explode('/', url()->current())) - 1] == 'agregar') ?
+        'Agregar Persona' : 'Modificar Persona'
+    }}
 @endsection
 
 @section('cuerpo')
@@ -41,11 +44,21 @@
 <BR>
 <div class="card" class="m-3">
     <div class="card-header">
-        <h3>Agregar Persona</h3>
+        <h3>
+            {{
+                (explode('/', url()->current()) [count(explode('/', url()->current())) - 1] == 'agregar') ?
+                'Agregar Persona' : 'Modificar Persona'
+            }}
+        </h3>
     </div>
     <div class="card-body">
         {{-- FORMULARIO DE AGREGAR USUARIO --}}
-        <form id="formularioAgregarSimpatizante" action="{{route('agregarSimpatizante.agregandoSimpatizante')}}" method="post" style="">
+        <form id="formularioAgregarSimpatizante" action="
+            {{
+                (explode('/', url()->current()) [count(explode('/', url()->current())) - 1] == 'agregar') ?
+                route('agregarSimpatizante.agregandoSimpatizante') : route('crudPersonas.modificarPersona', $persona)
+            }}
+        " method="post" style="">
             @csrf
             <div class="container">
                 @error('errorValidacion')
@@ -72,7 +85,7 @@
                         <div class="col">
                             <h4>Promotor</h4>
                             <select class="form-select selectToo" id="promotores" name="promotor">
-                                <option value="-1" selected>Sin promotor</option>
+                                <option value="0" selected>Sin dato</option>
                             </select>
                             @error('promotor')
                                 <div id="promotorError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -85,7 +98,7 @@
                     <h3>Datos personales</h3>
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
-                            <h4>Apellido paterno (*)</h4>
+                            <h4 class="fw-bold">Apellido paterno (*)</h4>
                             <input type="text" class="form-control" id="apellido_paterno" name="apellido_paterno" value="{{old('apellido_paterno')}}"
                             minlength="3" maxlength="255" onkeydown="return /[a-z, ]/i.test(event.key)"
                             onblur="if (this.value == '') {this.value = '';}" onfocus="if (this.value == '') {this.value = '';}">
@@ -94,7 +107,7 @@
                             @enderror
                         </div>
                         <div class="col">
-                            <h4>Apellido materno (*)</h4>
+                            <h4>Apellido materno</h4>
                             <input type="text" class="form-control" id="apellido_materno" name="apellido_materno" value="{{old('apellido_materno')}}"
                             minlength="3" maxlength="255" onkeydown="return /[a-z, ]/i.test(event.key)"
                             onblur="if (this.value == '') {this.value = '';}" onfocus="if (this.value == '') {this.value = '';}">
@@ -103,7 +116,7 @@
                             @enderror
                         </div>
                         <div class="col">
-                            <h4>Nombre(s) (*)</h4>
+                            <h4 class="fw-bold">Nombre(s) (*)</h4>
                             <input type="text" class="form-control" id="nombre" name="nombre" value="{{old('nombre')}}" minlength="3" maxlength="255"
                             onkeydown="return /[a-z, ]/i.test(event.key)"
                             onblur="if (this.value == '') {this.value = '';}"
@@ -116,8 +129,8 @@
                     <br>
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
-                            <h4>Genero (*)</h4>
-                            <select name="genero" class="form-control">
+                            <h4>Genero</h4>
+                            <select name="genero" class="form-select">
                                 <option {{old('genero') == 'SIN ESPECIFICAR' ? 'selected' : ''}} value="SIN ESPECIFICAR">SIN ESPECIFICAR</option>
                                 <option {{old('genero') == 'HOMBRE' ? 'selected' : ''}} value="HOMBRE">HOMBRE</option>
                                 <option {{old('genero') == 'MUJER' ? 'selected' : ''}} value="MUJER">MUJER</option>
@@ -152,6 +165,7 @@
                         <div class="col">
                             <h4>Escolaridad</h4>
                             <select class="form-select" name="escolaridad">
+                                <option value="0">Sin dato</option>
                                 <option {{old('escolaridad') == 'SIN ESTUDIOS' ? 'selected' : ''}}>SIN ESTUDIOS</option>
                                 <option {{old('escolaridad') == 'PRIMARIA' ? 'selected' : ''}}>PRIMARIA</option>
                                 <option {{old('escolaridad') == 'SECUNDARIA' ? 'selected' : ''}}>SECUNDARIA</option>
@@ -176,7 +190,7 @@
                     <h3>Datos de contacto</h3>
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
-                            <h4>Telefono Celular (*)</h4>
+                            <h4 class="fw-bold">Telefono Celular (*)</h4>
                             <input type="number" class="form-control" id="telefonoCelular" name="telefonoCelular" value="{{old('telefonoCelular')}}"
                             minlength="10" maxlength="12">
                             @error('telefonoCelular')
@@ -192,7 +206,7 @@
                             @enderror
                         </div>
                         <div class="col">
-                            <h4>Correo electronico (*)</h4>
+                            <h4>Correo electronico</h4>
                             <input type="email" style="text-transform: uppercase; color: black"  class="form-control" id="correo" name="correo"
                             value="{{old('correo')}}" minlength="3" maxlength="255">
                             @error('correo')
@@ -223,7 +237,7 @@
                     <h3>Datos de domicilio</h3>
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
-                            <h4>Calle (*)</h4>
+                            <h4>Calle</h4>
                             <input type="text" class="form-control" id="calle" name="calle" value="{{old('calle')}}"
                             onkeydown="return /[a-z, ]/i.test(event.key)"
                             onblur="if (this.value == '') {this.value = '';}"
@@ -233,7 +247,7 @@
                             @enderror
                         </div>
                         <div class="col">
-                            <h4>Número Externo (*)</h4>
+                            <h4>Número Externo</h4>
                             <input type="number" class="form-control" id="numeroExterior" name="numeroExterior" value="{{old('numeroExterior')}}">
                             @error('numeroExterior')
                                 <div id="numeroExteriorError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -250,25 +264,25 @@
                     <br>
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
-                            <h4>Colonia (*)</h4>
+                            <h4>Colonia</h4>
                             <select class="form-select selectToo" id="colonias" name="colonia">
-                                <option value="0">Seleccione una colonia</option>
+                                <option value="0">Sin dato</option>
                             </select>
                             @error('colonia')
                                 <div id="coloniaError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
-                            <h4>Código Postal (*)</h4>
+                            <h4>Código Postal</h4>
                             <input type="number" class="form-control" id="codigoPostal" name="codigoPostal" value="{{old('codigoPostal')}}">
                             @error('codigoPostal')
                             <div id="codigoPostalError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
-                            <h4>Municipio o Delegación (*)</h4>
+                            <h4>Municipio o Delegación</h4>
                             <select class="form-select selectToo" id="municipios" name="municipio">
-                                <option value="0">Seleccione un municipio</option>
+                                <option value="0">Sin dato</option>
                             </select>
                             @error('municipio')
                                 <div id="municipioError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -278,7 +292,7 @@
 
                     </div>
                     <br>
-                    <h4>¿Donde vive la persona?</h4>
+                    <h4>¿Donde vive la persona? (Dar double click para crear una marca)</h4>
                     <center>
                         <input type="hidden" id="coordenadas" name="coordenadas" value="{{old('coordenadas')}}">
                         <input type="text" class="col-3 d-none" id="cordenada" class="form-control" value="{{old('coordenadas')}}" disabled>
@@ -318,7 +332,7 @@
                                 </a>
                             </div>
                             <select class="form-select selectToo" id="secciones" name="seccion">
-                                <option value="0">Seleccione una sección</option>
+                                <option value="0">Sin dato</option>
                             </select>
                             @error('seccion')
                                 <div id="seccionError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -330,7 +344,7 @@
                         <div class="col">
                             <h4>Entidad Federativa</h4>
                             <select class="form-select selectToo" id="entidades" name="entidadFederativa">
-                                <option value="0">Seleccione una entidad federativa</option>
+                                <option value="0">Sin dato</option>
                             </select>
                             @error('entidadFederativa')
                                 <div id="entidadFederativaError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -339,7 +353,7 @@
                         <div class="col">
                             <h4>Distrito Federal</h4>
                             <select class="form-select selectToo" id="distritosFederales" name="distritoFederal">
-                                <option value="0">Seleccione un distrito federal</option>
+                                <option value="0">Sin dato</option>
                             </select>
                             @error('distritoFederal')
                                 <div id="distritoFederalError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -348,7 +362,7 @@
                         <div class="col">
                             <h4>Distrito local</h4>
                             <select class="form-select selectToo" id="distritosLocales" name="distritoLocal">
-                                <option value="0">Seleccione un distrito local</option>
+                                <option value="0">Sin dato</option>
                             </select>
                             @error('distritoLocal')
                                 <div id="distritoLocalError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -363,8 +377,9 @@
                         <div class="col">
                             <h4>Afiliado</h4>
                             <select class="form-select" name="esAfiliado">
-                                <option {{old('esAfiliado') == 'No' ? 'selected' : ''}}>No</option>
-                                <option {{old('esAfiliado') == 'Si' ? 'selected' : ''}}>Si</option>
+                                <option value="0">Sin dato</option>
+                                <option {{old('esAfiliado') == 'NO' ? 'selected' : ''}} value="NO">No</option>
+                                <option {{old('esAfiliado') == 'SI' ? 'selected' : ''}} value="SI">Si</option>
                             </select>
                             @error('esAfiliado')
                                 <div id="esAfiliadoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -373,20 +388,21 @@
                         <div class="col">
                             <h4>Simpatizantes</h4>
                             <select class="form-select" name="esSimpatizante">
-                                <option {{old('esSimpatizante') == 'No' ? 'selected' : ''}}>No</option>
-                                <option {{old('esSimpatizante') == 'Si' ? 'selected' : ''}}>Si</option>
-                                <option {{old('esSimpatizante') == 'Talvez' ? 'selected' : ''}}>Talvez</option>
+                                <option value="0">Sin dato</option>
+                                <option {{old('esSimpatizante') == 'NO' ? 'selected' : ''}} value="NO">No</option>
+                                <option {{old('esSimpatizante') == 'SI' ? 'selected' : ''}} value="SI">Si</option>
+                                <option {{old('esSimpatizante') == 'TALVEZ' ? 'selected' : ''}} value="TALVEZ">Talvez</option>
                             </select>
                             @error('esSimpatizante')
                                 <div id="esSimpatizanteError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
                         <div class="col">
-                            <h4>Programas</h4>
+                            <h4>Programa</h4>
                             <select class="form-select selectToo" name="programa">
-                                <option select>Ninguno</option>
-                                <option>Programa 1</option>
-                                <option>Programa 2</option>
+                                <option value="NINGUNO">Sin dato</option>
+                                <option value="PROGRAMA 1">Programa 1</option>
+                                <option value="PROGRAMA 2">Programa 2</option>
                             </select>
                             @error('programa')
                                 <div id="programaError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -401,7 +417,7 @@
                         <div class="col">
                             <h4>Rol en estructura</h4>
                             <select class="form-select" id="rolEstructura" name="rolEstructura">
-                                <option {{old('rolEstructura') == '-1' ? 'selected' : ''}} value="-1">Sin rol en la estructura</option>
+                                <option {{old('rolEstructura') == '-1' ? 'selected' : ''}} value="-1">Sin dato</option>
                                 <option {{old('rolEstructura') == 'COORDINADOR ESTATAL' ? 'selected' : ''}} value="COORDINADOR ESTATAL">COORDINADOR ESTATAL</option>
                                 <option {{old('rolEstructura') == 'COORDINADOR DE DISTRITO LOCAL' ? 'selected' : ''}} value="COORDINADOR DE DISTRITO LOCAL">COORDINADOR DE DISTRITO LOCAL</option>
                                 <option {{old('rolEstructura') == 'COORDINADOR DE SECCIÓN' ? 'selected' : ''}} value="COORDINADOR DE SECCIÓN">COORDINADOR DE SECCIÓN</option>
@@ -437,7 +453,7 @@
                         <div class="col">
                             <h4>Rol en estructura temporal</h4>
                             <select class="form-select" id="rolEstructuraTemporal" name="rolEstructuraTemporal" disabled>
-                                <option {{old('rolEstructuraTemporal') == '-1' ? 'selected' : ''}} value="-1">Sin rol en la estructura</option>
+                                <option {{old('rolEstructuraTemporal') == '-1' ? 'selected' : ''}} value="-1">Sin dato</option>
                                 <option {{old('rolEstructuraTemporal') == 'COORDINADOR ESTATAL' ? 'selected' : ''}} value="COORDINADOR ESTATAL">COORDINADOR ESTATAL</option>
                                 <option {{old('rolEstructuraTemporal') == 'COORDINADOR DE DISTRITO LOCAL' ? 'selected' : ''}} value="COORDINADOR DE DISTRITO LOCAL">COORDINADOR DE DISTRITO LOCAL</option>
                                 <option {{old('rolEstructuraTemporal') == 'COORDINADOR DE SECCIÓN' ? 'selected' : ''}} value="COORDINADOR DE SECCIÓN">COORDINADOR DE SECCIÓN</option>
@@ -490,7 +506,12 @@
             <div>
                 <center>
                     <button id="BotonAgregarPersona"  class="btn btn-primary" hidden></button>
-                    <a id="BotonValidador" onclick="validar()" class="btn btn-primary" >Agregar Persona</a>
+                    <a id="BotonValidador" onclick="validar()" class="btn btn-primary" >
+                        {{
+                            (explode('/', url()->current()) [count(explode('/', url()->current())) - 1] == 'agregar') ?
+                            'Agregar Persona' : 'Modificar Persona'
+                        }}
+                    </a>
                     <!-- <button class="btn btn-danger" type="button" class="cerrarFormulario">Limpiar</button> -->
                 </center>
             </div>
@@ -506,7 +527,7 @@
 @if (session()->has('validarCamposFormPersona'))
     <script>
         Swal.fire({
-            'tittle':"Error",
+            'title':"Error",
             'text':"{{session('validarCamposFormPersona')}}",
             'icon':"error"
         });
@@ -518,36 +539,12 @@
 
 
 <script text="text/javascript">
-    function initMap() {
-        var marker;
-        var marker2;
-        const myLatLng = { lat: 24.123954, lng: - 110.311664 };
+    var marker;
+    var marker2;
+    const myLatLng = { lat: 24.123954, lng: - 110.311664 };
 
-        const map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 17,
-            center: myLatLng,
-            title: "Ubicación",
-        });
-        // service.findPlaceFromQuery(request, (results, status) => {
-        //     if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-        //     for (let i = 0; i < results.length; i++) {
-        //         createMarker(results[i]);
-        //     }
-        //         map.setCenter(results[0].geometry.location);
-        //     }
-        // });
-
-        google.maps.event.addListener(map, 'click', function (event) {
-            console.log(event.latLng);
-            placeMarker(event.latLng);
-            document.getElementById("cordenada").value = event.latLng.lat() + ", " + event.latLng.lng();
-            document.getElementById("coordenadas").value = event.latLng.lat() + "," + event.latLng.lng();
-        });
-        @if(old('coordenadas'))
-            placeMarker({lat: {{explode(',', old('coordenadas'))[0]}}, lng: {{explode(',', old('coordenadas'))[1]}}})
-        @endif
-
-        function placeMarker(location) {
+    var map;
+    function placeMarker(location) {
             if (marker == undefined) {
                 marker = new google.maps.Marker({
                     position: location,
@@ -574,12 +571,25 @@
                 marker2.setPosition(location);
             }
             map.setCenter(location);
+    }
 
-        }
+    function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+            disableDoubleClickZoom: true,
+            zoom: 17,
+            center: myLatLng,
+            title: "Ubicación",
+        });
 
+        google.maps.event.addListener(map, 'dblclick', function (event) {
+            placeMarker(event.latLng);
+            document.getElementById("cordenada").value = event.latLng.lat() + ", " + event.latLng.lng();
+            document.getElementById("coordenadas").value = event.latLng.lat() + "," + event.latLng.lng();
+        });
     }
     window.initMap = initMap;
     function buscarUbicacion(nombre) {
+
         // Clave de API de Google Maps (reemplaza 'TU_API_KEY' con tu propia clave)
         var apiKey = 'AIzaSyDg60SDcmNRPnG1tzZNBBGFx02cW2VkWWQ';
 
@@ -598,11 +608,9 @@
                 var longitud = ubicacion.lng;
 
                 // Aquí puedes usar latitud y longitud como desees
-                console.log('Latitud:', latitud);
-                console.log('Longitud:', longitud);
+                document.getElementById("cordenada").value = latitud + ", " + longitud;
+                document.getElementById("coordenadas").value = latitud + "," + longitud;
                 placeMarker({lat: latitud, lng: longitud});
-            } else {
-                console.log('No se encontraron resultados para la ubicación:', nombre);
             }
         })
         .catch(error => {
@@ -613,21 +621,93 @@
 
     //FIN MAPA
 
+    function filtrarColonia(){
+        let colonia = $('#colonias').val();
+        $.when(
+        $.ajax({
+                type: "get",
+                url: `{{url('/')}}/simpatizantes/filtrarColonias-${colonia}`,
+                data: [],
+                contentType: "application/x-www-form-urlencoded",
+                success: function (response) {
+                    $('#municipios').val(response.municipio);
+                    $('#municipios').trigger('change');
+                    $('#codigoPostal').val(response.codigoPostal);
+                    buscarUbicacion(`${response.nombreColonia}, ${response.codigoPostal}, ${response.nombreMunicipio}, B.C.S, México`);
+                },
+                error: function( data, textStatus, jqXHR){
+                    if (jqXHR.status === 0) {
+                        console.log('Not connect: Verify Network.');
+                    } else if (jqXHR.status == 404) {
+                        console.log('Requested page not found [404]');
+                    } else if (jqXHR.status == 500) {
+                        console.log('Internal Server Error [500].');
+                    } else if (textStatus === 'parsererror') {
+                        console.log('Requested JSON parse failed.');
+                    } else if (textStatus === 'timeout') {
+                        console.log('Time out error.');
+                    } else if (textStatus === 'abort') {
+                        console.log('Ajax request aborted.');
+                    } else {
+                        console.log('Uncaught Error: ' + jqXHR.responseText);
+                    }
+                }
+            })
+        ).then(
+            function( data, textStatus, jqXHR ) {
+        });
+    }
+
+    $('#colonias').change(filtrarColonia);
+
+    function filtrarSecciones(){
+        let seccion = $('#secciones').val();
+        $.when(
+        $.ajax({
+                type: "get",
+                url: `{{url('/')}}/simpatizantes/filtrarSecciones-${seccion}`,
+                data: [],
+                contentType: "application/x-www-form-urlencoded",
+                success: function (response) {
+                    $('#entidades').val(response.entidad);
+                    $('#entidades').trigger('change');
+                    $('#distritosFederales').val(response.distritoFederal);
+                    $('#distritosFederales').trigger('change');
+                    $('#distritosLocales').val(response.distritoLocal);
+                    $('#distritosLocales').trigger('change');
+                },
+                error: function( data, textStatus, jqXHR){
+                    if (jqXHR.status === 0) {
+                        console.log('Not connect: Verify Network.');
+                    } else if (jqXHR.status == 404) {
+                        console.log('Requested page not found [404]');
+                    } else if (jqXHR.status == 500) {
+                        console.log('Internal Server Error [500].');
+                    } else if (textStatus === 'parsererror') {
+                        console.log('Requested JSON parse failed.');
+                    } else if (textStatus === 'timeout') {
+                        console.log('Time out error.');
+                    } else if (textStatus === 'abort') {
+                        console.log('Ajax request aborted.');
+                    } else {
+                        console.log('Uncaught Error: ' + jqXHR.responseText);
+                    }
+                }
+            })
+        ).then(
+            function( data, textStatus, jqXHR ) {
+        });
+    }
+    $('#secciones').change(filtrarSecciones);
+
 
     // FUNCION PARA CARGAR TABLA DE USUARIOS
     $(document).ready(function () {
-        $('.selectToo').select2({
-            language: {
-
-                noResults: function() {
-
-                return "No hay resultado";
-                },
-                searching: function() {
-
-                return "Buscando..";
-                }
-            }
+        Swal.fire({
+            title: 'Cargando...',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            html: '<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>'
         });
         $.when(
             $.ajax({
@@ -714,6 +794,160 @@
             })
         ).then(
             function( data, textStatus, jqXHR ) {
+            @if (explode('/', url()->current()) [count(explode('/', url()->current())) - 1] != 'agregar' && session('noEsCargaInicial') == false)
+                $.when(
+                    $.ajax({
+                        type: "get",
+                        url: "{{url('/')}}/simpatizantes/modificar/cargarPersona-{{$persona}}",
+                        data: [],
+                        contentType: "application/x-www-form-urlencoded",
+                        success: function (response) {
+                            console.log(response.persona.telefono_celular);
+                            $('input[name="fechaRegistro"]').val(response.persona.created_at);
+                            $('input[name="folio"]').val(response.persona.folio);
+                            $('select[name="promotor"]').val(response.persona.persona_id != null ? response.persona.persona_id : 0);
+                            $('select[name="promotor"]').trigger('change');
+                            $('input[name="apellido_paterno"]').val(response.persona.apellido_paterno);
+                            $('input[name="apellido_materno"]').val(response.persona.apellido_materno);
+                            $('input[name="nombre"]').val(response.persona.nombres);
+                            $('select[name="genero"]').val(response.persona.genero);
+                            if(response.persona.fecha_nacimiento != null){
+                                $('input[name="fechaNacimiento"]').val(response.persona.fecha_nacimiento.substring(0, 10));
+                                $('#fechaNacimiento').trigger('change');
+                            }
+                            $('select[name="escolaridad"]').val(response.persona.escolaridad);
+                            $('input[name="telefonoCelular"]').val(response.persona.telefono_celular);
+                            $('input[name="telefonoFijo"]').val(response.persona.telefono_fijo);
+                            $('input[name="correo"]').val(response.persona.correo);
+                            $('input[name="facebook"]').val(response.persona.nombre_en_facebook);
+                            $('input[name="calle"]').val(response.domicilio.calle);
+                            $('input[name="numeroExterior"]').val(response.domicilio.numero_exterior);
+                            $('input[name="numeroInterior"]').val(response.domicilio.numero_interior);
+                            $('input[name="codigoPostal"]').val(response.colonia != null ? response.colonia.codigo_postal : 0);
+                            $('select[name="municipio"]').val(response.municipio != null ? response.municipio : 0);
+                            $('select[name="municipio"]').trigger('change');
+
+                            $('select[name="colonia"]').val(response.domicilio.colonia_id != null ?   response.domicilio.colonia_id : 0);
+                            if(response.domicilio.colonia_id != null){
+                                //COMO HACER PARA QUE FUNCIONE DESPUES
+                                // $('select[name="colonia"]').trigger('change');
+                            }
+                            $('input[name="claveElectoral"]').val(response.identificacion.clave_elector);
+                            $('input[name="curp"]').val(response.identificacion.curp);
+                            $('select[name="seccion"]').val(  response.identificacion.seccion_id != null ?   response.identificacion.seccion_id : 0);
+                            if(response.identificacion.seccion_id != null){
+                                $('select[name="seccion"]').trigger('change');
+                            }
+                            $('select[name="distritoLocal"]').val(  response.distritoLocal != null ?   response.distritoLocal : 0);
+                            $('select[name="distritoLocal"]').trigger('change');
+                            $('select[name="distritoFederal"]').val(  response.distritoFederal != null ?   response.distritoFederal : 0);
+                            $('select[name="distritoFederal"]').trigger('change');
+                            $('select[name="entidadFederativa"]').val(  response.entidad != null ?   response.entidad : 0);
+                            $('select[name="entidadFederativa"]').trigger('change');
+                            $('select[name="esAfiliado"]').val(response.persona.afiliado);
+                            $('select[name="esSimpatizante"]').val(  response.persona.simpatizante != null ?   response.persona.simpatizante : 0);
+                            $('select[name="programa"]').val(  response.persona.programa != null ?   response.persona.programa : 0);
+                            $('select[name="programa"]').trigger('change');
+                            if(response.persona.rolEstructuraTemporal != null){
+                                $('#tieneRolTemporal').val('SI');
+                                $('#tieneRolTemporal').trigger('change');
+                            }
+                            $('select[name="rolEstructura"]').val(response.persona.rolEstructura != null ?   response.persona.rolEstructura : 0);
+                            $('select[name="rolEstructura"]').trigger('change');
+                            $('input[name="rolNumero"]').val(response.persona.rolNumero);
+                            $('select[name="rolEstructuraTemporal"]').val(response.persona.rolEstructuraTemporal != null ?   response.persona.rolEstructuraTemporal : 0);
+                            $('select[name="rolEstructuraTemporal"]').trigger('change');
+                            $('input[name="rolNumeroTemporal"]').val(response.persona.rolNumeroTemporal);
+                            $('input[name="funciones"]').val(response.persona.funcion_en_campania);
+                            $('textarea[name="observaciones"]').val(response.persona.observaciones);
+                            if(response.domicilio.latitud != null){
+                                $('input[name="coordenadas"]').val(`${response.domicilio.latitud},${response.domicilio.longitud}`);
+                                placeMarker({lat: response.domicilio.latitud, lng: response.domicilio.longitud});
+                            }
+
+                            let etiquedasPreprocesar = (response.persona.etiquetas != null) ? response.persona.etiquetas.split(',') : [];
+                            $.each(etiquedasPreprocesar, function (i, valor) {
+                                createTag(valor);
+                            });
+                            $('#fechaRegistro').focus();
+                        },
+                        error: function( data, textStatus, jqXHR){
+                            if (jqXHR.status === 0) {
+                                console.log('Not connect: Verify Network.');
+                            } else if (jqXHR.status == 404) {
+                                console.log('Requested page not found [404]');
+                            } else if (jqXHR.status == 500) {
+                                console.log('Internal Server Error [500].');
+                            } else if (textStatus === 'parsererror') {
+                                console.log('Requested JSON parse failed.');
+                            } else if (textStatus === 'timeout') {
+                                console.log('Time out error.');
+                            } else if (textStatus === 'abort') {
+                                console.log('Ajax request aborted.');
+                            } else {
+                                console.log('Uncaught Error: ' + jqXHR.responseText);
+                            }
+                        }
+                    })
+                ).then(
+                    function( data, textStatus, jqXHR ) {
+                        @if (old('fechaRegistro'))
+                            $('#fechaRegistro').val("{{old('fechaRegistro')}}");
+                        @endif
+                        @if (old('etiquetas'))
+                            let etiquetasCrudas = @json(old('etiquetas'));
+                            let etiquedasPreprocesar = (etiquetasCrudas != null) ? etiquetasCrudas.split(',') : [];
+                            $.each(etiquedasPreprocesar, function (i, valor) {
+                                createTag(valor);
+                            });
+                        @endif
+                        @if (old('rolEstructura'))
+                            $('#rolEstructura').trigger("change");
+                        @endif
+                        @if (old('rolEstructuraTemporal'))
+                            $('#tieneRolTemporal').trigger('change');
+                            $('#rolEstructuraTemporal').trigger("change");
+                        @endif
+                        @if(old('coordenadas'))
+                            placeMarker({lat: {{explode(',', old('coordenadas'))[0]}}, lng: {{explode(',', old('coordenadas'))[1]}}});
+                            $('input[name="coordenadas"]').val(`{{explode(',', old('coordenadas'))[0]}},{{explode(',', old('coordenadas'))[1]}}`);
+
+                        @endif
+                        @if(old('observaciones'))
+                            $('#comment').html("{{old('observaciones')}}");
+                        @endif
+                        $('.selectToo').select2({
+                            language: {
+
+                                noResults: function() {
+
+                                return "No hay resultado";
+                                },
+                                searching: function() {
+
+                                return "Buscando..";
+                                }
+                            }
+                        });
+                        Swal.close();
+                    });
+            @else
+                $('.selectToo').select2({
+                    language: {
+
+                        noResults: function() {
+
+                        return "No hay resultado";
+                        },
+                        searching: function() {
+
+                        return "Buscando..";
+                        }
+                    }
+                });
+                Swal.close();
+            @endif
+
         });
         @if (old('fechaRegistro'))
             $('#fechaRegistro').val("{{old('fechaRegistro')}}");
@@ -732,7 +966,14 @@
             $('#tieneRolTemporal').trigger('change');
             $('#rolEstructuraTemporal').trigger("change");
         @endif
+        @if(old('coordenadas'))
+            placeMarker({lat: {{explode(',', old('coordenadas'))[0]}}, lng: {{explode(',', old('coordenadas'))[1]}}});
+            $('input[name="coordenadas"]').val(`{{explode(',', old('coordenadas'))[0]}},{{explode(',', old('coordenadas'))[1]}}`);
 
+        @endif
+        @if(old('observaciones'))
+            $('#comment').html("{{old('observaciones')}}");
+        @endif
     });
 
 
@@ -864,85 +1105,7 @@
         }
     });
 
-    function filtrarColonia(){
-        let colonia = $('#colonias').val();
-        $.when(
-        $.ajax({
-                type: "get",
-                url: `{{url('/')}}/simpatizantes/filtrarColonias-${colonia}`,
-                data: [],
-                contentType: "application/x-www-form-urlencoded",
-                success: function (response) {
-                    console.log(response);
-                    $('#municipios').val(response.municipio);
-                    $('#municipios').trigger('change');
-                    $('#codigoPostal').val(response.codigoPostal);
-                    // buscarUbicacion(`${colonia}, ${response.nombreColonia}, ${response.nombreMunicipio}`);
-                },
-                error: function( data, textStatus, jqXHR){
-                    if (jqXHR.status === 0) {
-                        console.log('Not connect: Verify Network.');
-                    } else if (jqXHR.status == 404) {
-                        console.log('Requested page not found [404]');
-                    } else if (jqXHR.status == 500) {
-                        console.log('Internal Server Error [500].');
-                    } else if (textStatus === 'parsererror') {
-                        console.log('Requested JSON parse failed.');
-                    } else if (textStatus === 'timeout') {
-                        console.log('Time out error.');
-                    } else if (textStatus === 'abort') {
-                        console.log('Ajax request aborted.');
-                    } else {
-                        console.log('Uncaught Error: ' + jqXHR.responseText);
-                    }
-                }
-            })
-        ).then(
-            function( data, textStatus, jqXHR ) {
-        });
-    }
-    $('#colonias').change(filtrarColonia);
 
-    function filtrarSecciones(){
-        let seccion = $('#secciones').val();
-        $.when(
-        $.ajax({
-                type: "get",
-                url: `{{url('/')}}/simpatizantes/filtrarSecciones-${seccion}`,
-                data: [],
-                contentType: "application/x-www-form-urlencoded",
-                success: function (response) {
-                    console.log(response);
-                    $('#entidades').val(response.entidad);
-                    $('#entidades').trigger('change');
-                    $('#distritosFederales').val(response.distritoFederal);
-                    $('#distritosFederales').trigger('change');
-                    $('#distritosLocales').val(response.distritoLocal);
-                    $('#distritosLocales').trigger('change');
-                },
-                error: function( data, textStatus, jqXHR){
-                    if (jqXHR.status === 0) {
-                        console.log('Not connect: Verify Network.');
-                    } else if (jqXHR.status == 404) {
-                        console.log('Requested page not found [404]');
-                    } else if (jqXHR.status == 500) {
-                        console.log('Internal Server Error [500].');
-                    } else if (textStatus === 'parsererror') {
-                        console.log('Requested JSON parse failed.');
-                    } else if (textStatus === 'timeout') {
-                        console.log('Time out error.');
-                    } else if (textStatus === 'abort') {
-                        console.log('Ajax request aborted.');
-                    } else {
-                        console.log('Uncaught Error: ' + jqXHR.responseText);
-                    }
-                }
-            })
-        ).then(
-            function( data, textStatus, jqXHR ) {
-        });
-    }
-    $('#secciones').change(filtrarSecciones);
 
     $('#fechaNacimiento').change(function (e) {
         var fechaNacimiento = new Date($('#fechaNacimiento').val());

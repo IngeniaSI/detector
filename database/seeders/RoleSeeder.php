@@ -21,6 +21,8 @@ class RoleSeeder extends Seeder
         $rolSupervisor = Role::create(['name' => 'SUPERVISOR']);
         //CAPTURA Y EDICION DE ENCUESTAS
         $rolCapturista = Role::create(['name' => 'CAPTURISTA']);
+        //Consulta registros
+        $rolConsultas = Role::create(['name' => 'CONSULTAS']);
 
         //INTENTAR HACER UN PERMISO POR CADA RUTA
         Permission::create(['name' => 'crudUsuarios.index'])->syncRoles([$rolSU, $rolAdmin]);
@@ -28,13 +30,16 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'crudUsuarios.edit'])->syncRoles([$rolSU, $rolAdmin]);
         Permission::create(['name' => 'crudUsuarios.delete'])->syncRoles([$rolSU, $rolAdmin]);
 
-        Permission::create(['name' => 'crudSimpatizantes.index'])->syncRoles([$rolSU, $rolAdmin, $rolSupervisor, $rolCapturista]);
+        Permission::create(['name' => 'crudSimpatizantes.index'])->syncRoles([$rolSU, $rolAdmin, $rolSupervisor, $rolCapturista, $rolConsultas]);
         Permission::create(['name' => 'crudSimpatizantes.verificar'])->syncRoles([$rolSU, $rolAdmin, $rolSupervisor]);
+        Permission::create(['name' => 'crudSimpatizantes.modificar'])->syncRoles([$rolSU, $rolAdmin, $rolSupervisor, $rolCapturista]);
+        Permission::create(['name' => 'crudSimpatizantes.consultar'])->syncRoles([$rolSU, $rolAdmin, $rolConsultas]);
         Permission::create(['name' => 'crudSimpatizantes.borrar'])->syncRoles([$rolSU, $rolAdmin, $rolSupervisor]);
 
         Permission::create(['name' => 'agregarSimpatizante.index'])->syncRoles([$rolSU, $rolAdmin, $rolSupervisor, $rolCapturista]);
+
         Permission::create(['name' => 'bitacora.index'])->syncRoles([$rolSU, $rolAdmin]);
-        Permission::create(['name' => 'estadistica.index'])->syncRoles([$rolSU, $rolAdmin, $rolSupervisor]);
-        Permission::create(['name' => 'mapa.index'])->syncRoles([$rolSU, $rolAdmin, $rolSupervisor, $rolCapturista]);
+        Permission::create(['name' => 'estadistica.index'])->syncRoles([$rolSU, $rolAdmin, $rolSupervisor, $rolConsultas]);
+        Permission::create(['name' => 'mapa.index'])->syncRoles([$rolSU, $rolAdmin, $rolSupervisor, $rolConsultas]);
     }
 }

@@ -91,6 +91,16 @@ class DatabaseSeeder extends Seeder
             'nivel_acceso' => 'ENTIDAD',
         ])->assignRole('SUPERVISOR');
 
+        User::Create([
+            'nombre' => 'Consultas',
+            'apellido_paterno' => 'Nuevo',
+            'email' => 'consultas.nuevo@hotmail.com',
+            'password' => Hash::make('123'),
+            'email_verified_at' => Date("Y-m-d H:i:s"),
+            'nivel_acceso' => 'ENTIDAD',
+        ])->assignRole('CONSULTAS');
+
+
 
         // CARGA INICIAL ENTIDAD
         $dataForFirstTable = Excel::toArray(new entidadImport, storage_path('app/Catalogos/03_Cat+ílogo de Secciones con Distritos Electorales LOCALES.xlsx'));

@@ -23,12 +23,14 @@ class tablaSimpatizantesController extends Controller
             $user = auth()->user();
             if($user->getRoleNames()->first() == 'SUPER ADMINISTRADOR' || $user->getRoleNames()->first() == 'ADMINISTRADOR'){
                 $persona = persona::where('deleted_at', null)
+                ->orderBy('supervisado', 'DESC')
                 ->get([
                     'id',
                     'folio',
                     'nombres',
                     'apellido_paterno',
                     'apellido_materno',
+                    'telefono_celular',
                     'supervisado',
                 ]);
             }
@@ -39,12 +41,14 @@ class tablaSimpatizantesController extends Controller
                 // return $niveles; //APLICAR TRIM A CADA NIVEL
 
                 $persona = persona::where('deleted_at', null)
+                ->orderBy('supervisado', 'ASC')
                 ->get([
                     'id',
                     'folio',
                     'nombres',
                     'apellido_paterno',
                     'apellido_materno',
+                    'telefono_celular',
                     'supervisado',
                 ]);
             }
@@ -57,6 +61,7 @@ class tablaSimpatizantesController extends Controller
                     'apellido_paterno' => $p->apellido_paterno,
                     'apellido_materno' => $p->apellido_materno,
                     'seccionId' => $p->identificacion->seccion_id,
+                    'telefonoCelular' => $p->telefono_celular,
                     'distritoLocalId' => isset($p->identificacion->seccion) ? $p->identificacion->seccion->distritoLocal->id : null,
                     'nombreMunicipio' => isset($p->identificacion->seccion) ? $p->identificacion->seccion->distritoLocal->municipio->id : null,
                     'distritoFederalId' => isset($p->identificacion->seccion) ? $p->identificacion->seccion->distritoLocal->municipio->distritoFederal->id : null,
@@ -122,21 +127,27 @@ class tablaSimpatizantesController extends Controller
     }
 
     public function verificar (Request $formulario, persona $persona){
-        if(!$persona->supervisado){
-            try{
-                DB::beginTransaction();
+        try{
+            DB::beginTransaction();
+            $user = auth()->user();
+            $bitacora = new bitacora();
+            if(!$persona->supervisado){
                 $persona->supervisado = true;
                 $persona->save();
-                $user = auth()->user();
-                $bitacora = new bitacora();
-                $bitacora->accion = 'Persona supervisada : ' . $persona->correo;
+                $bitacora->accion = 'Persona cambio a supervisada : ' . $persona->correo;
+            }
+            else{
+                $persona->supervisado = false;
+                $persona->save();
+                $bitacora->accion = 'Persona cambio a no supervisada : ' . $persona->correo;
+            }
                 $bitacora->url = url()->current();
                 $bitacora->ip = $formulario->ip();
                 $bitacora->tipo = 'post';
                 $bitacora->user_id = $user->id;
                 $bitacora->save();
                 DB::commit();
-                session()->flash('mensajeExito', 'Se ha supervisado la persona exitosamente');
+                session()->flash('mensajeExito', 'Se ha cambiado el estado de la persona exitosamente');
                 return redirect()->route('crudSimpatizantes.index');
             }
             catch(Exception $e){
@@ -144,10 +155,6 @@ class tablaSimpatizantesController extends Controller
                 Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
                 return back()->withErrors(['errorBorrar' => 'Ha ocurrido un error al supervisar una persona']);
             }
-        }
-        else{
-            return back()->withErrors(['errorBorrar' => 'Ha ocurrido un error al supervisar una persona']);
-        }
     }
 
     public function borrar(Request $formulario, persona $persona){
