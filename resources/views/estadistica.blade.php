@@ -8,7 +8,7 @@
 
 <style>
     .select2-container .select2-selection--multiple {
-    
+
     width: 120px;
 }
 </style>
@@ -26,7 +26,15 @@
                     @csrf
                     <div class="row">
                         <div class="col">
-                            <h4>Simpatizantes a conseguir:</h4>
+                            <h4>Sección objetivo:</h4>
+                            <select name="seccionObjetivo" id="seccionObjetivo" class="form-select selectToo" style="width: 100%">
+                                <option value="">001</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <h4>Población:</h4>
                             <input type="number" id="cantidadObjetivo" name="cantidadObjetivo" class="form-control" value="{{old('cantidadObjetivo')}}" minlength="2" maxlength="255">
                             @error('cantidadObjetivo')
                                 <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -36,7 +44,7 @@
                     <br>
                     <div class="row">
                         <div class="col">
-                            <h4>Población de votantes:</h4>
+                            <h4>Listado Nominal:</h4>
                             <input type="number" id="poblacion" name="poblacion" value="{{old('poblacion')}}" class="form-control" minlength="2" maxlength="255">
                             @error('poblacion')
                                 <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -88,12 +96,12 @@
                    Sección
                 </div>
                 <div class="card-body justify-content">
-                    <center> 
+                    <center>
                     <select id="tipoSeleccion" class="form-control" name="select">
                         <option value="Todas">Todas</option>
                         <option value="Separado" >Por Separado </option>
                     </select>
-                    
+
                     </center>
 
                 </div>
@@ -106,8 +114,8 @@
                    Selecciona la Sección
                 </div>
                 <div class="card-body justify-content">
-                    <center> 
-                    
+                    <center>
+
                     <select class="js-example-basic-multiple" styles="width:50px;" name="states[]" multiple="multiple">
                         <option value="1">Sección 1</option>
                         <option value="2">Sección 2</option>
@@ -199,20 +207,21 @@
         <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.6.0"></script>
         <link href="vendor/select2/dist/css/select2.min.css" rel="stylesheet" />
         <script src="vendor/select2/dist/js/select2.min.js"></script>
-        <script src="{{ asset('Plantilla/assets/demo/chart-area-demo.js')}}"></script>
+        {{-- <script src="{{ asset('Plantilla/assets/demo/chart-area-demo.js')}}"></script>
         <script src="{{ asset('Plantilla/assets/demo/chart-bar-demo.js')}}"></script>
-        <script src="{{ asset('Plantilla/assets/demo/chart-pie-demo.js')}}"></script>
+        <script src="{{ asset('Plantilla/assets/demo/chart-pie-demo.js')}}"></script> --}}
         <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script>
             $('#tipoSeleccion').on('change', function() {
-            if( this.value == 'Separado'){
-                $('#PorSeparado').show();
-            }else{
-                $('#PorSeparado').hide();
-            }
-            });
-            $(document).ready(function () {
+                if( this.value == 'Separado'){
+                    $('#PorSeparado').show();
+                }else{
+                    $('#PorSeparado').hide();
+                }
+                });
+                $(document).ready(function () {
+
                 $('#PorSeparado').hide();
                 $('.js-example-basic-multiple').select2();
                 $.when(
@@ -433,6 +442,19 @@
                 })
                 ).then(
                     function( data, textStatus, jqXHR ) {
+                        $('.selectToo').select2({
+                        language: {
+
+                            noResults: function() {
+
+                            return "No hay resultado";
+                            },
+                            searching: function() {
+
+                            return "Buscando..";
+                            }
+                        }
+                    });
                 });
             });
         </script>

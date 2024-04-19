@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('domicilios', function (Blueprint $table) {
             $table->id();
             $table->string('calle')->nullable();
-            $table->integer('numero_exterior')->nullable();
+            $table->string('numero_exterior')->nullable();
             $table->integer('numero_interior')->nullable();
             $table->float('latitud', 20, 15)->nullable();
             $table->float('longitud', 20, 15)->nullable();

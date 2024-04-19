@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\bitacora;
+use App\Models\distritoFederal;
+use App\Models\distritoLocal;
+use App\Models\entidad;
+use App\Models\seccion;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -36,10 +40,19 @@ class crudUsuariosController extends Controller
         $bitacora->user_id = $user->id;
         $bitacora->save();
 
-        return User::join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+        $niveles = [
+            'entidades' => entidad::all(['id']),
+            'distritosFederales' => distritoFederal::all(['id']),
+            'distritosLocales' => distritoLocal::all(['id']),
+            'secciones' => seccion::all(['id']),
+        ];
+
+        $usuarios = User::join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
         ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
         ->where('deleted_at', null)
         ->get(['users.id', 'email', 'nombre', 'apellido_paterno', 'apellido_materno', 'name']);
+
+        return array($usuarios, $niveles);
     }
     public function obtenerUsuario(Request $formulario, User $usuario){
         $user = auth()->user();
@@ -89,7 +102,19 @@ class crudUsuariosController extends Controller
                 $usuario->email = strtoupper($formulario->correo);
                 $usuario->password = Hash::make($formulario->contrasenia);
                 $usuario->nivel_acceso = strtoupper($formulario->nivelAcceso);
-                $usuario->niveles = $formulario->etiquetas;
+                if($formulario->nivelAcceso != 'TODO'){
+                    if(count($formulario->niveles) > 0){
+                        $nivelesConcatenados = '';
+                        foreach ($formulario->niveles as $nivel) {
+                            $nivelesConcatenados .= $nivel . ',';
+                        }
+                        $nivelesConcatenados = substr($nivelesConcatenados, 0, -1);
+                        $usuario->niveles = $nivelesConcatenados;
+                    }
+                    else{
+                        return back()->withErrors(['errorValidacion' => 'Debes de seleccionar al menos un nivel (entidad, distrito federal, distrito local o sección)'])->withInput();
+                    }
+                }
                 $usuario->save();
                 $usuario->assignRole($formulario->rolUsuario);
                 DB::commit();
@@ -137,7 +162,19 @@ class crudUsuariosController extends Controller
                 $usuario->telefono = $formulario->telefono;
                 $usuario->email = strtoupper($formulario->correo);
                 $usuario->nivel_acceso = strtoupper($formulario->nivelAcceso);
-                $usuario->niveles = $formulario->etiquetas;
+                if($formulario->nivelAcceso != 'TODO'){
+                    if(count($formulario->niveles) > 0){
+                        $nivelesConcatenados = '';
+                        foreach ($formulario->niveles as $nivel) {
+                            $nivelesConcatenados .= $nivel . ',';
+                        }
+                        $nivelesConcatenados = substr($nivelesConcatenados, 0, -1);
+                        $usuario->niveles = $nivelesConcatenados;
+                    }
+                    else{
+                        return back()->withErrors(['errorValidacion' => 'Debes de seleccionar al menos un nivel (entidad, distrito federal, distrito local o sección)'])->withInput();
+                    }
+                }
                 if(isset($formulario->contrasenia) && $formulario->contrasenia != ""){
                     $usuario->password = Hash::make($formulario->contrasenia);
                 }

@@ -803,7 +803,9 @@
                         contentType: "application/x-www-form-urlencoded",
                         success: function (response) {
                             console.log(response.persona.telefono_celular);
-                            $('input[name="fechaRegistro"]').val(response.persona.created_at);
+                            if(response.persona.created_at != null){
+                                $('input[name="fechaRegistro"]').val(response.persona.created_at.substring(0, 10));
+                            }
                             $('input[name="folio"]').val(response.persona.folio);
                             $('select[name="promotor"]').val(response.persona.persona_id != null ? response.persona.persona_id : 0);
                             $('select[name="promotor"]').trigger('change');
