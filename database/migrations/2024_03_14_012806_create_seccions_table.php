@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('tipo')->nullable();
             $table->foreignId('distrito_local_id')->constrained();
+            $table->integer('poblacion')->default(0);
+            $table->integer('objetivo')->default(0);
             $table->timestamps();
         });
     }

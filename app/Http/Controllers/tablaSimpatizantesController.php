@@ -16,62 +16,101 @@ use Maatwebsite\Excel\Facades\Excel;
 class tablaSimpatizantesController extends Controller
 {
     public function index(){
+
         return view('tablaSimpatizantes');
     }
-    public function inicializar(){
+    public function inicializar(Request $formulario){
         try {
-            $user = auth()->user();
-            if($user->getRoleNames()->first() == 'SUPER ADMINISTRADOR' || $user->getRoleNames()->first() == 'ADMINISTRADOR'){
-                $persona = persona::where('deleted_at', null)
-                ->orderBy('supervisado', 'DESC')
-                ->get([
-                    'id',
-                    'folio',
-                    'nombres',
-                    'apellido_paterno',
-                    'apellido_materno',
-                    'telefono_celular',
-                    'supervisado',
-                ]);
-            }
-            else{
-                // $user = auth()->user();
-                // // return $user;
-                // $niveles = isset($user->niveles) ? explode( ',', $user->niveles) : null;
-                // return $niveles; //APLICAR TRIM A CADA NIVEL
+            $draw = ($formulario->get('draw') != null) ? $formulario->get('draw') : 1;
+            $start = ($formulario->get('start') != null) ? $formulario->get('start') : 0;
+            $length = ($formulario->get('length') != null) ? $formulario->get('length') : 10;
+            $filter = $formulario->get('search');
+            $search = (isset($filter['value']))? $filter['value'] : false;
 
-                $persona = persona::where('deleted_at', null)
-                ->orderBy('supervisado', 'ASC')
-                ->get([
-                    'id',
-                    'folio',
-                    'nombres',
-                    'apellido_paterno',
-                    'apellido_materno',
-                    'telefono_celular',
-                    'supervisado',
-                ]);
-            }
-            $personas = [];
-            foreach ($persona as $p) {
-                $aux = [
-                    'personaId' => $p->id,
-                    'folio' => $p->folio,
-                    'nombres' => $p->nombres,
-                    'apellido_paterno' => $p->apellido_paterno,
-                    'apellido_materno' => $p->apellido_materno,
-                    'seccionId' => $p->identificacion->seccion_id,
-                    'telefonoCelular' => $p->telefono_celular,
-                    'distritoLocalId' => isset($p->identificacion->seccion) ? $p->identificacion->seccion->distritoLocal->id : null,
-                    'nombreMunicipio' => isset($p->identificacion->seccion) ? $p->identificacion->seccion->distritoLocal->municipio->id : null,
-                    'distritoFederalId' => isset($p->identificacion->seccion) ? $p->identificacion->seccion->distritoLocal->municipio->distritoFederal->id : null,
-                    'nombreEntidad' => isset($p->identificacion->seccion) ? $p->identificacion->seccion->distritoLocal->municipio->distritoFederal->entidad->id : null,
-                    'supervisado' => $p->supervisado,
-                ];
-                array_push($personas, $aux);
-            }
-            return$personas;
+            // $user = auth()->user();
+                // if($user->getRoleNames()->first() == 'SUPER ADMINISTRADOR' || $user->getRoleNames()->first() == 'ADMINISTRADOR'){
+                //     $persona = persona::where('deleted_at', null)
+                //     ->orderBy('supervisado', 'DESC')
+                //     ->select(
+                //         'id',
+                //         'folio',
+                //         'nombres',
+                //         'apellido_paterno',
+                //         'apellido_materno',
+                //         'telefono_celular',
+                //         'supervisado',
+                //     )
+                //     ->paginate(10);
+                // }
+                // else{
+                //     // $user = auth()->user();
+                //     // // return $user;
+                //     // $niveles = isset($user->niveles) ? explode( ',', $user->niveles) : null;
+                //     // return $niveles; //APLICAR TRIM A CADA NIVEL
 
+                //     $persona = persona::where('deleted_at', null)
+                //     ->orderBy('supervisado', 'ASC')
+                //     ->select(
+                //         'id',
+                //         'folio',
+                //         'nombres',
+                //         'apellido_paterno',
+                //         'apellido_materno',
+                //         'telefono_celular',
+                //         'supervisado',
+                //     )
+                //     ->paginate(10);
+                // }
+                // $personas = [];
+                // foreach ($persona as $p) {
+                //     $aux = [
+                //         'personaId' => $p->id,
+                //         'folio' => $p->folio,
+                //         'nombres' => $p->nombres,
+                //         'apellido_paterno' => $p->apellido_paterno,
+                //         'apellido_materno' => $p->apellido_materno,
+                //         'seccionId' => $p->identificacion->seccion_id,
+                //         'telefonoCelular' => $p->telefono_celular,
+                //         'distritoLocalId' => isset($p->identificacion->seccion) ? $p->identificacion->seccion->distritoLocal->id : null,
+                //         'nombreMunicipio' => isset($p->identificacion->seccion) ? $p->identificacion->seccion->distritoLocal->municipio->id : null,
+                //         'distritoFederalId' => isset($p->identificacion->seccion) ? $p->identificacion->seccion->distritoLocal->municipio->distritoFederal->id : null,
+                //         'nombreEntidad' => isset($p->identificacion->seccion) ? $p->identificacion->seccion->distritoLocal->municipio->distritoFederal->entidad->id : null,
+                //         'supervisado' => $p->supervisado,
+                //     ];
+                //     array_push($personas, $aux);
+                // }
+            // return$personas;
+            // $pagina = $formulario->input('page', 1);
+            $total = persona::where('deleted_at', null)
+            ->join('identificacions', 'personas.id', '=', 'identificacions.persona_id')
+            ->join('seccions', 'seccions.id', '=', 'identificacions.seccion_id')
+            ->count();
+            $personas = persona::where('deleted_at', null)
+            ->join('identificacions', 'personas.id', '=', 'identificacions.persona_id')
+            ->join('seccions', 'seccions.id', '=', 'identificacions.seccion_id')
+            ->orderBy('supervisado', 'ASC')
+            ->select(
+                'personas.id',
+                DB::raw('CONCAT(nombres, " ", apellido_paterno) as nombre_completo'),
+                'telefono_celular',
+                'seccions.id as seccionId',
+                'seccions.distrito_local_id as distritoLocalId',
+                'supervisado',
+            )
+            ->skip($start)
+            ->take($length)
+            ->get();
+
+
+
+            return [
+                'data' => $personas,
+                'length' => $length,
+                'recordsTotal' => $total,
+                'recordsFiltered' => $total,
+                'start' => $start,
+                'draw' => $draw,
+            ];
 
         } catch (Exception $e) {
             Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());

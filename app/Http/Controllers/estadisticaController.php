@@ -25,98 +25,50 @@ class estadisticaController extends Controller
         $dias = [];
         $maximo = 0;
         $user = auth()->user();
-        if($user->getRoleNames()->first() == 'SUPER ADMINISTRADOR' || $user->getRoleNames()->first() == 'ADMINISTRADOR'){
-            for ($i = 13; $i >= 0; $i--) {
-                $fecha = $fechaActual->copy()->subDays($i)->toDateString();
-                $fechaFormateada = $fechaActual->copy()->subDays($i)->format('d-F');
 
-                $fecha = Carbon::parse($fechaFormateada);
-                $mes = $meses[($fecha->format('n')) - 1];
-                $fechaFormateada = $fecha->format('d') . ' de ' . $mes;
+        for ($i = 13; $i >= 0; $i--) {
+            $fecha = $fechaActual->copy()->subDays($i)->toDateString();
+            $fechaFormateada = $fechaActual->copy()->subDays($i)->format('d-F');
 
-                $conteo = persona::whereDate('created_at', $fecha)->count();
-                array_push($conteos, $conteo);
-                array_push($dias, $fechaFormateada);
-                if($maximo < $conteo){
-                    $maximo = $conteo;
-                }
+            $fecha = Carbon::parse($fechaFormateada);
+            $mes = $meses[($fecha->format('n')) - 1];
+            $fechaFormateada = $fecha->format('d') . ' de ' . $mes;
+
+            $conteo = persona::whereDate('created_at', $fecha)->count();
+            array_push($conteos, $conteo);
+            array_push($dias, $fechaFormateada);
+            if($maximo < $conteo){
+                $maximo = $conteo;
             }
-
-            $conteoRegistrosPorDia = [
-                'fechas' => $dias,
-                'totales' => $conteos,
-                'maximo' => $maximo
-            ];
-            $meta = meta::find(1);
-            $numeroPersonas = persona::count();
-            $numeroSimpatizantes = persona::where('simpatizante', 'SI')->count();
-
-            return [
-                [
-                    $numeroPersonas,
-                    $numeroSimpatizantes,
-                    $meta->numeroObjetivo,
-                    $meta->poblacionEstablecida
-                ],
-                $conteoRegistrosPorDia,
-                [
-                    $numeroPersonas,
-                    $meta->poblacionEstablecida - $numeroPersonas
-                ],
-                [
-                    $numeroPersonas,
-                    $meta->numeroObjetivo - $numeroPersonas
-                ]
-            ];
         }
-        else{
-            // $user = auth()->user();
-            // // return $user;
-            // $niveles = isset($user->niveles) ? explode( ',', $user->niveles) : null;
-            // return $niveles; //APLICAR TRIM A CADA NIVEL
-            for ($i = 13; $i >= 0; $i--) {
-                $fecha = $fechaActual->copy()->subDays($i)->toDateString();
-                $fechaFormateada = $fechaActual->copy()->subDays($i)->format('d-F');
 
-                $fecha = Carbon::parse($fechaFormateada);
-                $mes = $meses[($fecha->format('n')) - 1];
-                $fechaFormateada = $fecha->format('d') . ' de ' . $mes;
+        $conteoRegistrosPorDia = [
+            'fechas' => $dias,
+            'totales' => $conteos,
+            'maximo' => $maximo
+        ];
+        $meta = meta::find(1);
+        $numeroPersonas = persona::count();
+        $numeroSimpatizantes = persona::where('simpatizante', 'SI')->count();
 
-                $conteo = persona::whereDate('created_at', $fecha)->count();
-                array_push($conteos, $conteo);
-                array_push($dias, $fechaFormateada);
-                if($maximo < $conteo){
-                    $maximo = $conteo;
-                }
-            }
+        return [
+            [
+                $numeroPersonas,
+                $numeroSimpatizantes,
+                $meta->numeroObjetivo,
+                $meta->poblacionEstablecida
+            ],
+            $conteoRegistrosPorDia,
+            [
+                $numeroPersonas,
+                $meta->poblacionEstablecida - $numeroPersonas
+            ],
+            [
+                $numeroPersonas,
+                $meta->numeroObjetivo - $numeroPersonas
+            ]
+        ];
 
-            $conteoRegistrosPorDia = [
-                'fechas' => $dias,
-                'totales' => $conteos,
-                'maximo' => $maximo
-            ];
-            $meta = meta::find(1);
-            $numeroPersonas = persona::count();
-            $numeroSimpatizantes = persona::where('simpatizante', 'SI')->count();
-
-            return [
-                [
-                    $numeroPersonas,
-                    $numeroSimpatizantes,
-                    $meta->numeroObjetivo,
-                    $meta->poblacionEstablecida
-                ],
-                $conteoRegistrosPorDia,
-                [
-                    $numeroPersonas,
-                    $meta->poblacionEstablecida - $numeroPersonas
-                ],
-                [
-                    $numeroSimpatizantes,
-                    $meta->poblacionEstablecida - $numeroSimpatizantes
-                ]
-            ];
-        }
     }
 
     public function cargarMeta(Request $formulario){

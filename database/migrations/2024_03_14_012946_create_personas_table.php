@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('personas', function (Blueprint $table) {
             $table->id();
-            $table->dateTime('fecha_registro')->nullable();
+            $table->date('fecha_registro')->nullable();
             $table->integer('folio')->nullable();
             $table->foreignId('persona_id')->nullable()->constrained();
             $table->string('nombres');
-            $table->string('apellido_paterno');
+            $table->string('apellido_paterno')->nullable();
             $table->string('apellido_materno')->nullable();
             $table->string('genero')->nullable();
             $table->string('telefono_celular')->nullable();
@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('simpatizante')->nullable();
             $table->string('programa')->nullable();
             $table->string('funcion_en_campania')->nullable();
-            $table->dateTime('fecha_nacimiento')->nullable();
+            $table->date('fecha_nacimiento')->nullable();
             $table->string('edadPromedio')->nullable();
             $table->string('observaciones')->nullable();
             $table->string('etiquetas')->nullable();

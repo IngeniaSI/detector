@@ -82,3 +82,15 @@ Route::post('/simpatizantes/modificar/modificarPersona-{persona}',
 [crudPersonasController::class, 'modificarPersona'])->name('crudPersonas.modificarPersona')->middleware(['auth']);
 Route::get('/simpatizantes/consultar-{persona}',
 [crudPersonasController::class, 'consultar'])->name('crudPersonas.consultar')->middleware(['auth']);
+
+// Route::group(['middleware' => ['can:publish articles']], function () { ... });
+// Route::middleware(['first', 'second'])->group(function () {
+    // Route::controller(OrderController::class)->group(function () {
+    //     Route::get('/orders/{id}', 'show');
+    //     Route::post('/orders', 'store');
+    // });
+    // Route::prefix('admin')->group(function () {
+    //     Route::get('/users', function () {
+    //         // Matches The "/admin/users" URL
+    //     });
+    // });
