@@ -136,9 +136,7 @@
                         <div class="row justify-content-between">
                             <div class="col">
                                 <select name="niveles[]" class="form-select selectToo nivelesSeleccionados" multiple="multiple" style="width:100%">
-                                    <option value="">Opcion 1</option>
-                                    <option value="">Opcion 2</option>
-                                    <option value="">Opcion 3</option>
+
                                 </select>
                             </div>
                         </div>
@@ -243,7 +241,6 @@
                             <option value="ENTIDAD">Entidad</option>
                             <option value="DISTRITO FEDERAL">Distrito Federal</option>
                             <option value="DISTRITO LOCAL">Distrito Local</option>
-                            <option value="MUNICIPIO">Municipio</option>
                             <option value="SECCION">Seccion</option>
                         </select>
                         @error('nivelAcceso')
@@ -254,9 +251,7 @@
                         <div class="row justify-content-between">
                             <div class="col">
                                 <select name="niveles[]" class="form-select selectToo nivelesSeleccionados" multiple="multiple" style="width:100%">
-                                    <option value="">Opcion 1</option>
-                                    <option value="">Opcion 2</option>
-                                    <option value="">Opcion 3</option>
+
                                 </select>
                             </div>
                         </div>
