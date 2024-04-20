@@ -21,16 +21,15 @@
         <title>Detector de Intención del Voto (VEVO)</title>
         <link href="{{ asset('Plantilla/css/styles.css') }}" rel="stylesheet" />
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+        <style>
+            body, html {
+                height: 100%;
+                background-repeat: no-repeat;
+                background: url("{{asset('Plantilla/assets/img/fondo.jpg')}}") no-repeat center center fixed;
+                background-size: 100% 100%;
+            }
+        </style>
     </head>
-    <style>
-        body, html {
-    height: 100%;
-    background-repeat: no-repeat;
-    background: url({{ asset('Plantilla/assets/img/fondo.jpg') }}) no-repeat center center fixed;
-    background-size: 100% 100%;
-}
-
-    </style>
     <body class="bg-primary">
         <div id="layoutAuthentication">
             <div id="layoutAuthentication_content">
@@ -41,7 +40,7 @@
                                 <div class="card shadow-lg border-0 rounded-lg mt-5">
                                     <div class="card-header"><h4 class="text-center font-weight-light my-4">Detector de Intención del Voto (VEVO)</h4></div>
                                     <div class="card-body">
-                                    <form action="{{route('login.comprobando')}}" method="post" class="form-floating mb-3">
+                                    <form action="{{route('login.comprobando')}}" id="formularioIniciarSesion" method="post" class="form-floating mb-3">
                                         @csrf
                                         <div class="form-floating mb-3">
                                             <input class="form-control" type="email" name="correo" id="correo" min="3"  />
@@ -84,6 +83,16 @@
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="{{ asset('Plantilla/js/scripts.js') }}"></script>
+        <script text="text/javascript">
+            $('#formularioIniciarSesion').submit(function(e){
+                Swal.fire({
+                    title: 'Cargando...',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    html: '<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>'
+                });
+            });
+        </script>
     </body>
 </html>
 
