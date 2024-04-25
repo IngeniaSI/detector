@@ -90,11 +90,16 @@ class tablaSimpatizantesController extends Controller
             ->leftjoin('seccions', 'seccions.id', '=', 'identificacions.seccion_id');
 
             if($user->nivel_acceso != 'TODO'){
-                $personaQuery->whereIn('seccion_id', $seccionesParaBuscar);
+                $personaQuery->where(function($query) use ($user, $seccionesParaBuscar) {
+                        $query->whereIn('seccion_id', $seccionesParaBuscar)
+                        ->orWhere('user_id', $user->id);
+                });
+
             }
             if ($search != false) {
                 $personaQuery->where(function($query) use ($search) {
                     $query->where('nombres', 'LIKE', '%' . $search . '%')
+                        ->orWhere('telefono_celular', 'LIKE', '%' . $search . '%')
                         ->orWhere('seccion_id', 'LIKE', '%' . $search . '%')
                         ->orWhere('distrito_local_id', 'LIKE', '%' . $search . '%');
                 });
@@ -104,7 +109,7 @@ class tablaSimpatizantesController extends Controller
             $personas = $personaQuery->orderBy('supervisado', 'ASC')
             ->select(
                 'personas.id',
-                DB::raw('CONCAT(nombres, " ", apellido_paterno) as nombre_completo'),
+                DB::raw('IF(apellido_paterno != "", CONCAT(nombres, " ", apellido_paterno), nombres) as nombre_completo'),
                 'telefono_celular',
                 'seccions.id as seccionId',
                 'seccions.distrito_local_id as distritoLocalId',
@@ -113,6 +118,9 @@ class tablaSimpatizantesController extends Controller
             ->skip($start)
             ->take($length)
             ->get();
+
+            $personaQuery->where('supervisado', 0)
+            ->count();
 
             return [
                 'data' => $personas,
@@ -128,6 +136,87 @@ class tablaSimpatizantesController extends Controller
             return null;
         }
 
+    }
+    public function numeroSupervisados(){
+        try {
+            //CONTROLADOR DE NIVELES DE ACCESO
+            $user = auth()->user();
+            switch ($user->nivel_acceso) {
+                case 'TODO':
+                     //HACER CONSULTA SIN FILTROS
+                     $seccionesParaBuscar = seccion::pluck('id')->toArray();
+                    break;
+                case 'ENTIDAD':
+                     //HACER CONSULTA FILTRAR PERSONAS QUE SU IDENTIFICACION
+                     //PERTENEZCA A LA LISTA DE SECCIONES PERTENECIENTES A LAS ENTIDADES SELECCIONADAS
+                    $nivelesConAcceso = explode(',', $user->niveles);
+                    $seccionesParaBuscar = entidad::whereIn('entidads.id', $nivelesConAcceso)
+                    ->join('distrito_federals', 'entidads.id', '=','distrito_federals.entidad_id')
+                    ->join('municipios', 'distrito_federals.id', '=','municipios.distrito_federal_id')
+                    ->join('distrito_locals', 'municipios.id', '=','distrito_locals.municipio_id')
+                    ->join('seccions', 'distrito_locals.id', '=','seccions.distrito_local_id')
+                    ->pluck('seccions.id')
+                    ->toArray();
+
+                    break;
+                case 'DISTRITO FEDERAL':
+                     //HACER CONSULTA FILTRAR PERSONAS QUE SU IDENTIFICACION
+                     //PERTENEZCA A LA LISTA DE SECCIONES PERTENECIENTES A LOS DISTRITOS FEDERALES SELECCIONADAS
+                    $nivelesConAcceso = explode(',', $user->niveles);
+                    $seccionesParaBuscar = distritoFederal::whereIn('distrito_federals.id', $nivelesConAcceso)
+                    ->join('municipios', 'distrito_federals.id', '=','municipios.distrito_federal_id')
+                    ->join('distrito_locals', 'municipios.id', '=','distrito_locals.municipio_id')
+                    ->join('seccions', 'distrito_locals.id', '=','seccions.distrito_local_id')
+                    ->pluck('seccions.id')
+                    ->toArray();
+
+                    break;
+                case 'DISTRITO LOCAL':
+                     //HACER CONSULTA FILTRAR PERSONAS QUE SU IDENTIFICACION
+                     //PERTENEZCA A LA LISTA DE SECCIONES PERTENECIENTES A LOS DISTRITOS LOCALES SELECCIONADAS
+                    $nivelesConAcceso = explode(',', $user->niveles);
+                    $seccionesParaBuscar = distritoLocal::whereIn('distrito_locals.id', $nivelesConAcceso)
+                    ->join('seccions', 'distrito_locals.id', '=','seccions.distrito_local_id')
+                    ->pluck('seccions.id')
+                    ->toArray();
+
+                    break;
+                case 'SECCION':
+                     //HACER CONSULTA FILTRAR PERSONAS QUE SU IDENTIFICACION
+                     //PERTENEZCA A LA LISTA DE SECCIONES PERTENECIENTES A LAS SECCIONES SELECCIONADAS
+                    $seccionesParaBuscar = explode(',', $user->niveles);
+                    $seccionesParaBuscar = array_map('intval', $seccionesParaBuscar);
+
+                    break;
+            }
+
+
+            $personaQuery = persona::where('deleted_at', null)
+            ->join('identificacions', 'personas.id', '=', 'identificacions.persona_id')
+            ->leftjoin('seccions', 'seccions.id', '=', 'identificacions.seccion_id');
+
+            if($user->nivel_acceso != 'TODO'){
+                $personaQuery->where(function($query) use ($user, $seccionesParaBuscar) {
+                        $query->whereIn('seccion_id', $seccionesParaBuscar)
+                        ->orWhere('user_id', $user->id);
+                });
+
+            }
+
+            $total = $personaQuery->count();
+
+            $sinSupervisar = $personaQuery->where('supervisado', 0)
+            ->count();
+
+            return [
+                'total' => $total,
+                'sinSupervisar' => $sinSupervisar
+            ];
+
+        } catch (Exception $e) {
+            Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
+            return null;
+        }
     }
     public function buscar(persona $persona){
         return $persona;

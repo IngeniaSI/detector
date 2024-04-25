@@ -255,7 +255,7 @@
                         </div>
                         <div class="col">
                             <h4>Número Interno</h4>
-                            <input type="number" class="form-control" id="numeroInterior" name="numeroInterior" value="{{old('numeroInterior')}}">
+                            <input type="text" class="form-control" id="numeroInterior" name="numeroInterior" value="{{old('numeroInterior')}}">
                             @error('numeroInterior')
                                 <div id="numeroInteriorError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
@@ -700,6 +700,29 @@
     }
     $('#secciones').change(filtrarSecciones);
 
+    function contarRepeticiones(arreglo) {
+        // Utilizamos reduce para acumular el conteo de repeticiones
+        let resumen = arreglo.reduce((conteo, objeto) => {
+            // Si el nombre ya existe en el conteo, incrementar el contador
+            if (conteo[objeto.nombre]) {
+                conteo[objeto.nombre]++;
+            } else {
+                // Si no existe, inicializar el contador en 1
+                conteo[objeto.nombre] = 1;
+            }
+            return conteo;
+        }, {});
+
+        const nombresRepetidos = Object.keys(resumen).filter(nombre => resumen[nombre] > 1);
+
+        // Crear un objeto con los nombres repetidos y su conteo
+        const resultado = {};
+        nombresRepetidos.forEach(nombre => {
+        resultado[nombre] = resumen[nombre];
+        });
+
+        return resultado;
+    }
 
     // FUNCION PARA CARGAR TABLA DE USUARIOS
     $(document).ready(function () {
@@ -716,7 +739,12 @@
                 data: [],
                 contentType: "application/x-www-form-urlencoded",
                 success: function (response) {
+                    console.log(response.colonias);
+                    // Obtener el conteo de repeticiones
+                    const repeticiones = contarRepeticiones(response.colonias);
+                    console.log(repeticiones);
                     $.each(response.colonias, function (i, valor) {
+                        //AQUI REPETIDOS
                         $('#colonias').append(
                             $('<option>').val(valor.id).text(valor.nombre)
                         );

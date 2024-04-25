@@ -13,15 +13,37 @@ use Maatwebsite\Excel\Facades\Excel;
 class iniciarSesionController extends Controller
 {
     public function index(Request $formulario){
-        $bitacora = new bitacora();
-        $bitacora->accion = 'entrando pantalla iniciar sesion';
-        $bitacora->url = url()->current();
-        $bitacora->ip = $formulario->ip();
-        $bitacora->tipo = 'vista';
-        $bitacora->user_id = null;
-        $bitacora->save();
+        $user = auth()->user();
+        if($user){
+            switch ($user->getRoleNames()->first()) {
+                case 'SUPER ADMINISTRADOR':
+                    return redirect()->route('crudUsuario.index');
+                    break;
+                case 'ADMINISTRADOR':
+                    return redirect()->route('estadistica.index');
+                    break;
+                case 'SUPERVISOR':
+                    return redirect()->route('crudSimpatizantes.index');
+                    break;
+                case 'CAPTURISTA':
+                    return redirect()->route('crudSimpatizantes.index');
+                    break;
+                case 'CONSULTAS':
+                    return redirect()->route('crudSimpatizantes.index');
+                    break;
+            }
+        }
+        else{
+            $bitacora = new bitacora();
+            $bitacora->accion = 'entrando pantalla iniciar sesion';
+            $bitacora->url = url()->current();
+            $bitacora->ip = $formulario->ip();
+            $bitacora->tipo = 'vista';
+            $bitacora->user_id = null;
+            $bitacora->save();
+            return view('inicioSesion');
+        }
 
-        return view('inicioSesion');
     }
     public function validarUsuario(Request $formulario){
         $validarSiEliminado = User::where('email', strtoupper($formulario->correo))->first();

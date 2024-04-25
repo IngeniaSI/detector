@@ -50,7 +50,8 @@ class crudUsuariosController extends Controller
         $usuarios = User::join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
         ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
         ->where('deleted_at', null)
-        ->get(['users.id', 'email', 'nombre', 'apellido_paterno', 'apellido_materno', 'name']);
+        ->orderBy('id', 'DESC')
+        ->get(['users.id', 'email', 'nombre', 'apellido_paterno', 'apellido_materno', 'telefono', 'name']);
 
         return array($usuarios, $niveles);
     }

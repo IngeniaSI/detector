@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('calle')->nullable();
             $table->string('numero_exterior')->nullable();
-            $table->integer('numero_interior')->nullable();
+            $table->string('numero_interior')->nullable();
             $table->float('latitud', 20, 15)->nullable();
             $table->float('longitud', 20, 15)->nullable();
             $table->foreignId('colonia_id')->nullable()->constrained();
