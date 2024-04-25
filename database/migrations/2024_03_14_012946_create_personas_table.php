@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('personas', function (Blueprint $table) {
             $table->id();
             $table->date('fecha_registro')->nullable();
+            $table->foreignId('user_id')->nullable()->constrained();
             $table->integer('folio')->nullable();
             $table->foreignId('persona_id')->nullable()->constrained();
             $table->string('nombres');

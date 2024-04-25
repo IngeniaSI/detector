@@ -27,70 +27,78 @@ use Illuminate\Support\Facades\DB;
 Route::get('/', function () {
     return redirect()->route('login');
 });
-
 Route::get('/iniciar-sesion', [iniciarSesionController::class, 'index'])->name('login');
 Route::post('/iniciar-sesion/verificando', [iniciarSesionController::class, 'validarUsuario'])->name('login.comprobando');
-Route::post('/cerrando-sesion', [iniciarSesionController::class, 'cerrarSesion'])->name('logout')->middleware('auth');
 
-Route::get('/gestor-usuarios', [crudUsuariosController::class, 'index'])->name('crudUsuario.index')->middleware(['auth', 'can:crudUsuarios.index']);
-Route::get('/gestor-usuarios/usuarios', [crudUsuariosController::class, 'todosUsuarios'])->name('crudUsuario.todos')->middleware('auth');
-Route::get('/gestor-usuarios/obtener-{usuario}', [crudUsuariosController::class, 'obtenerUsuario'])->name('crudUsuario.obtener')->middleware('auth');
-Route::post('/gestor-usuarios/crear-usuario', [crudUsuariosController::class, 'crearUsuario'])->name('crudUsuario.crear')->middleware('auth');
-Route::post('/gestor-usuarios/editar-usuario-{usuario}', [crudUsuariosController::class, 'editarUsuario'])->name('crudUsuario.editar')->middleware('auth');
-Route::post('/gestor-usuarios/borrar-usuario-{usuario}', [crudUsuariosController::class, 'borrarUsuario'])->name('crudUsuario.borrar')->middleware('auth');
+Route::prefix('/')->middleware('auth')->group(function (){
+    Route::post('cerrando-sesion', [iniciarSesionController::class, 'cerrarSesion'])->name('logout');
 
-Route::get('/simpatizantes',
-[tablaSimpatizantesController::class, 'index'])->name('crudSimpatizantes.index')->middleware(['auth', 'can:crudSimpatizantes.index']);
-Route::get('/simpatizantes/descargar',
-[tablaSimpatizantesController::class, 'descargar'])->name('crudSimpatizantes.descargar')->middleware('auth');
-Route::get('/simpatizantes/inicializar',
-[tablaSimpatizantesController::class, 'inicializar'])->name('crudSimpatizantes.inicializar')->middleware('auth');
-Route::get('/simpatizantes/ver-{persona}',
-[tablaSimpatizantesController::class, 'ver'])->name('crudSimpatizantes.ver')->middleware('auth');
-Route::post('/simpatizantes/supervisar-{persona}',
-[tablaSimpatizantesController::class, 'verificar'])->name('crudSimpatizantes.verificar')->middleware(['auth', 'can:crudSimpatizantes.verificar']);
-Route::post('/simpatizantes/borrar-{persona}',
-[tablaSimpatizantesController::class, 'borrar'])->name('crudSimpatizantes.borrar')->middleware(['auth', 'can:crudSimpatizantes.borrar']);
-Route::get('/simpatizantes/filtrarColonias-{colonia}',
-[formularioSimpatizanteController::class, 'filtrarColonias'])->name('crudSimpatizantes.filtrarColonias')->middleware('auth');
-Route::get('/simpatizantes/filtrarSecciones-{seccion}',
-[formularioSimpatizanteController::class, 'filtrarSecciones'])->name('crudSimpatizantes.filtrarSecciones')->middleware('auth');
+    Route::prefix('gestor-usuarios')->controller(crudUsuariosController::class)->group(function () {
+        Route::get('/', 'index')
+        ->name('crudUsuario.index')->middleware(['can:crudUsuarios.index']);
+        Route::get('/usuarios', 'todosUsuarios')
+        ->name('crudUsuario.todos')->middleware(['can:crudUsuarios.index']);
+        Route::get('/obtener-{usuario}', 'obtenerUsuario')
+        ->name('crudUsuario.obtener')->middleware(['can:crudUsuarios.edit']);
+        Route::post('/crear-usuario', 'crearUsuario')
+        ->name('crudUsuario.crear')->middleware(['can:crudUsuarios.create']);
+        Route::post('/editar-usuario-{usuario}', 'editarUsuario')
+        ->name('crudUsuario.editar')->middleware(['can:crudUsuarios.edit']);
+        Route::post('/borrar-usuario-{usuario}', 'borrarUsuario')
+        ->name('crudUsuario.borrar')->middleware(['can:crudUsuarios.delete']);
+    });
+    Route::prefix('simpatizantes')->group(function() {
+        Route::controller(tablaSimpatizantesController::class)->group(function() {
+            Route::get('/', 'index')
+            ->name('crudSimpatizantes.index')->middleware(['can:crudSimpatizantes.index']);
+            Route::get('/descargar', 'descargar')
+            ->name('crudSimpatizantes.descargar')->middleware(['can:crudSimpatizantes.exportar']);
+            Route::get('/inicializar', 'inicializar')
+            ->name('crudSimpatizantes.inicializar')->middleware(['can:crudSimpatizantes.index']);
+            Route::get('/numeros-supervisado', 'numeroSupervisados')
+            ->name('crudSimpatizantes.numeroSupervisados')->middleware(['can:crudSimpatizantes.index']);
+            Route::get('/ver-{persona}', 'ver')
+            ->name('crudSimpatizantes.ver')->middleware(['can:crudSimpatizantes.consultar']);//DESUSO
+            Route::post('/supervisar-{persona}', 'verificar')
+            ->name('crudSimpatizantes.verificar')->middleware(['can:crudSimpatizantes.verificar', 'nivelAcceso']); //ESTOS NECESITA LA VALIDACION
+            Route::post('/borrar-{persona}', 'borrar')
+            ->name('crudSimpatizantes.borrar')->middleware(['can:crudSimpatizantes.borrar', 'nivelAcceso']); //ESTOS NECESITA LA VALIDACION
+        });
+        Route::controller(formularioSimpatizanteController::class)->group(function() {
+            Route::get('/filtrarColonias-{colonia}', 'filtrarColonias')
+            ->name('crudSimpatizantes.filtrarColonias')->middleware(['can:agregarSimpatizante.index']);
+            Route::get('/filtrarSecciones-{seccion}', 'filtrarSecciones')
+            ->name('crudSimpatizantes.filtrarSecciones')->middleware(['can:agregarSimpatizante.index']);
+            Route::get('/agregar', 'index')
+            ->name('agregarSimpatizante.index')->middleware(['can:agregarSimpatizante.index']);
+            Route::get('/agregar/inicializar', 'inicializar')
+            ->name('agregarSimpatizante.inicializar')->middleware(['can:agregarSimpatizante.index']);
+            Route::post('/agregar/agregando', 'agregandoSimpatizante')
+            ->name('agregarSimpatizante.agregandoSimpatizante')->middleware(['can:agregarSimpatizante.index']);
+        });
+        Route::controller(crudPersonasController::class)->group(function() {
+            Route::get('/modificar-{persona}', 'index')
+            ->name('crudPersonas.index')->middleware(['can:crudSimpatizantes.modificar', 'nivelAcceso']); //ESTOS NECESITA LA VALIDACION
+            Route::get('/modificar/cargarPersona-{persona}', 'cargarPersona')
+            ->name('crudPersonas.cargarPersona')->middleware(['can:crudSimpatizantes.modificar', 'nivelAcceso']); //ESTOS NECESITA LA VALIDACION
+            Route::post('/modificar/modificarPersona-{persona}', 'modificarPersona')
+            ->name('crudPersonas.modificarPersona')->middleware(['can:crudSimpatizantes.modificar', 'nivelAcceso']); //ESTOS NECESITA LA VALIDACION
+            Route::get('/consultar-{persona}', 'consultar')
+            ->name('crudPersonas.consultar')->middleware(['can:crudSimpatizantes.consultar', 'nivelAcceso']); //ESTOS NECESITA LA VALIDACION
+        });
+    });
+    Route::prefix('estadistica')->controller(estadisticaController::class)->group(function(){
+        Route::get('/', 'index')
+        ->name('estadistica.index')->middleware(['can:estadistica.index']);
+        Route::get('/inicializar', 'inicializar')
+        ->name('estadistica.inicializar')->middleware(['can:estadistica.index']);
+        Route::get('/filtrar', 'filtrar')
+        ->name('estadistica.filtrar')->middleware(['can:estadistica.index']);
+        Route::post('/cargarMeta', 'cargarMeta')
+        ->name('estadistica.cargarMeta')->middleware(['can:estadistica.cambiarMeta']);
+    });
 
-Route::get('/simpatizantes/agregar',
-[formularioSimpatizanteController::class, 'index'])->name('agregarSimpatizante.index')->middleware(['auth', 'can:agregarSimpatizante.index']);
-Route::get('/simpatizantes/agregar/inicializar',
-[formularioSimpatizanteController::class, 'inicializar'])->name('agregarSimpatizante.inicializar')->middleware('auth');
-Route::post('/simpatizantes/agregar/agregando',
-[formularioSimpatizanteController::class, 'agregandoSimpatizante'])->name('agregarSimpatizante.agregandoSimpatizante')->middleware('auth');
+    Route::get('/mapa', [mapaController::class, 'index'])->middleware(['can:mapa.index']);
+    Route::get('/bitacora', [bitacoraController::class, 'index'])->name('bitacora.index')->middleware(['can:bitacora.index']);
+});
 
-Route::get('/estadistica',
-[estadisticaController::class, 'index'])->name('estadistica.index')->middleware(['auth', 'can:estadistica.index']);
-Route::get('/estadistica/inicializar',
-[estadisticaController::class, 'inicializar'])->name('estadistica.inicializar')->middleware(['auth']);
-Route::post('/estadistica/cargarMeta',
-[estadisticaController::class, 'cargarMeta'])->name('estadistica.cargarMeta')->middleware(['auth']);
-
-Route::get('/mapa', [mapaController::class, 'index'])->middleware(['auth', 'can:mapa.index']);
-
-Route::get('/bitacora', [bitacoraController::class, 'index'])->name('bitacora.index')->middleware(['auth', 'can:bitacora.index']);
-
-Route::get('/simpatizantes/modificar-{persona}',
-[crudPersonasController::class, 'index'])->name('crudPersonas.index')->middleware(['auth']);
-Route::get('/simpatizantes/modificar/cargarPersona-{persona}',
-[crudPersonasController::class, 'cargarPersona'])->name('crudPersonas.cargarPersona')->middleware(['auth']);
-Route::post('/simpatizantes/modificar/modificarPersona-{persona}',
-[crudPersonasController::class, 'modificarPersona'])->name('crudPersonas.modificarPersona')->middleware(['auth']);
-Route::get('/simpatizantes/consultar-{persona}',
-[crudPersonasController::class, 'consultar'])->name('crudPersonas.consultar')->middleware(['auth']);
-
-// Route::group(['middleware' => ['can:publish articles']], function () { ... });
-// Route::middleware(['first', 'second'])->group(function () {
-    // Route::controller(OrderController::class)->group(function () {
-    //     Route::get('/orders/{id}', 'show');
-    //     Route::post('/orders', 'store');
-    // });
-    // Route::prefix('admin')->group(function () {
-    //     Route::get('/users', function () {
-    //         // Matches The "/admin/users" URL
-    //     });
-    // });

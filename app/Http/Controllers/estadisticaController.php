@@ -25,6 +25,11 @@ class estadisticaController extends Controller
     public function inicializar(){
         //DEVOLVER LISTADO DE SECCIONES CON SUS METAS Y POBLACIONES
         //UNA LISTA DE REGISTROS HECHOS CON FECHA Y SECCIÓN
+
+        //2 GRAFICAS
+        //GRAFICA DE TIEMPO PARA VISUALIZAR REGISTROS HECHO EN EL TIEMPO
+        //CUANDO ES COMPARATIVO DESPLEGAR TODAS LAS SECCIONES CON EL GRAFICO DE barras PARA COMPRAR, REGISTROS, META Y POBLACIÓN
+
         $user = auth()->user();
         switch ($user->nivel_acceso) {
             case 'TODO':
@@ -89,40 +94,61 @@ class estadisticaController extends Controller
         ->orderBy('fecha_registro', 'ASC')
         ->get();
 
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+        $conteos = [];
+        $dias = [];
+        $maximo = 0;
+        foreach ($registrosPorFechas as $registro) {
+            $fechaActual = Carbon::parse($registro->fecha_registro)->format('d-F');
+            $fecha = Carbon::parse($fechaActual);
+            $mes = $meses[($fecha->format('n')) - 1];
+            $fechaFormateada = $fecha->format('d') . ' de ' . $mes;
+            array_push($dias, $fechaFormateada);
+            array_push($conteos, $registro->conteoTotal);
+            if($maximo < $registro->conteoTotal){
+                $maximo = $registro->conteoTotal;
+            }
+
+        }
+
+
         $seccions = seccion::select('id', 'poblacion', 'objetivo')->get();
 
         return [
             'conteoSeparado' => $personas,
-            'registrosPorFechas' => $registrosPorFechas,
+            'registrosPorFechas' => [
+                'conteos' => $conteos,
+                'fechas' => $dias,
+                'maximo' => $maximo
+            ],
             'seccionesAccesibles' => $seccionesParaBuscar,
             'seccionesConfigurarMetas' => $seccions
         ];
     }
 
     public function cargarMeta(Request $formulario){
-        $formulario->validate([
-            'cantidadObjetivo' => 'required|numeric',
-            'poblacion' => 'required|numeric',
-        ]);
-        $meta = meta::find(1);
+        $meta = seccion::find($formulario->idSeccion);
         try {
             DB::beginTransaction();
-            $meta->numeroObjetivo = $formulario->cantidadObjetivo;
-            $meta->poblacionEstablecida = $formulario->poblacion;
+            $meta->objetivo = $formulario->cantidadObjetivo;
+            $meta->poblacion = $formulario->poblacion;
             $meta->save();
             DB::commit();
-            session()->flash('mensajeExito', 'Meta cargada con éxito');
-            return redirect()->route('estadistica.index');
+            return [1, 'Se ha modificado la sección: ' . $formulario->idSeccion . ' se recomienda recargar la página.'];
         } catch (Exception $e) {
             DB::rollBack();
             Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
-            return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al cargar la meta'])->withInput();
+            return [0, 'Ha ocurrido un error al cambiar una meta.'];
         }
     }
 
-    public function filtrar($banderaAgrupacion, $seccionesSeleccionadas, $fechaInicio, $fechaFin){
+    public function filtrar(Request $formulario){
         //DEVOLVER LISTADO DE SECCIONES CON SUS METAS Y POBLACIONES
         //UNA LISTA DE REGISTROS HECHOS CON FECHA Y SECCIÓN
+        $banderaAgrupacion = $formulario->banderaAgrupacion;
+        $seccionesSeleccionadas = $formulario->seccionesSeleccionadas;
+        $fechaInicio = $formulario->fechaInicio;
+        $fechaFin = $formulario->fechaFin;
         $user = auth()->user();
         switch ($user->nivel_acceso) {
             case 'TODO':
@@ -172,126 +198,101 @@ class estadisticaController extends Controller
 
                 break;
         }
+        $queryPrincial = persona::where('deleted_at', null)
+        ->join('identificacions', 'identificacions.persona_id', '=', 'personas.id');
+        if(isset($fechaInicio)){
+            $queryPrincial->whereDate('fecha_registro', '>=', $fechaInicio);
+        }
+        if(isset($fechaFin)){
+            $queryPrincial->whereDate('fecha_registro', '<=', $fechaFin);
+        }
+        if($banderaAgrupacion  == 'COMPARATIVO'){
+            $personas = $queryPrincial->join('seccions', 'identificacions.seccion_id', '=', 'seccions.id')
+            ->whereIn('seccion_id', $seccionesParaBuscar)
+            ->select('seccion_id', 'poblacion', 'objetivo', DB::raw('COUNT(*) as conteoTotal'))
+            ->groupBy('seccion_id', 'poblacion', 'objetivo')
+            ->get();
 
-        $personas = persona::join('identificacions', 'identificacions.persona_id', '=', 'personas.id')
-        ->join('seccions', 'identificacions.seccion_id', '=', 'seccions.id')
-        ->whereIn('seccion_id', $seccionesParaBuscar)
-        ->select('seccion_id', 'poblacion', 'objetivo', DB::raw('COUNT(*) as conteoTotal'))
-        ->groupBy('seccion_id', 'poblacion', 'objetivo')
-        ->get();
+            $registrosPorFechas = $queryPrincial->whereIn('seccion_id', $seccionesParaBuscar)
+            ->select('fecha_registro', DB::raw('COUNT(*) as conteoTotal'))
+            ->groupBy('fecha_registro')
+            ->orderBy('fecha_registro', 'ASC')
+            ->get();
 
-        $registrosPorFechas = persona::join('identificacions', 'identificacions.persona_id', '=', 'personas.id')
-        ->whereIn('seccion_id', $seccionesParaBuscar)
-        ->select('fecha_registro', DB::raw('COUNT(*) as conteoTotal'))
-        ->groupBy('fecha_registro')
-        ->orderBy('fecha_registro', 'ASC')
-        ->get();
+            $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+            $conteos = [];
+            $dias = [];
+            $maximo = 0;
+            foreach ($registrosPorFechas as $registro) {
+                $fechaActual = Carbon::parse($registro->fecha_registro)->format('d-F');
+                $fecha = Carbon::parse($fechaActual);
+                $mes = $meses[($fecha->format('n')) - 1];
+                $fechaFormateada = $fecha->format('d') . ' de ' . $mes;
+                array_push($dias, $fechaFormateada);
+                array_push($conteos, $registro->conteoTotal);
+                if($maximo < $registro->conteoTotal){
+                    $maximo = $registro->conteoTotal;
+                }
 
-        $seccions = seccion::select('id', 'poblacion', 'objetivo')->get();
+            }
 
-        return [
-            'conteoSeparado' => $personas,
-            'registrosPorFechas' => $registrosPorFechas,
-            'seccionesAccesibles' => $seccionesParaBuscar,
-            'seccionesConfigurarMetas' => $seccions
-        ];
-        // $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
-            // $fechaActual = Carbon::now();
-            // $conteos = [];
-            // $dias = [];
-            // $maximo = 0;
-            // $user = auth()->user();
-            // if($user->getRoleNames()->first() == 'SUPER ADMINISTRADOR' || $user->getRoleNames()->first() == 'ADMINISTRADOR'){
-            //     for ($i = 13; $i >= 0; $i--) {
-            //         $fecha = $fechaActual->copy()->subDays($i)->toDateString();
-            //         $fechaFormateada = $fechaActual->copy()->subDays($i)->format('d-F');
 
-            //         $fecha = Carbon::parse($fechaFormateada);
-            //         $mes = $meses[($fecha->format('n')) - 1];
-            //         $fechaFormateada = $fecha->format('d') . ' de ' . $mes;
 
-            //         $conteo = persona::whereDate('created_at', $fecha)->count();
-            //         array_push($conteos, $conteo);
-            //         array_push($dias, $fechaFormateada);
-            //         if($maximo < $conteo){
-            //             $maximo = $conteo;
-            //         }
-            //     }
+            return [
+                'tipo' => 'COMPARATIVO',
+                'conteoSeparado' => $personas,
+                'registrosPorFechas' => [
+                    'conteos' => $conteos,
+                    'fechas' => $dias,
+                    'maximo' => $maximo,
+                ],
+            ];
+        }
+        else{
+            //CUANDO ES AGRUPACIÓN, DESPLEGAR UNA GRAFICA DE BARRAS PARA COMPARAR LA SUMA DE TODOS LOS REGISTROS
+            //CONTRA SUS METAS SUMADAS Y POBLACIONES SUMADAS
+            //Y UNA GRAFICA DE PIE PARA VER EL PORCETANJE DE REGISTROS POR CADA SECCIÓN SELECCIONADA
+            $personas = $queryPrincial->join('seccions', 'identificacions.seccion_id', '=', 'seccions.id')
+            ->whereIn('seccion_id', $seccionesSeleccionadas)
+            ->select('seccion_id', 'poblacion', 'objetivo', DB::raw('COUNT(*) as conteoTotal'))
+            ->groupBy('seccion_id', 'poblacion', 'objetivo')
+            ->get();
 
-            //     $conteoRegistrosPorDia = [
-            //         'fechas' => $dias,
-            //         'totales' => $conteos,
-            //         'maximo' => $maximo
-            //     ];
-            //     $meta = meta::find(1);
-            //     $numeroPersonas = persona::count();
-            //     $numeroSimpatizantes = persona::where('simpatizante', 'SI')->count();
+            $registrosPorFechas = $queryPrincial->whereIn('seccion_id', $seccionesSeleccionadas)
+            ->select('fecha_registro', DB::raw('COUNT(*) as conteoTotal'))
+            ->groupBy('fecha_registro')
+            ->orderBy('fecha_registro', 'ASC')
+            ->get();
 
-            //     return [
-            //         [
-            //             $numeroPersonas,
-            //             $numeroSimpatizantes,
-            //             $meta->numeroObjetivo,
-            //             $meta->poblacionEstablecida
-            //         ],
-            //         $conteoRegistrosPorDia,
-            //         [
-            //             $numeroPersonas,
-            //             $meta->poblacionEstablecida - $numeroPersonas
-            //         ],
-            //         [
-            //             $numeroPersonas,
-            //             $meta->numeroObjetivo - $numeroPersonas
-            //         ]
-            //     ];
-            // }
-            // else{
-            //     // $user = auth()->user();
-            //     // // return $user;
-            //     // $niveles = isset($user->niveles) ? explode( ',', $user->niveles) : null;
-            //     // return $niveles; //APLICAR TRIM A CADA NIVEL
-            //     for ($i = 13; $i >= 0; $i--) {
-            //         $fecha = $fechaActual->copy()->subDays($i)->toDateString();
-            //         $fechaFormateada = $fechaActual->copy()->subDays($i)->format('d-F');
+            $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+            $conteos = [];
+            $dias = [];
+            $maximo = 0;
+            foreach ($registrosPorFechas as $registro) {
+                $fechaActual = Carbon::parse($registro->fecha_registro)->format('d-F');
+                $fecha = Carbon::parse($fechaActual);
+                $mes = $meses[($fecha->format('n')) - 1];
+                $fechaFormateada = $fecha->format('d') . ' de ' . $mes;
+                array_push($dias, $fechaFormateada);
+                array_push($conteos, $registro->conteoTotal);
+                if($maximo < $registro->conteoTotal){
+                    $maximo = $registro->conteoTotal;
+                }
 
-            //         $fecha = Carbon::parse($fechaFormateada);
-            //         $mes = $meses[($fecha->format('n')) - 1];
-            //         $fechaFormateada = $fecha->format('d') . ' de ' . $mes;
+            }
 
-            //         $conteo = persona::whereDate('created_at', $fecha)->count();
-            //         array_push($conteos, $conteo);
-            //         array_push($dias, $fechaFormateada);
-            //         if($maximo < $conteo){
-            //             $maximo = $conteo;
-            //         }
-            //     }
 
-            //     $conteoRegistrosPorDia = [
-            //         'fechas' => $dias,
-            //         'totales' => $conteos,
-            //         'maximo' => $maximo
-            //     ];
-            //     $meta = meta::find(1);
-            //     $numeroPersonas = persona::count();
-            //     $numeroSimpatizantes = persona::where('simpatizante', 'SI')->count();
 
-            //     return [
-            //         [
-            //             $numeroPersonas,
-            //             $numeroSimpatizantes,
-            //             $meta->numeroObjetivo,
-            //             $meta->poblacionEstablecida
-            //         ],
-            //         $conteoRegistrosPorDia,
-            //         [
-            //             $numeroPersonas,
-            //             $meta->poblacionEstablecida - $numeroPersonas
-            //         ],
-            //         [
-            //             $numeroPersonas,
-            //             $meta->numeroObjetivo - $numeroPersonas
-            //         ]
-            //     ];
-        // }
+            return [
+                'tipo' => 'AGRUPACION',
+                'conteoSeparado' => $personas,
+                'registrosPorFechas' => [
+                    'conteos' => $conteos,
+                    'fechas' => $dias,
+                    'maximo' => $maximo,
+                ],
+            ];
+        }
+
     }
 }

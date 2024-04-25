@@ -128,15 +128,22 @@
         <script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap4.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script>
         @if (session()->has('mensajeExito'))
-            <script>
-                Swal.fire({
-                    'title':"Éxito",
-                    'text':"{{session('mensajeExito')}}",
-                    'icon':"success"
-                });
-            </script>
+            Swal.fire({
+                'title':"Éxito",
+                'text':"{{session('mensajeExito')}}",
+                'icon':"success"
+            });
         @endif
+        @if (session('nivelAccesoDenegado'))
+            Swal.fire({
+                'title':"Acceso denegado",
+                'text':"{{ session('nivelAccesoDenegado') }}",
+                'icon':"warning"
+            });
+        @endif
+        </script>
         @yield('scripts')
     </body>
 
