@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('encuestas', function (Blueprint $table) {
+        Schema::create('respuestas', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('folio');
-            $table->string('pregunta');
-            $table->string('respuesta');
-            $table->string('tipo');
-            $table->string('nombre_encuestado');
-            $table->foreignId('campania_id')->constrained();
+            $table->text('opcionSeleccionada');
+            $table->foreignId('pregunta_id')->constrained();
+            $table->foreignId('respuesta_id')->constrained();
             $table->timestamps();
         });
     }
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('encuestas');
+        Schema::dropIfExists('respuestas');
     }
 };
