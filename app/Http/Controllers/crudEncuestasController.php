@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\bitacora;
 use App\Models\distritoFederal;
 use App\Models\distritoLocal;
+use App\Models\encuesta;
 use App\Models\entidad;
+use App\Models\persona;
+use App\Models\pregunta;
 use App\Models\seccion;
 use App\Models\User;
 use Exception;
@@ -29,8 +32,227 @@ class crudEncuestasController extends Controller
 
         // $roles = Role::where('name', '!=', 'SUPER ADMINISTRADOR')->get(['name']);
         // return view('crudEncuestas', compact('roles'));
-        return view();
+        return view('crudEncuestas');
     }
+    public function cargarEncuestas(Request $formulario){
+        try {
+            $draw = ($formulario->get('draw') != null) ? $formulario->get('draw') : 1;
+            $start = ($formulario->get('start') != null) ? $formulario->get('start') : 0;
+            $length = ($formulario->get('length') != null) ? $formulario->get('length') : 10;
+            $filter = $formulario->get('search');
+            $search = (isset($filter['value']))? $filter['value'] : false;
+
+
+            $encuestasQuery = encuesta::where('deleted_at', null);
+            if ($search != false) {
+                $encuestasQuery->where(function($query) use ($search) {
+                    $query->where('nombre', 'LIKE', '%' . $search . '%')
+                        ->orWhere('fecha_inicio', 'LIKE', '%' . $search . '%')
+                        ->orWhere('fecha_fin', 'LIKE', '%' . $search . '%');
+                });
+            }
+            $total = $encuestasQuery->count();
+
+            $encuestas = $encuestasQuery->select(
+                'id',
+                'nombre',
+                DB::raw('DATE_FORMAT(fecha_inicio, "%d/%m/%Y") as fecha_inicio'),
+                DB::raw('DATE_FORMAT(fecha_fin, "%d/%m/%Y") as fecha_fin'),
+                'estatus',
+            )
+            ->orderBy('id', 'DESC')
+            ->skip($start)
+            ->take($length)
+            ->get();
+
+            return [
+                'data' => $encuestas,
+                'length' => $length,
+                'recordsTotal' => $total,
+                'recordsFiltered' => $total,
+                'start' => $start,
+                'draw' => $draw,
+            ];
+
+        } catch (Exception $e) {
+            Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
+            return null;
+        }
+    }
+    public function agregar(Request $formulario){
+        // session()->flash('formularioCrearErrores', true);
+        try{
+            $user = auth()->user();
+            DB::beginTransaction();
+            $nuevaEncuesta = new encuesta();
+            $nuevaEncuesta->user_id = $user->id;
+            $nuevaEncuesta->nombre = $formulario->nombreEncuesta;
+            $nuevaEncuesta->fecha_inicio = $formulario->fechaInicio;
+            $nuevaEncuesta->fecha_fin = $formulario->fechaFin;
+            $nuevaEncuesta->save();
+            //FALTA AÑADIR SI HAY PREGUNTAS DISPONIBLES Y AGREGARLAS
+            if(isset($formulario->preguntasCreadas) && count($formulario->PreguntasCreadas) > 0){
+                foreach ($formulario->preguntasCreadas as $pregunta) {
+                    $nuevaPregunta = new pregunta();
+                    $nuevaPregunta->pregunta = $pregunta->pregunta;
+                    $nuevaPregunta->tipo = $pregunta->tipo;
+                    $nuevaPregunta->valorPregunta = $pregunta->valorPregunta;
+                    $nuevaPregunta->obligatoria = $pregunta->obligatoria;
+                    $nuevaPregunta->opciones = $pregunta->opciones;
+                    $nuevaPregunta->valoresOpciones = $pregunta->valoresOpciones;
+                    $nuevaPregunta->encuesta_id = $nuevaEncuesta->id;
+                    $nuevaPregunta->save();
+                }
+            }
+            DB::commit();
+            // session()->forget('formularioCrearErrores');
+            session()->flash('mensajeExito', 'Encuesta creada con éxito');
+            return redirect()->route('crudEncuestasController.index');
+        }
+        catch(Exception $e){
+            DB::rollBack();
+            Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
+            return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al crear una encuesta'])->withInput();
+        }
+    }
+    public function editar(){
+         try{
+            // DB::beginTransaction();
+
+            // DB::commit();
+            // session()->forget('formularioCrearErrores');
+            // session()->flash('mensajeExito', 'Usuario creado con exito');
+            // return redirect()->route('crudUsuario.index');
+        }
+        catch(Exception $e){
+            // DB::rollBack();
+            // Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
+            // return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario'])->withInput();
+        }
+    }
+    public function borrar(){
+         try{
+            // DB::beginTransaction();
+
+            // DB::commit();
+            // session()->forget('formularioCrearErrores');
+            // session()->flash('mensajeExito', 'Usuario creado con exito');
+            // return redirect()->route('crudUsuario.index');
+        }
+        catch(Exception $e){
+            // DB::rollBack();
+            // Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
+            // return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario'])->withInput();
+        }
+    }
+    public function configurar(){
+         try{
+            // DB::beginTransaction();
+
+            // DB::commit();
+            // session()->forget('formularioCrearErrores');
+            // session()->flash('mensajeExito', 'Usuario creado con exito');
+            // return redirect()->route('crudUsuario.index');
+        }
+        catch(Exception $e){
+            // DB::rollBack();
+            // Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
+            // return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario'])->withInput();
+        }
+    }
+    public function clonar(){
+         try{
+            // DB::beginTransaction();
+
+            // DB::commit();
+            // session()->forget('formularioCrearErrores');
+            // session()->flash('mensajeExito', 'Usuario creado con exito');
+            // return redirect()->route('crudUsuario.index');
+        }
+        catch(Exception $e){
+            // DB::rollBack();
+            // Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
+            // return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario'])->withInput();
+        }
+    }
+    public function vistaPrevia(){
+         try{
+            // DB::beginTransaction();
+
+            // DB::commit();
+            // session()->forget('formularioCrearErrores');
+            // session()->flash('mensajeExito', 'Usuario creado con exito');
+            // return redirect()->route('crudUsuario.index');
+        }
+        catch(Exception $e){
+            // DB::rollBack();
+            // Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
+            // return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario'])->withInput();
+        }
+    }
+    public function cargarVistaPrevia(){
+         try{
+            // DB::beginTransaction();
+
+            // DB::commit();
+            // session()->forget('formularioCrearErrores');
+            // session()->flash('mensajeExito', 'Usuario creado con exito');
+            // return redirect()->route('crudUsuario.index');
+        }
+        catch(Exception $e){
+            // DB::rollBack();
+            // Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
+            // return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario'])->withInput();
+        }
+    }
+    public function iniciarEncuesta(){
+         try{
+            // DB::beginTransaction();
+
+            // DB::commit();
+            // session()->forget('formularioCrearErrores');
+            // session()->flash('mensajeExito', 'Usuario creado con exito');
+            // return redirect()->route('crudUsuario.index');
+        }
+        catch(Exception $e){
+            // DB::rollBack();
+            // Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
+            // return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario'])->withInput();
+        }
+    }
+    public function detenerEncuesta(){
+         try{
+            // DB::beginTransaction();
+
+            // DB::commit();
+            // session()->forget('formularioCrearErrores');
+            // session()->flash('mensajeExito', 'Usuario creado con exito');
+            // return redirect()->route('crudUsuario.index');
+        }
+        catch(Exception $e){
+            // DB::rollBack();
+            // Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
+            // return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario'])->withInput();
+        }
+    }
+    public function enviarCorreo(){
+         try{
+            // DB::beginTransaction();
+
+            // DB::commit();
+            // session()->forget('formularioCrearErrores');
+            // session()->flash('mensajeExito', 'Usuario creado con exito');
+            // return redirect()->route('crudUsuario.index');
+        }
+        catch(Exception $e){
+            // DB::rollBack();
+            // Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
+            // return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario'])->withInput();
+        }
+    }
+
+
+
     // public function todasEncuestas(Request $formulario){
     //     $user = auth()->user();
     //     $bitacora = new bitacora();

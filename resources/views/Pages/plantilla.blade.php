@@ -56,6 +56,10 @@
                                     Estadística
                                 </a>
                             @endcan
+                            <a class="nav-link" href="{{route('encuestas.index')}}">
+                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                                Encuestas
+                            </a>
                             @can('agregarSimpatizante.index')
                                 <a class="nav-link" href="{{url('/')}}/simpatizantes/agregar">
                                     <div class="sb-nav-link-icon"><i class="fas fa-file"></i></div>
@@ -80,12 +84,9 @@
                                     Usuarios del Sistema
                                 </a>
                             @endcan
-                          
-                                <a class="nav-link" href="{{url('/')}}/crudEncuestas">
-                                    <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                    Encuestas
-                                </a>
-                           
+
+
+
                             @can('bitacora.index')
                             <a class="nav-link" href="{{url('/')}}/bitacora">
                                 <div class="sb-nav-link-icon"><i class="fas fa-info"></i></div>

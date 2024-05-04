@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('encuestas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('persona_id')->constrained();
+            $table->foreignId('user_id')->constrained();
+            $table->string('nombre');
             $table->date('fecha_inicio_sistema')->nullable();
             $table->date('fecha_fin_sistema')->nullable();
             $table->date('fecha_inicio')->nullable();
