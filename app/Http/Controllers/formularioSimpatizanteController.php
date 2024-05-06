@@ -213,136 +213,154 @@ class formularioSimpatizanteController extends Controller
             //AGREGAR PERSONA
             $curpRepetido = identificacion::where('curp', strtoupper($formulario->curp))->first();
             if(!isset($formulario->curp) || !isset($curpRepetido)){
-                $user = auth()->user();
-                $personaNueva = new persona();
-                $personaNueva->user_id = $user->id;
-                $personaNueva->apellido_paterno = strtoupper($formulario->apellido_paterno);
-                $personaNueva->apellido_materno = strtoupper($formulario->apellido_materno);
-                $personaNueva->nombres = strtoupper($formulario->nombre);
-                $personaNueva->genero = strtoupper($formulario->genero);
-                $personaNueva->telefono_celular = strtoupper($formulario->telefonoCelular);
-                $personaNueva->correo = strtoupper($formulario->correo);
-                $personaNueva->afiliado = strtoupper($formulario->esAfiliado);
-                $personaNueva->programa = strtoupper($formulario->programa);
-                $personaNueva->simpatizante = strtoupper($formulario->esSimpatizante);
-                $personaNueva->funcion_en_campania = strtoupper($formulario->funciones);
-                $personaNueva->telefono_fijo = strtoupper($formulario->telefonoFijo);
-                $personaNueva->escolaridad = strtoupper($formulario->escolaridad);
-                $personaNueva->edadPromedio = $formulario->rangoEdad;
-                if(isset($formulario->rolEstructura) && $formulario->rolEstructura != -1){
-                    if(isset($formulario->rolNumero)){
-                        $personaNueva->rolEstructura = $formulario->rolEstructura;
-                        $personaNueva->rolNumero = $formulario->rolNumero;
-                    }
-                    else{
-                        DB::rollBack();
-                        switch ($formulario->rolEstructura) {
-                            case 'COORDINADOR ESTATAL':
-                                return back()->withErrors(['rolNumero' => 'Debe especificar que entidad coordina'])->withInput();
-                                break;
-                            case 'COORDINADOR DE DISTRITO LOCAL':
-                                return back()->withErrors(['rolNumero' => 'Debe especificar que distrito coordina'])->withInput();
-                                break;
-                            case 'COORDINADOR DE SECCIÓN':
-                                return back()->withErrors(['rolNumero' => 'Debe especificar que sección coordina'])->withInput();
-                                break;
-                            case 'PROMOTOR':
-                                return back()->withErrors(['rolNumero' => 'Debe especificar que sección promueve'])->withInput();
-                                break;
+                $personaNoHomogama = persona::join('identificacions', 'personas.id', '=', 'identificacions.persona_id')
+                ->join('domicilios', 'identificacions.id', '=', 'domicilios.identificacion_id')
+                ->where('nombres', strtoupper($formulario->nombre))
+                ->where('apellido_paterno', strtoupper($formulario->apellido_paterno))
+                ->where(function($query) use ($formulario) {
+                    $query->where('telefono_celular', $formulario->telefonoCelular)
+                    ->orWhere('correo', $formulario->correo)
+                    ->orWhere('calle', $formulario->calle);
+                })
+                ->first();
+                if(!isset($personaNoHomogama)){
+                    $user = auth()->user();
+                    $personaNueva = new persona();
+                    $personaNueva->user_id = $user->id;
+                    $personaNueva->apellido_paterno = strtoupper($formulario->apellido_paterno);
+                    $personaNueva->apellido_materno = strtoupper($formulario->apellido_materno);
+                    $personaNueva->nombres = strtoupper($formulario->nombre);
+                    $personaNueva->genero = strtoupper($formulario->genero);
+                    $personaNueva->telefono_celular = strtoupper($formulario->telefonoCelular);
+                    $personaNueva->correo = strtoupper($formulario->correo);
+                    $personaNueva->afiliado = strtoupper($formulario->esAfiliado);
+                    $personaNueva->programa = strtoupper($formulario->programa);
+                    $personaNueva->simpatizante = strtoupper($formulario->esSimpatizante);
+                    $personaNueva->funcion_en_campania = strtoupper($formulario->funciones);
+                    $personaNueva->telefono_fijo = strtoupper($formulario->telefonoFijo);
+                    $personaNueva->escolaridad = strtoupper($formulario->escolaridad);
+                    $personaNueva->edadPromedio = $formulario->rangoEdad;
+                    if(isset($formulario->rolEstructura) && $formulario->rolEstructura != -1){
+                        if(isset($formulario->rolNumero)){
+                            $personaNueva->rolEstructura = $formulario->rolEstructura;
+                            $personaNueva->rolNumero = $formulario->rolNumero;
                         }
-                    }
-                }
-                if($formulario->tieneRolTemporal == 'SI'){
-                    if(isset($formulario->rolEstructuraTemporal) && $formulario->rolEstructuraTemporal != -1){
-                        if(isset($formulario->rolNumeroTemporal)){
-                            $personaNueva->rolEstructuraTemporal = $formulario->rolEstructuraTemporal;
-                            $personaNueva->rolNumeroTemporal = $formulario->rolNumeroTemporal;
+                        else if($formulario->rolEstructura == 'PROMOTOR'){
+                            $personaNueva->rolEstructura = $formulario->rolEstructura;
                         }
                         else{
                             DB::rollBack();
-                            switch ($formulario->rolEstructuraTemporal) {
+                            switch ($formulario->rolEstructura) {
                                 case 'COORDINADOR ESTATAL':
-                                    return back()->withErrors(['rolNumeroTemporal' => 'Debe especificar que entidad coordina'])->withInput();
+                                    return back()->withErrors(['rolNumero' => 'Debe especificar que entidad coordina'])->withInput();
                                     break;
                                 case 'COORDINADOR DE DISTRITO LOCAL':
-                                    return back()->withErrors(['rolNumeroTemporal' => 'Debe especificar que distrito coordina'])->withInput();
+                                    return back()->withErrors(['rolNumero' => 'Debe especificar que distrito coordina'])->withInput();
                                     break;
                                 case 'COORDINADOR DE SECCIÓN':
-                                    return back()->withErrors(['rolNumeroTemporal' => 'Debe especificar que sección coordina'])->withInput();
-                                    break;
-                                case 'PROMOTOR':
-                                    return back()->withErrors(['rolNumeroTemporal' => 'Debe especificar que sección promueve'])->withInput();
+                                    return back()->withErrors(['rolNumero' => 'Debe especificar que sección coordina'])->withInput();
                                     break;
                             }
                         }
                     }
-                }
+                    if($formulario->tieneRolTemporal == 'SI'){
+                        if(isset($formulario->rolEstructuraTemporal) && $formulario->rolEstructuraTemporal != -1){
+                            if(isset($formulario->rolNumeroTemporal)){
+                                $personaNueva->rolEstructuraTemporal = $formulario->rolEstructuraTemporal;
+                                $personaNueva->rolNumeroTemporal = $formulario->rolNumeroTemporal;
+                            }
+                            else if($formulario->rolEstructuraTemporal == 'PROMOTOR'){
+                                $personaNueva->rolEstructuraTemporal = $formulario->rolEstructuraTemporal;
+                            }
+                            else{
+                                DB::rollBack();
+                                switch ($formulario->rolEstructuraTemporal) {
+                                    case 'COORDINADOR ESTATAL':
+                                        return back()->withErrors(['rolNumeroTemporal' => 'Debe especificar que entidad coordina'])->withInput();
+                                        break;
+                                    case 'COORDINADOR DE DISTRITO LOCAL':
+                                        return back()->withErrors(['rolNumeroTemporal' => 'Debe especificar que distrito coordina'])->withInput();
+                                        break;
+                                    case 'COORDINADOR DE SECCIÓN':
+                                        return back()->withErrors(['rolNumeroTemporal' => 'Debe especificar que sección coordina'])->withInput();
+                                        break;
+                                }
+                            }
+                        }
+                    }
 
-                if(isset($formulario->fechaNacimiento)){
-                    $personaNueva->fecha_nacimiento = $formulario->fechaNacimiento;
-                }
-                if(isset($formulario->facebook)){
-                    $personaNueva->nombre_en_facebook = $formulario->facebook;
-                }
-                if(isset($formulario->fechaRegistro)){
-                    $personaNueva->fecha_registro = $formulario->fechaRegistro;
-                }
-                if(isset($formulario->etiquetas)){
-                    $personaNueva->etiquetas = $formulario->etiquetas;
-                }
-                if(isset($formulario->observaciones)){
-                    $personaNueva->observaciones = $formulario->observaciones;
-                }
-                if(isset($formulario->folio)){
-                    $personaNueva->folio = $formulario->folio;
-                }
-                if(isset($formulario->promotor) && $formulario->promotor > 0){
-                    $personaNueva->persona_id = $formulario->promotor;
-                }
-                $personaNueva->save();
+                    if(isset($formulario->fechaNacimiento)){
+                        $personaNueva->fecha_nacimiento = $formulario->fechaNacimiento;
+                    }
+                    if(isset($formulario->facebook)){
+                        $personaNueva->nombre_en_facebook = $formulario->facebook;
+                    }
+                    if(isset($formulario->fechaRegistro)){
+                        $personaNueva->fecha_registro = $formulario->fechaRegistro;
+                    }
+                    if(isset($formulario->etiquetas)){
+                        $personaNueva->etiquetas = $formulario->etiquetas;
+                    }
+                    if(isset($formulario->observaciones)){
+                        $personaNueva->observaciones = $formulario->observaciones;
+                    }
+                    if(isset($formulario->folio)){
+                        $personaNueva->folio = $formulario->folio;
+                    }
+                    if(isset($formulario->promotor) && $formulario->promotor > 0){
+                        $personaNueva->persona_id = $formulario->promotor;
+                    }
+                    $personaNueva->save();
 
-                //AGREGAR IDENTIFICACION
-                $identificacion = new identificacion();
-                $identificacion->persona_id = $personaNueva->id;
-                $identificacion->curp = strtoupper($formulario->curp);
-                $identificacion->clave_elector = strtoupper($formulario->claveElectoral);
-                if($formulario->seccion > 0){
-                    $identificacion->seccion_id = $formulario->seccion;
-                }
-                $identificacion->save();
+                    //AGREGAR IDENTIFICACION
+                    $identificacion = new identificacion();
+                    $identificacion->persona_id = $personaNueva->id;
+                    $identificacion->curp = strtoupper($formulario->curp);
+                    $identificacion->clave_elector = strtoupper($formulario->claveElectoral);
+                    if($formulario->seccion > 0){
+                        $identificacion->seccion_id = $formulario->seccion;
+                    }
+                    $identificacion->save();
 
 
-                //AGREGAR DOMICILIO
-                $domicilio = new domicilio();
-                $domicilio->calle = strtoupper($formulario->calle);
-                $domicilio->numero_exterior = $formulario->numeroExterior;
-                $domicilio->numero_interior = $formulario->numeroInterior;
-                if($formulario->colonia > 0){
-                    $domicilio->colonia_id = $formulario->colonia;
-                }
-                $domicilio->identificacion_id = $identificacion->id;
-                if(isset($coordenadas) && count($coordenadas) > 1){
-                    $domicilio->latitud = $coordenadas[0];
-                    $domicilio->longitud = $coordenadas[1];
-                }
-                $domicilio->save();
+                    //AGREGAR DOMICILIO
+                    $domicilio = new domicilio();
+                    $domicilio->calle = strtoupper($formulario->calle);
+                    $domicilio->numero_exterior = $formulario->numeroExterior;
+                    $domicilio->numero_interior = $formulario->numeroInterior;
+                    if($formulario->colonia > 0){
+                        $domicilio->colonia_id = $formulario->colonia;
+                    }
+                    $domicilio->identificacion_id = $identificacion->id;
+                    if(isset($coordenadas) && count($coordenadas) > 1){
+                        $domicilio->latitud = $coordenadas[0];
+                        $domicilio->longitud = $coordenadas[1];
+                    }
+                    $domicilio->save();
 
-                $user = auth()->user();
-                $bitacora = new bitacora();
-                $bitacora->accion = 'Agregar nueva persona';
-                $bitacora->url = url()->current();
-                $bitacora->ip = $formulario->ip();
-                $bitacora->tipo = 'post';
-                $bitacora->user_id = $user->id;
-                $bitacora->save();
-                DB::commit();
-                session()->forget('validarCamposFormPersona');
-                session()->flash('mensajeExito', 'Usuario creado con éxito');
-                return redirect()->route('crudSimpatizantes.index');
+                    $user = auth()->user();
+                    $bitacora = new bitacora();
+                    $bitacora->accion = 'Agregar nueva persona';
+                    $bitacora->url = url()->current();
+                    $bitacora->ip = $formulario->ip();
+                    $bitacora->tipo = 'post';
+                    $bitacora->user_id = $user->id;
+                    $bitacora->save();
+                    DB::commit();
+                    session()->forget('validarCamposFormPersona');
+                    session()->flash('mensajeExito', 'Usuario creado con éxito');
+                    return redirect()->route('crudSimpatizantes.index');
+                }
+                else{
+                    DB::rollBack();
+                    return back()->withErrors(['errorValidacion' => 'El registro realizado ya se encuentra registrado. Revise el registro existente
+                    o verifique los campos de identificación (Nombre, Apellido paterno y dato de contacto)'])->withInput();
+
+                }
             }
             else{
                 DB::rollBack();
-                return back()->withErrors(['curp' => 'El curp ingresado ya esta registrado'])->withInput();
+                return back()->withErrors(['errorValidacion' => 'El curp ingresado ya esta registrado'])->withInput();
 
             }
         } catch (Exception $e) {

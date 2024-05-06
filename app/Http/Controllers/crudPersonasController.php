@@ -80,6 +80,9 @@ class crudPersonasController extends Controller
                             $persona->rolEstructura = $formulario->rolEstructura;
                             $persona->rolNumero = $formulario->rolNumero;
                         }
+                        else if($formulario->rolEstructura == 'PROMOTOR'){
+                            $persona->rolEstructura = $formulario->rolEstructura;
+                        }
                         else{
                             DB::rollBack();
                             switch ($formulario->rolEstructura) {
@@ -92,9 +95,6 @@ class crudPersonasController extends Controller
                                 case 'COORDINADOR DE SECCIÓN':
                                     return back()->withErrors(['rolNumero' => 'Debe especificar que sección coordina'])->withInput();
                                     break;
-                                case 'PROMOTOR':
-                                    return back()->withErrors(['rolNumero' => 'Debe especificar que sección promueve'])->withInput();
-                                    break;
                             }
                         }
                     }
@@ -103,6 +103,9 @@ class crudPersonasController extends Controller
                             if(isset($formulario->rolNumeroTemporal)){
                                 $persona->rolEstructuraTemporal = $formulario->rolEstructuraTemporal;
                                 $persona->rolNumeroTemporal = $formulario->rolNumeroTemporal;
+                            }
+                            else if($formulario->rolEstructuraTemporal == 'PROMOTOR'){
+                                $persona->rolEstructuraTemporal = $formulario->rolEstructuraTemporal;
                             }
                             else{
                                 DB::rollBack();
@@ -115,9 +118,6 @@ class crudPersonasController extends Controller
                                         break;
                                     case 'COORDINADOR DE SECCIÓN':
                                         return back()->withErrors(['rolNumeroTemporal' => 'Debe especificar que sección coordina'])->withInput();
-                                        break;
-                                    case 'PROMOTOR':
-                                        return back()->withErrors(['rolNumeroTemporal' => 'Debe especificar que sección promueve'])->withInput();
                                         break;
                                 }
                             }

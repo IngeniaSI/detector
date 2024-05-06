@@ -541,7 +541,9 @@
             <option value="Promovido">Promovido</option>
             <option value="Afiliado">Afiliado</option>
       </select>
-       
+      <div class="mt-3">
+          <small>*Los campos de color azul seran supervisados</small>
+      </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" onclick="tipoRegistro()">Guardar Cambios</button>
@@ -758,8 +760,12 @@
         return resultado;
     }
 
+    var myModal = new bootstrap.Modal(document.getElementById('exampleModal'))
     // FUNCION PARA CARGAR TABLA DE USUARIOS
     $(document).ready(function () {
+        @if(!session()->has('validarCamposFormPersona') && explode('/', url()->current()) [count(explode('/', url()->current())) - 1] == 'agregar')
+            myModal.show()
+        @endif
         Swal.fire({
             title: 'Cargando...',
             allowOutsideClick: false,
@@ -1054,7 +1060,8 @@
                 $('#rolNumeroEncabezadoTemporal').text('¿En qué Sección?');
                 break;
                 case 'PROMOTOR':
-                $('#rolNumeroEncabezadoTemporal').text('¿En qué Sección?');
+                $('#rolNumeroEncabezadoTemporal').text('Promotor seleccionado');
+                $('#rolNumeroTemporal').prop('disabled', true);
                 break;
             default:
                 $('#rolNumeroEncabezadoTemporal').text('Seleccione un rol en estructura');
@@ -1075,7 +1082,8 @@
                 $('#rolNumeroEncabezado').text('¿En qué Sección?');
                 break;
                 case 'PROMOTOR':
-                $('#rolNumeroEncabezado').text('¿En qué Sección?');
+                $('#rolNumeroEncabezado').text('Promotor seleccionado');
+                $('#rolNumero').prop('disabled', true);
                 break;
             default:
                 $('#rolNumeroEncabezado').text('Seleccione un rol en estructura');
@@ -1212,16 +1220,14 @@
             $('#rolNumeroTemporal').prop('disabled', true);
         }
     });
-    var myModal = new bootstrap.Modal(document.getElementById('exampleModal'))
-    myModal.show()
+
 
     function tipoRegistro(){
         myModal.hide()
 
         if($("#tipoRegistro").val()=="Prospecto"){
-            $("#apellido_materno").addClass('bg-info');
-            $("#apellido_paterno").addClass("bg-info")
             $("#nombre").addClass('bg-info');
+            $("#apellido_paterno").addClass("bg-info")
             $("#telefonoCelular").addClass('bg-info');
             $("#telefonoFijo").addClass("bg-info")
             $("#correo").addClass('bg-info');
@@ -1233,7 +1239,6 @@
             $("#municipios").addClass('bg-info');
             $("#fondoDelegacion").addClass('bg-info');
             $("#fondoColonia").addClass('bg-info');
-
         }
         if($("#tipoRegistro").val()=="Simpatizante"){
             $("#apellido_materno").addClass('bg-info');
@@ -1251,7 +1256,6 @@
             $("#fondoDelegacion").addClass('bg-info');
             $("#fondoColonia").addClass('bg-info');
             $("#fondoSeccion").addClass('bg-info');
-
         }
         if($("#tipoRegistro").val()=="Promovido"){
             $("#apellido_materno").addClass('bg-info');
@@ -1292,8 +1296,8 @@
             $("#datosRelacion").addClass('bg-info');
         }
     }
-    
-    
+
+
 
     </script>
 @endsection
