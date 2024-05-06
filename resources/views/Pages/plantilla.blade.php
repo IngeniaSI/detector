@@ -85,8 +85,6 @@
                                 </a>
                             @endcan
 
-
-
                             @can('bitacora.index')
                             <a class="nav-link" href="{{url('/')}}/bitacora">
                                 <div class="sb-nav-link-icon"><i class="fas fa-info"></i></div>

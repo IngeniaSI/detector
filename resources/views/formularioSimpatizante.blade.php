@@ -42,7 +42,9 @@
     }
 </style>
 <BR>
+
 <div class="card" class="m-3">
+
     <div class="card-header">
         <h3>
             {{
@@ -65,8 +67,8 @@
                     <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                 @enderror
                 <br>
-                <div class="p-4 border rounded-3 bg-secondary bg-opacity-10">
-                    <h3>Datos de control</h3>
+                <div id="datosControl" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
+                    <h3>Datos de control </h3>
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
                             <h4>Fecha de registro</h4>
@@ -94,7 +96,7 @@
                     </div>
                 </div>
                 <br>
-                <div class="p-4 border rounded-3 bg-secondary bg-opacity-10">
+                <div id="datosPersonales" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
                     <h3>Datos personales</h3>
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
@@ -187,7 +189,7 @@
                     </div>
                 </div>
                 <br>
-                <div class="p-4 border rounded-3 bg-secondary bg-opacity-10">
+                <div id="datosContacto" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
                     <h3>Datos de contacto</h3>
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
@@ -234,7 +236,7 @@
                     </div>
                 </div>
                 <br>
-                <div class="p-4 border rounded-3 bg-secondary bg-opacity-10">
+                <div id="datosContacto" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
                     <h3>Datos de domicilio</h3>
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
@@ -264,7 +266,7 @@
                     </div>
                     <br>
                     <div class="row row-cols-1 row-cols-sm-3">
-                        <div class="col">
+                        <div class="col" id="fondoColonia">
                             <h4>Colonia</h4>
                             <select class="form-select selectToo" id="colonias" name="colonia">
                                 <option value="0">Sin dato</option>
@@ -280,7 +282,7 @@
                             <div id="codigoPostalError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
-                        <div class="col">
+                        <div class="col" id="fondoDelegacion">
                             <h4>Municipio o Delegación</h4>
                             <select class="form-select selectToo" id="municipios" name="municipio">
                                 <option value="0">Sin dato</option>
@@ -306,7 +308,7 @@
                     </center>
                 </div>
                 <br>
-                <div class="p-4 border rounded-3 bg-secondary bg-opacity-10">
+                <div id="datosIdentificacion" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
                     <h3>Datos de identificación</h3>
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
@@ -325,7 +327,7 @@
                                 <div id="curpError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
                         </div>
-                        <div class="col">
+                        <div class="col" id="fondoSeccion">
                             <div class="d-flex">
                                 <h4>Sección</h4>
                                 <a class="ms-3" title="Este dato se encuentra en su identificación INE">
@@ -372,7 +374,7 @@
                     </div>
                 </div>
                 <br>
-                <div class="p-4 border rounded-3 bg-secondary bg-opacity-10">
+                <div id="datosRelacion" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
                     <h3>Datos de relación</h3>
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
@@ -412,7 +414,7 @@
                     </div>
                 </div>
                 <br>
-                <div class="p-4 border rounded-3 bg-secondary bg-opacity-10">
+                <div id="datosEstructura" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
                     <h3>Datos de estructura</h3>
                     <div class="row row-cols-1 row-cols-sm-3">
                         <div class="col">
@@ -475,7 +477,7 @@
                     </div>
                 </div>
                 <br>
-                <div class="p-4 border rounded-3 bg-secondary bg-opacity-10">
+                <div id="otrosDatos" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
                     <h3>Otros datos</h3>
                     <h4>Etiquetas</h4>
                     <div class="row justify-content-between">
@@ -522,6 +524,31 @@
 
 
     </script>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Tipo de Registro</h5>
+      </div>
+      <div class="modal-body">
+      <select id="tipoRegistro" class="form-select" aria-label="Tipo de Registro">
+            <option value="Prospecto" selected>Prospecto</option>
+            <option value="Simpatizante">Simpatizante</option>
+            <option value="Promovido">Promovido</option>
+            <option value="Afiliado">Afiliado</option>
+      </select>
+       
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="tipoRegistro()">Guardar Cambios</button>
+      </div>
+    </div>
+  </div>
+
 @endsection
 
 @section('scripts')
@@ -540,6 +567,12 @@
 
 
 <script text="text/javascript">
+
+
+
+
+
+
     var marker;
     var marker2;
     const myLatLng = { lat: 24.123954, lng: - 110.311664 };
@@ -1179,5 +1212,88 @@
             $('#rolNumeroTemporal').prop('disabled', true);
         }
     });
+    var myModal = new bootstrap.Modal(document.getElementById('exampleModal'))
+    myModal.show()
+
+    function tipoRegistro(){
+        myModal.hide()
+
+        if($("#tipoRegistro").val()=="Prospecto"){
+            $("#apellido_materno").addClass('bg-info');
+            $("#apellido_paterno").addClass("bg-info")
+            $("#nombre").addClass('bg-info');
+            $("#telefonoCelular").addClass('bg-info');
+            $("#telefonoFijo").addClass("bg-info")
+            $("#correo").addClass('bg-info');
+            $("#calle").addClass('bg-info');
+            $("#numeroExterior").addClass("bg-info")
+            $("#numeroInterior").addClass('bg-info');
+            $("#colonias").addClass('bg-info');
+            $("#codigoPostal").addClass('bg-info');
+            $("#municipios").addClass('bg-info');
+            $("#fondoDelegacion").addClass('bg-info');
+            $("#fondoColonia").addClass('bg-info');
+
+        }
+        if($("#tipoRegistro").val()=="Simpatizante"){
+            $("#apellido_materno").addClass('bg-info');
+            $("#apellido_paterno").addClass("bg-info")
+            $("#nombre").addClass('bg-info');
+            $("#telefonoCelular").addClass('bg-info');
+            $("#telefonoFijo").addClass("bg-info")
+            $("#correo").addClass('bg-info');
+            $("#calle").addClass('bg-info');
+            $("#numeroExterior").addClass("bg-info")
+            $("#numeroInterior").addClass('bg-info');
+            $("#colonias").addClass('bg-info');
+            $("#codigoPostal").addClass('bg-info');
+            $("#municipios").addClass('bg-info');
+            $("#fondoDelegacion").addClass('bg-info');
+            $("#fondoColonia").addClass('bg-info');
+            $("#fondoSeccion").addClass('bg-info');
+
+        }
+        if($("#tipoRegistro").val()=="Promovido"){
+            $("#apellido_materno").addClass('bg-info');
+            $("#apellido_paterno").addClass("bg-info")
+            $("#nombre").addClass('bg-info');
+            $("#telefonoCelular").addClass('bg-info');
+            $("#telefonoFijo").addClass("bg-info")
+            $("#correo").addClass('bg-info');
+            $("#calle").addClass('bg-info');
+            $("#numeroExterior").addClass("bg-info")
+            $("#numeroInterior").addClass('bg-info');
+            $("#colonias").addClass('bg-info');
+            $("#codigoPostal").addClass('bg-info');
+            $("#municipios").addClass('bg-info');
+            $("#fondoDelegacion").addClass('bg-info');
+            $("#fondoColonia").addClass('bg-info');
+            $("#fondoSeccion").addClass('bg-info');
+            $("#claveElectoral").addClass('bg-info');
+        }
+        if($("#tipoRegistro").val()=="Afiliado"){
+            $("#apellido_materno").addClass('bg-info');
+            $("#apellido_paterno").addClass("bg-info")
+            $("#nombre").addClass('bg-info');
+            $("#telefonoCelular").addClass('bg-info');
+            $("#telefonoFijo").addClass("bg-info")
+            $("#correo").addClass('bg-info');
+            $("#calle").addClass('bg-info');
+            $("#numeroExterior").addClass("bg-info")
+            $("#numeroInterior").addClass('bg-info');
+            $("#colonias").addClass('bg-info');
+            $("#codigoPostal").addClass('bg-info');
+            $("#municipios").addClass('bg-info');
+            $("#fondoDelegacion").addClass('bg-info');
+            $("#fondoColonia").addClass('bg-info');
+            $("#fondoSeccion").addClass('bg-info');
+            $("#claveElectoral").addClass('bg-info');
+            $("#datosRelacion").removeClass('bg-secondary bg-opacity-10');
+            $("#datosRelacion").addClass('bg-info');
+        }
+    }
+    
+    
+
     </script>
 @endsection
