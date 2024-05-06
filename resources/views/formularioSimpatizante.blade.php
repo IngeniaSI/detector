@@ -152,6 +152,7 @@
                         <div class="col">
                             <h4>Rango de edad</h4>
                             <select id="rangoEdad" class="form-select" name="rangoEdad">
+                                <option {{old('rangoEdad') == '0' ? 'selected' : ''}} value="23">NO ESPECIFICÓ</option>
                                 <option {{old('rangoEdad') == '23' ? 'selected' : ''}} value="23">18-28</option>
                                 <option {{old('rangoEdad') == '34' ? 'selected' : ''}} value="34">29-39</option>
                                 <option {{old('rangoEdad') == '45' ? 'selected' : ''}} value="45">40-49</option>
@@ -1193,6 +1194,9 @@
         }
         else if(70 <= edad){
             $('#rangoEdad').val(74);
+        }
+        else{
+            $('#rangoEdad').val(0);
         }
     });
 

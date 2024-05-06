@@ -75,7 +75,6 @@ class tablaSimpatizantesController extends Controller
                     break;
             }
 
-
             $user = auth()->user();
             $draw = ($formulario->get('draw') != null) ? $formulario->get('draw') : 1;
             $start = ($formulario->get('start') != null) ? $formulario->get('start') : 0;

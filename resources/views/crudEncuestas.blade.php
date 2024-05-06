@@ -43,7 +43,7 @@
         <div class="modal fade" id="AgregarModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 {{-- FORMULARIO DE AGREGAR  --}}
-                <form id="formularioCrearEncuesta" action="#" method="post">
+                <form id="formularioCrearEncuesta" action="{{route('encuestas.agregar')}}" method="post">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel"> Agregar Encuestas</h5>
@@ -51,26 +51,35 @@
                         </div>
                         <div class="modal-body">
                             @csrf
-                            <div class="row">
+                            <div class="row mb-3">
                                 <div class="col">
                                     <h4>Descripción</h4>
-                                    <input type="text" name="descripcion" class="form-control" value="{{old('nombre')}}" minlength="3" maxlength="255">
-                                    @error('nombre')
+                                    <input type="text" name="nombreEncuesta" class="form-control" value="{{old('nombreEncuesta')}}" minlength="3" maxlength="255">
+                                    @error('nombreEncuesta')
+                                        <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <h4>Fecha de Inicio</h4>
+                                    <input type="date" name="fechaInicio" class="form-control">
+                                    @error('fechaInicio')
                                         <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                                     @enderror
                                 </div>
                                 <div class="col">
                                     <h4>Fecha de Finalización</h4>
-                                    <input type="date" name="fechaFinalizacion" class="form-control">
-                                    @error('apellido_paterno')
+                                    <input type="date" name="fechaFin" class="form-control">
+                                    @error('fechaFin')
                                         <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                                     @enderror
                                 </div>
-                               
                             </div>
                             <br>
                             <div class="row">
-                            <div id="fb-editor"></div>
+                                <h4>Gestor de preguntas</h4>
+                                <div id="fb-editor"></div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -92,31 +101,40 @@
                 method="post">
                 <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel"> Modificar Encuestas</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">Modificar Encuestas</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             @csrf
-                            <div class="row">
+                            <div class="row mb-3">
                                 <div class="col">
                                     <h4>Descripción</h4>
-                                    <input type="text" name="descripcion" class="form-control" value="{{old('nombre')}}" minlength="3" maxlength="255">
-                                    @error('nombre')
+                                    <input type="text" name="descripcion" class="form-control" value="{{old('descripcion')}}" minlength="3" maxlength="255">
+                                    @error('descripcion')
+                                        <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <h4>Fecha de Inicio</h4>
+                                    <input type="date" name="fechaInicio" class="form-control">
+                                    @error('fechaInicio')
                                         <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                                     @enderror
                                 </div>
                                 <div class="col">
                                     <h4>Fecha de Finalización</h4>
                                     <input type="date" name="fechaFinalizacion" class="form-control">
-                                    @error('apellido_paterno')
+                                    @error('fechaFinalizacion')
                                         <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                                     @enderror
                                 </div>
-                               
                             </div>
                             <br>
                             <div class="row">
-                            <div id="fb-editor2"></div>
+                                <h4>Gestor de preguntas</h4>
+                                <div id="fb-editor2"></div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -142,9 +160,10 @@
                 <table id="tablaUsuarios2" class="table table-striped table-bordered " style="width:100%">
                     <thead>
                         <tr>
-                            <th>Creado</th>
+                            <th>Id</th>
                             <th>Descripción</th>
-                            <th>Finaliza</th>
+                            <th>Periodo</th>
+                            <th>Estatus</th>
                             <th>Acción</th>
                         </tr>
                     </thead>
@@ -284,7 +303,7 @@
   $fbTemplate2 = $(document.getElementById('fb-editor2'));
   $fbTemplate2.formBuilder(options);
 });
-       
+
         var niveles = [];
         $(document).ready(function() {
             @if (session()->has('formularioCrearErrores'))
@@ -302,9 +321,58 @@
                 language: {
                     url: 'https://cdn.datatables.net/plug-ins/1.13.5/i18n/es-ES.json',
                 },
-                // buttons: [ 'copy', 'excel', 'csv', 'pdf', 'colvis' ]
+                "processing": true,
+                "serverSide": true,
+                ajax: {
+                    url: "{{route('encuestas.cargar')}}",
+                },
+                columns: [
+                    { data: 'id' },
+                    { data: 'nombre'},
+                    { data: null,
+                        render: function(data, type, row){
+                            return (data.fecha_inicio != null) ? `${data.fecha_inicio} - ${data.fecha_fin}` : 'SIN PERIODO';
+                        }},
+                    { data: 'estatus' },
+                    { data: null,
+                        render: function(data, type, row){
+                            var botones = '';
+                            botones = '<button id="btnModificarEncuesta_'+data.id+'" class ="btn btn-warning" data-bs-toggle="modal" data-bs-target="#ModificarModal" >'+
+                                    '<i class="fas fa-edit me-1">'+
+                                '</i>&nbsp;Editar'+
+                                '</button>'+
+                                '<button id="btnConfigurarUsuario_'+data.id+'" class ="btn btn-primary" >'+
+                                    '<i class="fas fa-gear me-1">'+
+                                '</i>&nbsp;Configurar'+
+                                '</button>'+
+                                '<button id="btnIniciarEncuestaUsuario_'+data.id+'" class ="btn btn-success">'+
+                                    '<i class="fas fa-play">'+
+                                '</i>&nbsp;Iniciar Encuesta'+
+                                '</button>'+
+                                '<button id="btnCerrarEncuestaUsuario_'+data.id+'" class ="btn btn-secondary">'+
+                                    '<i class="fas fa-stop">'+
+                                '</i>&nbsp;Cerrar Encuesta'+
+                                '</button>'+
+                                '<button id="btnEnviarCorreoUsuario_'+data.id+'" class ="btn btn-dark">'+
+                                    '<i class="fas fa-envelope">'+
+                                '</i>&nbsp;Enviar por Correo'+
+                                '</button>'+
+                                '<button id="btnCerrarEncuestaUsuario_'+data.id+'" class ="btn btn-ligth">'+
+                                    '<i class="fas fa-clone">'+
+                                '</i>&nbsp;Clonar'+
+                                '</button>'+
+                                '<form action="{{url('/')}}/gestor-usuarios/borrar-usuario-' + data.id + '" method="post">'+
+                                '<a id="borrarUsuario_'+data.id+'" type="button" class="btn btn btn-danger">'+
+                                '<input type="hidden" value="{{csrf_token()}}" name="_token">'+
+                                '<i class="fas fa-close me-1">'+
+                                '</i>Borrar</a>'+
+                                '</form>'+
+                            '';
+                            return botones;
+                        }},
+                    // Agrega más columnas según tus datos
+                ]
             });
-            console.log('iniciar select');
             $('.selectToo').select2({
                 language: {
 
@@ -318,126 +386,9 @@
                     }
                 }
             });
-            console.log('fin select');
-            $.when(
-                $.ajax({
-                    type: "get",
-                    url: "{{route('crudUsuario.todos')}}",
-                    data: [],
-                    contentType: "application/x-www-form-urlencoded",
-                success: function (response) {
-                    niveles = response[1];
-                    console.log(response);
-                    if(response[0].length == 0){
-                        var nuevaFila = $('<tr>').append(
-                            $('<td>').attr('colspan', 99).text('Sin registros')
-                        );
-                        $('#tablaUsuarios2 tbody').append(nuevaFila);
-                    }
-                    $.each(response[0], function (index, elemento) {
-                        var apellidoMaterno = (elemento.apellido_materno != null) ? elemento.apellido_materno : '';
-                        $('#tablaUsuarios2').DataTable().row.add([
-                            '29-04-2024', elemento.nombre,'23-09-2024',
-                            @can('crudUsuarios.edit')
-                                '<button id="btnModificarEncuesta_'+elemento.id+'" class ="btn btn-warning" data-bs-toggle="modal" data-bs-target="#ModificarModal" >'+
-                                    '<i class="fas fa-edit me-1">'+
-                                '</i>&nbsp;Editar'+
-                                '</button>'+
-                                '<button id="btnConfigurarUsuario_'+elemento.id+'" class ="btn btn-primary" >'+
-                                    '<i class="fas fa-gear me-1">'+
-                                '</i>&nbsp;Configurar'+
-                                '</button>'+
-                                '<button id="btnIniciarEncuestaUsuario_'+elemento.id+'" class ="btn btn-success">'+
-                                    '<i class="fas fa-play">'+
-                                '</i>&nbsp;Iniciar Encuesta'+
-                                '</button>'+
-                                '<button id="btnCerrarEncuestaUsuario_'+elemento.id+'" class ="btn btn-secondary">'+
-                                    '<i class="fas fa-stop">'+
-                                '</i>&nbsp;Cerrar Encuesta'+
-                                '</button>'+
-                                '<button id="btnEnviarCorreoUsuario_'+elemento.id+'" class ="btn btn-dark">'+
-                                    '<i class="fas fa-envelope">'+
-                                '</i>&nbsp;Enviar por Correo'+
-                                '</button>'+
-                                '<button id="btnCerrarEncuestaUsuario_'+elemento.id+'" class ="btn btn-ligth">'+
-                                    '<i class="fas fa-clone">'+
-                                '</i>&nbsp;Clonar'+
-                                '</button>'+
-                            @endcan
-                            @can('crudUsuarios.delete')
-                                '<form action="{{url('/')}}/gestor-usuarios/borrar-usuario-' + elemento.id + '" method="post">'+
-                                '<a id="borrarUsuario_'+elemento.id+'" type="button" class="btn btn btn-danger">'+
-                                '<input type="hidden" value="{{csrf_token()}}" name="_token">'+
-                                '<i class="fas fa-close me-1">'+
-                                '</i>Borrar</a>'+
-                                '</form>'+
-                            @endcan
-                            ''
-                        ]).draw();
-                        
-                    });
-                    
-                    },
-                    error: function( data, textStatus, jqXHR){
-                        if (jqXHR.status === 0) {
-                            console.log('Not connect: Verify Network.');
-                        } else if (jqXHR.status == 404) {
-                            console.log('Requested page not found [404]');
-                        } else if (jqXHR.status == 500) {
-                            console.log('Internal Server Error [500].');
-                        } else if (textStatus === 'parsererror') {
-                            console.log('Requested JSON parse failed.');
-                        } else if (textStatus === 'timeout') {
-                            console.log('Time out error.');
-                        } else if (textStatus === 'abort') {
-                            console.log('Ajax request aborted.');
-                        } else {
-                            console.log('Uncaught Error: ' + jqXHR.responseText);
-                        }
-                    }
-                })
-            ).then(
-                function( data, textStatus, jqXHR ) {
-                    $('.nivelAcceso').change(function (e) {
-                        var seleccion = $(this).val();
-                        if(seleccion != -1){
-                            $('.nivelesSeleccionados').html('');
-                            switch (seleccion) {
-                                case 'TODO':
-                                    $('.nivelesSeleccionados').prop('disabled', true);
-                                    break;
-                                case 'ENTIDAD':
-                                    $('.nivelesSeleccionados').prop('disabled', false);
-                                        $.each(niveles.entidades, function (indexInArray, valueOfElement) {
-                                            $('.nivelesSeleccionados').append($('<option>').html(valueOfElement.id));
-                                        });
-                                    break;
-                                case 'DISTRITO FEDERAL':
-                                    $('.nivelesSeleccionados').prop('disabled', false);
-                                        $.each(niveles.distritosFederales, function (indexInArray, valueOfElement) {
-                                            $('.nivelesSeleccionados').append($('<option>').html(valueOfElement.id));
-                                        });
-                                    break;
-                                case 'DISTRITO LOCAL':
-                                    $('.nivelesSeleccionados').prop('disabled', false);
-                                        $.each(niveles.distritosLocales, function (indexInArray, valueOfElement) {
-                                            $('.nivelesSeleccionados').append($('<option>').html(valueOfElement.id));
-                                        });
-                                    break;
-                                case 'SECCION':
-                                    $('.nivelesSeleccionados').prop('disabled', false);
-                                        $.each(niveles.secciones, function (indexInArray, valueOfElement) {
-                                            $('.nivelesSeleccionados').append($('<option>').html(valueOfElement.id));
-                                        });
-                                    break;
-                            }
-                            $('.nivelesSeleccionados').trigger('change');
-                        }
-                    });
-            });
         });
 
-        
+
 
     </script>
 @endsection

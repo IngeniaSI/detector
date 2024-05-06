@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('respuestas', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('folio');
             $table->text('opcionSeleccionada');
             $table->foreignId('pregunta_id')->constrained();
             $table->foreignId('respuesta_id')->constrained();

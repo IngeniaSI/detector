@@ -12,7 +12,7 @@ use App\Http\Controllers\crudEncuestasController;
 use App\Models\bitacora;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\View;
 
 /*
 |--------------------------------------------------------------------------
@@ -98,14 +98,16 @@ Route::prefix('/')->middleware('auth')->group(function (){
         Route::post('/cargarMeta', 'cargarMeta')
         ->name('estadistica.cargarMeta')->middleware(['can:estadistica.cambiarMeta']);
     });
+    Route::prefix('encuestas')->controller(crudEncuestasController::class)->group(function(){
+        Route::get("/", 'index')->name('encuestas.index');
+        Route::get("/inicializar", 'cargarEncuestas')->name('encuestas.cargar');
+        Route::post("/agregar", 'agregar')->name('encuestas.agregar');
+    });
 
     Route::get('/mapa', [mapaController::class, 'index'])->middleware(['can:mapa.index']);
     Route::get('/bitacora', [bitacoraController::class, 'index'])->name('bitacora.index')->middleware(['can:bitacora.index']);
 
 
-    // Route::get("/crudEncuestas", function(){
-    //     return View::make("crudEncuestas");
-    //  });
 
 });
 

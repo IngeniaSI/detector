@@ -16,9 +16,9 @@ return new class extends Migration
             $table->text('pregunta');
             $table->string('tipo');
             $table->integer('valorPregunta');
-            $table->boolean('obligatoria');
-            $table->text('opciones');
-            $table->text('valorOpciones');
+            $table->boolean('obligatoria')->default(false);
+            $table->text('opciones')->nullable();
+            $table->text('valorOpciones')->nullable();
             $table->foreignId('encuesta_id')->constrained();
             $table->timestamps();
         });
