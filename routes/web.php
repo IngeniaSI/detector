@@ -102,6 +102,14 @@ Route::prefix('/')->middleware('auth')->group(function (){
         Route::get("/", 'index')->name('encuestas.index');
         Route::get("/inicializar", 'cargarEncuestas')->name('encuestas.cargar');
         Route::post("/agregar", 'agregar')->name('encuestas.agregar');
+        Route::get("/ver-{encuesta}", 'ver')->name('encuestas.ver');
+        Route::post("/modificar-{encuesta}", 'editar')->name('encuestas.modificar');
+        Route::post("/iniciar-periodo-{encuesta}", 'iniciarEncuesta')->name('encuestas.iniciarEncuesta');
+        Route::post("/finalizar-periodo-{encuesta}", 'detenerEncuesta')->name('encuestas.finalizarEncuesta');
+        Route::post("/borrar-{encuesta}", 'borrar')->name('encuestas.borrar');
+        Route::post("/duplicar-{encuesta}", 'clonar')->name('encuestas.clonar');
+
+
     });
 
     Route::get('/mapa', [mapaController::class, 'index'])->middleware(['can:mapa.index']);

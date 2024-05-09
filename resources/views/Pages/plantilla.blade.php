@@ -56,10 +56,12 @@
                                     Estadística
                                 </a>
                             @endcan
-                            <a class="nav-link" href="{{route('encuestas.index')}}">
-                                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                                Encuestas
-                            </a>
+                            @can('encuestas.index')
+                                <a class="nav-link" href="{{route('encuestas.index')}}">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                                    Encuestas
+                                </a>
+                            @endcan
                             @can('agregarSimpatizante.index')
                                 <a class="nav-link" href="{{url('/')}}/simpatizantes/agregar">
                                     <div class="sb-nav-link-icon"><i class="fas fa-file"></i></div>

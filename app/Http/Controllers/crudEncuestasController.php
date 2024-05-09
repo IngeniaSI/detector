@@ -80,7 +80,7 @@ class crudEncuestasController extends Controller
         }
     }
     public function agregar(Request $formulario){
-        // session()->flash('formularioCrearErrores', true);
+        session()->flash('encuestaCrearErrores', true);
         try{
             $user = auth()->user();
             DB::beginTransaction();
@@ -89,24 +89,13 @@ class crudEncuestasController extends Controller
             $nuevaEncuesta->nombre = $formulario->nombreEncuesta;
             $nuevaEncuesta->fecha_inicio = $formulario->fechaInicio;
             $nuevaEncuesta->fecha_fin = $formulario->fechaFin;
-            $nuevaEncuesta->save();
-            //FALTA AÑADIR SI HAY PREGUNTAS DISPONIBLES Y AGREGARLAS
-            if(isset($formulario->preguntasCreadas) && count($formulario->PreguntasCreadas) > 0){
-                foreach ($formulario->preguntasCreadas as $pregunta) {
-                    $nuevaPregunta = new pregunta();
-                    $nuevaPregunta->pregunta = $pregunta->pregunta;
-                    $nuevaPregunta->tipo = $pregunta->tipo;
-                    $nuevaPregunta->valorPregunta = $pregunta->valorPregunta;
-                    $nuevaPregunta->obligatoria = $pregunta->obligatoria;
-                    $nuevaPregunta->opciones = $pregunta->opciones;
-                    $nuevaPregunta->valoresOpciones = $pregunta->valoresOpciones;
-                    $nuevaPregunta->encuesta_id = $nuevaEncuesta->id;
-                    $nuevaPregunta->save();
-                }
+            if(isset($formulario->preguntasJSON) && $formulario->preguntasJSON != ''){
+                $nuevaEncuesta->jsonPregunta = $formulario->preguntasJSON;
             }
+            $nuevaEncuesta->save();
             DB::commit();
-            // session()->forget('formularioCrearErrores');
-            session()->flash('mensajeExito', 'Encuesta creada con éxito');
+            session()->forget('encuestaCrearErrores');
+            session()->flash('mensajeExito', 'La encuesta se ha creada con éxito');
             return redirect()->route('crudEncuestasController.index');
         }
         catch(Exception $e){
@@ -115,7 +104,54 @@ class crudEncuestasController extends Controller
             return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al crear una encuesta'])->withInput();
         }
     }
-    public function editar(){
+    public function ver(encuesta $encuesta){
+        return $encuesta;
+   }
+    public function editar(encuesta $encuesta, Request $formulario){
+        if($encuesta->estatus == 'CREANDO'){
+            session()->flash('encuestaModificarErrores', true);
+            try{
+                $user = auth()->user();
+                DB::beginTransaction();
+                $encuesta->user_id = $user->id;
+                $encuesta->nombre = $formulario->descripcion;
+                $encuesta->fecha_inicio = $formulario->fechaInicio;
+                $encuesta->fecha_fin = $formulario->fechaFin;
+                if(isset($formulario->ModificarPreguntasJSON) && $formulario->ModificarPreguntasJSON != ''){
+                    $encuesta->jsonPregunta = $formulario->ModificarPreguntasJSON;
+                }
+                $encuesta->save();
+                DB::commit();
+                session()->forget('encuestaModificarErrores');
+                session()->flash('mensajeExito', 'La encuesta se ha modificado con éxito');
+                return redirect()->route('crudEncuestasController.index');
+            }
+            catch(Exception $e){
+                DB::rollBack();
+                Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
+                return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al modificar una encuesta'])->withInput();
+            }
+        }
+        else{
+            return back()->withErrors(['errorValidacion' => 'No se puede editar una encuesta en curso o finalizada.'])->withInput();
+        }
+    }
+    public function borrar(encuesta $encuesta, Request $formulario){
+        try{
+            DB::beginTransaction();
+            $encuesta->deleted_at = Date("Y-m-d H:i:s");
+            $encuesta->save();
+            DB::commit();
+            session()->flash('mensajeExito', 'La encuesta ' . $encuesta->nombre . ' ha sido eliminada con éxito.');
+            return redirect()->route('crudEncuestasController.index');
+        }
+        catch(Exception $e){
+            DB::rollBack();
+            Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
+            return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario'])->withInput();
+        }
+    }
+    public function configurar(encuesta $encuesta, Request $formulario){
          try{
             // DB::beginTransaction();
 
@@ -130,7 +166,30 @@ class crudEncuestasController extends Controller
             // return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario'])->withInput();
         }
     }
-    public function borrar(){
+    public function clonar(encuesta $encuesta, Request $formulario){
+        try{
+            $user = auth()->user();
+            DB::beginTransaction();
+            $nuevaEncuesta = new encuesta();
+            $nuevaEncuesta->user_id = $user->id;
+            $nuevaEncuesta->nombre = $encuesta->nombre . '-COPIA';
+            $nuevaEncuesta->fecha_inicio = $encuesta->fecha_inicio;
+            $nuevaEncuesta->fecha_fin = $encuesta->fecha_fin;
+            if(isset($encuesta->jsonPregunta) && $encuesta->jsonPregunta != ''){
+                $nuevaEncuesta->jsonPregunta = $encuesta->jsonPregunta;
+            }
+            $nuevaEncuesta->save();
+            DB::commit();
+            session()->flash('mensajeExito', 'La encuesta se ha duplicado con éxito con el nombre: ' . $encuesta->nombre . '-COPIA');
+            return redirect()->route('crudEncuestasController.index');
+        }
+        catch(Exception $e){
+            DB::rollBack();
+            Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
+            return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al duplicar una encuesta'])->withInput();
+        }
+    }
+    public function vistaPrevia(encuesta $encuesta, Request $formulario){
          try{
             // DB::beginTransaction();
 
@@ -145,7 +204,7 @@ class crudEncuestasController extends Controller
             // return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario'])->withInput();
         }
     }
-    public function configurar(){
+    public function cargarVistaPrevia(encuesta $encuesta, Request $formulario){
          try{
             // DB::beginTransaction();
 
@@ -160,82 +219,37 @@ class crudEncuestasController extends Controller
             // return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario'])->withInput();
         }
     }
-    public function clonar(){
+    public function iniciarEncuesta(encuesta $encuesta, Request $formulario){
          try{
-            // DB::beginTransaction();
-
-            // DB::commit();
-            // session()->forget('formularioCrearErrores');
-            // session()->flash('mensajeExito', 'Usuario creado con exito');
-            // return redirect()->route('crudUsuario.index');
+            DB::beginTransaction();
+            $encuesta->estatus = "ENCURSO";
+            $encuesta->save();
+            DB::commit();
+            session()->flash('mensajeExito', 'La encuesta ' . $encuesta->nombre . ' esta en curso. Puede compartir la encuesta por un enlace o por correo.');
+            return redirect()->route('crudEncuestasController.index');
         }
         catch(Exception $e){
-            // DB::rollBack();
-            // Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
-            // return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario'])->withInput();
+            DB::rollBack();
+            Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
+            return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario'])->withInput();
         }
     }
-    public function vistaPrevia(){
-         try{
-            // DB::beginTransaction();
-
-            // DB::commit();
-            // session()->forget('formularioCrearErrores');
-            // session()->flash('mensajeExito', 'Usuario creado con exito');
-            // return redirect()->route('crudUsuario.index');
+    public function detenerEncuesta(encuesta $encuesta, Request $formulario){
+        try{
+            DB::beginTransaction();
+            $encuesta->estatus = "FINALIZADO";
+            $encuesta->save();
+            DB::commit();
+            session()->flash('mensajeExito', 'La encuesta ' . $encuesta->nombre . ' ha finalizado. Compruebe sus resultados en el módulo de estadística.');
+            return redirect()->route('crudEncuestasController.index');
         }
         catch(Exception $e){
-            // DB::rollBack();
-            // Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
-            // return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario'])->withInput();
+            DB::rollBack();
+            Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
+            return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario'])->withInput();
         }
     }
-    public function cargarVistaPrevia(){
-         try{
-            // DB::beginTransaction();
-
-            // DB::commit();
-            // session()->forget('formularioCrearErrores');
-            // session()->flash('mensajeExito', 'Usuario creado con exito');
-            // return redirect()->route('crudUsuario.index');
-        }
-        catch(Exception $e){
-            // DB::rollBack();
-            // Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
-            // return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario'])->withInput();
-        }
-    }
-    public function iniciarEncuesta(){
-         try{
-            // DB::beginTransaction();
-
-            // DB::commit();
-            // session()->forget('formularioCrearErrores');
-            // session()->flash('mensajeExito', 'Usuario creado con exito');
-            // return redirect()->route('crudUsuario.index');
-        }
-        catch(Exception $e){
-            // DB::rollBack();
-            // Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
-            // return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario'])->withInput();
-        }
-    }
-    public function detenerEncuesta(){
-         try{
-            // DB::beginTransaction();
-
-            // DB::commit();
-            // session()->forget('formularioCrearErrores');
-            // session()->flash('mensajeExito', 'Usuario creado con exito');
-            // return redirect()->route('crudUsuario.index');
-        }
-        catch(Exception $e){
-            // DB::rollBack();
-            // Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
-            // return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario'])->withInput();
-        }
-    }
-    public function enviarCorreo(){
+    public function enviarCorreo(encuesta $encuesta, Request $formulario){
          try{
             // DB::beginTransaction();
 
