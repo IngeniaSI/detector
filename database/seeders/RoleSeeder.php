@@ -39,6 +39,12 @@ class RoleSeeder extends Seeder
 
         Permission::create(['name' => 'agregarSimpatizante.index'])->syncRoles([$rolSU, $rolAdmin, $rolSupervisor, $rolCapturista]);
 
+        Permission::create(['name' => 'encuestas.index'])->syncRoles([$rolSU, $rolAdmin, $rolCapturista]);
+        Permission::create(['name' => 'encuestas.agregar'])->syncRoles([$rolSU, $rolAdmin]);
+        Permission::create(['name' => 'encuestas.modificar'])->syncRoles([$rolSU, $rolAdmin]);
+        Permission::create(['name' => 'encuestas.editar'])->syncRoles([$rolSU, $rolAdmin]);
+        Permission::create(['name' => 'encuestas.capturar'])->syncRoles([$rolSU, $rolAdmin, $rolCapturista]);
+
         Permission::create(['name' => 'bitacora.index'])->syncRoles([$rolSU, $rolAdmin, $rolConsultas]);
         Permission::create(['name' => 'estadistica.index'])->syncRoles([$rolSU, $rolAdmin, $rolSupervisor, $rolConsultas]);
         Permission::create(['name' => 'estadistica.cambiarMeta'])->syncRoles([$rolSU, $rolAdmin]);
