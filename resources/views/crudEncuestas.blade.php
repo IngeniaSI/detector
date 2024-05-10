@@ -188,6 +188,14 @@
         var fbEditor, formBuilder, fbEditor2, formBuilder2;
         $(document).ready(function () {
             var options = {
+                showActionButtons: false,
+                disableFields: [
+                'autocomplete',
+                'file',
+                'button',
+                'hidden',
+                'select'
+                ],
                 i18n: {
                     override: {
                     'en-US': {
@@ -335,6 +343,10 @@
                         render: function(data, type, row){
                             var botones = '';
                             var creando = @can('encuestas.modificar')
+                                    '<button id="btnVistaPrevia_'+data.id+'"  class ="btn btn-primary">'+
+                                        '<i class="fas fa-file me-1">'+
+                                    '</i>&nbsp;VistaPrevia'+
+                                    '</button>'+
                                     '<button id="btnModificarEncuesta_'+data.id+'" onclick="cargarEncuesta('+data.id+')" class ="btn btn-warning" data-bs-toggle="modal" data-bs-target="#ModificarModal" >'+
                                         '<i class="fas fa-edit me-1">'+
                                     '</i>&nbsp;Editar'+
@@ -418,7 +430,6 @@
             $('[name="ModificarPreguntasJSON"]').remove();
             $('#formularioModificarEncuesta').append($('<input>').attr('type', 'hidden').attr('name', 'ModificarPreguntasJSON').val(preguntasString));
         });
-
         function cargarEncuesta(idEncuesta){
             Swal.fire({
                 title: 'Cargando...',
@@ -443,7 +454,6 @@
                     $('#fechaInicio').val(response.fecha_inicio);
                     $('#fechaFinalizacion').val(response.fecha_fin);
                     formBuilder2.actions.setData(response.jsonPregunta);
-
                     // $('#modificarNombre').val(response[0].nombre);
                     // $('#modificarApellidoPaterno').val(response[0].apellido_paterno);
                     // $('#modificarApellidoMaterno').val(response[0].apellido_materno);
