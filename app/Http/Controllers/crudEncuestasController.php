@@ -79,6 +79,9 @@ class crudEncuestasController extends Controller
             return null;
         }
     }
+    public function cargarSecciones(){
+        return  seccion::pluck('id')->toArray();
+    }
     public function agregar(Request $formulario){
         session()->flash('encuestaCrearErrores', true);
         try{
@@ -89,6 +92,9 @@ class crudEncuestasController extends Controller
             $nuevaEncuesta->nombre = $formulario->nombreEncuesta;
             $nuevaEncuesta->fecha_inicio = $formulario->fechaInicio;
             $nuevaEncuesta->fecha_fin = $formulario->fechaFin;
+            if(isset($formulario->buscarBaseDatos) && $formulario->buscarBaseDatos == true){
+                $nuevaEncuesta->buscarBaseDatos = true;
+            }
             if(isset($formulario->preguntasJSON) && $formulario->preguntasJSON != ''){
                 $nuevaEncuesta->jsonPregunta = $formulario->preguntasJSON;
             }
@@ -117,6 +123,12 @@ class crudEncuestasController extends Controller
                 $encuesta->nombre = $formulario->descripcion;
                 $encuesta->fecha_inicio = $formulario->fechaInicio;
                 $encuesta->fecha_fin = $formulario->fechaFin;
+                if(isset($formulario->buscarBaseDatos) && $formulario->buscarBaseDatos == true){
+                    $encuesta->buscarBaseDatos = true;
+                }
+                else{
+                    $encuesta->buscarBaseDatos = false;
+                }
                 if(isset($formulario->ModificarPreguntasJSON) && $formulario->ModificarPreguntasJSON != ''){
                     $encuesta->jsonPregunta = $formulario->ModificarPreguntasJSON;
                 }
@@ -152,18 +164,27 @@ class crudEncuestasController extends Controller
         }
     }
     public function configurar(encuesta $encuesta, Request $formulario){
-         try{
-            // DB::beginTransaction();
 
-            // DB::commit();
-            // session()->forget('formularioCrearErrores');
-            // session()->flash('mensajeExito', 'Usuario creado con exito');
-            // return redirect()->route('crudUsuario.index');
+        session()->flash('encuestaConfigurarErrores', true);
+        try{
+            DB::beginTransaction();
+            $cadenaToArray = '';
+            foreach ($formulario->seccionesObjetivo as $seccion) {
+                $cadenaToArray .= $seccion . ',';
+            }
+            $cadenaToArray = substr($cadenaToArray, 0, -1);
+            $encuesta->seccionesObjetivo = $cadenaToArray;
+            $encuesta->tipoGrafica = $formulario->tipoGrafica;
+            $encuesta->save();
+            DB::commit();
+            session()->forget('encuestaConfigurarErrores');
+            session()->flash('mensajeExito', 'La encuesta '.$encuesta->nombre.' se ha configurado con éxito');
+            return redirect()->route('crudEncuestasController.index');
         }
         catch(Exception $e){
-            // DB::rollBack();
-            // Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
-            // return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario'])->withInput();
+            DB::rollBack();
+            Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
+            return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al configurar una encuesta'])->withInput();
         }
     }
     public function clonar(encuesta $encuesta, Request $formulario){
@@ -223,6 +244,7 @@ class crudEncuestasController extends Controller
          try{
             DB::beginTransaction();
             $encuesta->estatus = "ENCURSO";
+            $encuesta->fecha_inicio_sistema = Date("Y-m-d H:i:s");
             $encuesta->save();
             DB::commit();
             session()->flash('mensajeExito', 'La encuesta ' . $encuesta->nombre . ' esta en curso. Puede compartir la encuesta por un enlace o por correo.');
@@ -238,6 +260,7 @@ class crudEncuestasController extends Controller
         try{
             DB::beginTransaction();
             $encuesta->estatus = "FINALIZADO";
+            $encuesta->fecha_fin_sistema = Date("Y-m-d H:i:s");
             $encuesta->save();
             DB::commit();
             session()->flash('mensajeExito', 'La encuesta ' . $encuesta->nombre . ' ha finalizado. Compruebe sus resultados en el módulo de estadística.');
