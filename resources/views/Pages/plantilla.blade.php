@@ -62,12 +62,12 @@
                                     Encuestas
                                 </a>
                             @endcan
-                            @can('agregarSimpatizante.index')
+                            {{-- @can('agregarSimpatizante.index')
                                 <a class="nav-link" href="{{url('/')}}/simpatizantes/agregar">
                                     <div class="sb-nav-link-icon"><i class="fas fa-file"></i></div>
                                     Agregar Persona
                                 </a>
-                            @endcan
+                            @endcan --}}
                             @can('crudSimpatizantes.index')
                                 <a class="nav-link" href="{{url('/')}}/simpatizantes">
                                     <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>

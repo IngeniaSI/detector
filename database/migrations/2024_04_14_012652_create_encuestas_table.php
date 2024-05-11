@@ -16,8 +16,11 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained();
             $table->string('nombre');
             $table->text('jsonPregunta')->nullable();
+            $table->text('seccionesObjetivo')->nullable();
+            $table->string('tipoGrafica')->nullable();
             $table->date('fecha_inicio_sistema')->nullable();
             $table->date('fecha_fin_sistema')->nullable();
+            $table->boolean('buscarBaseDatos')->default(false);
             $table->date('fecha_inicio')->nullable();
             $table->date('fecha_fin')->nullable();
             $table->string('estatus')->default('CREANDO');
