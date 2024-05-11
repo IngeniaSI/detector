@@ -78,12 +78,67 @@
                             </div>
                             <br>
                             <div class="row">
+                                <div class="col">
+                                    <h4>Buscar personas en base de datos:</h4>
+                                    <input type="checkbox" name="buscarBaseDatos" id="buscarBaseDatos" class="form-check-input"> <span>Activado</span>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
                                 <h4>Gestor de preguntas</h4>
                                 <div id="fb-editor"></div>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-primary">Crear</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- Modal Configurar -->
+        <div class="modal fade" id="modalConfigurar" tabindex="-1" aria-labelledby="modalConfigurar" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                {{-- FORMULARIO DE CONFIGURAR  --}}
+                <form id="formularioConfigurar" action="#" method="post">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel"> Configurar encuesta</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            @csrf
+                            <div class="row mb-3">
+
+                                <div class="row">
+                                    <div class="col">
+                                        <h4>Secciones a encuestar:</h4>
+                                        <select id="seccionesObjetivo" name="seccionesObjetivo[]" class="form-select selectToo seccionesSeleccionadas" multiple="multiple" style="width:100%">
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <h4>Grafica para mostrar resultados:</h4>
+                                    <select id="tipoGrafica" name="tipoGrafica" class="form-select selectToo" style="width:100%">
+                                        <option>ÁREA BAJO LA CURVA</option>
+                                        <option>BARRAS</option>
+                                        <option>BURBUJAS</option>
+                                        <option>DONAS</option>
+                                        <option>CIRCULAR</option>
+                                        <option>LINEAL</option>
+                                        <option>ÁREA POLAR</option>
+                                        <option>RADAR</option>
+                                        <option>DISPERCIÓN</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-primary">Guardar</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                         </div>
                     </div>
@@ -118,17 +173,24 @@
                             <div class="row">
                                 <div class="col">
                                     <h4>Fecha de Inicio</h4>
-                                    <input type="date" id="fechaInicio" name="fechaInicio" class="form-control">
+                                    <input type="date" id="fechaInicio" name="fechaInicio" class="form-control" value="{{old('fechaInicio')}}">
                                     @error('fechaInicio')
                                         <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                                     @enderror
                                 </div>
                                 <div class="col">
                                     <h4>Fecha de Finalización</h4>
-                                    <input type="date" id="fechaFinalizacion" name="fechaFin" class="form-control">
+                                    <input type="date" id="fechaFinalizacion" name="fechaFin" class="form-control" value="{{old('fechaFin')}}">
                                     @error('fechaFinalizacion')
                                         <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                                     @enderror
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col">
+                                    <h4>Buscar personas en base de datos:</h4>
+                                    <input type="checkbox" name="buscarBaseDatos" id="buscarBaseDatosModificar" class="form-check-input" @checked(old('buscarBaseDatos') == true)> <span>Activado</span>
                                 </div>
                             </div>
                             <br>
@@ -146,6 +208,34 @@
             </div>
         </div>
     @endcan
+    <!-- Modal COMPARTIR -->
+    <div class="modal fade" id="modalCompartir" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <h4>Opciones para compartir</h4>
+                            <button id="botonCompartirLink" type="button" class="btn btn btn-primary">
+                                <i class="fas fa-link me-1">
+                            </i>Enlace</button>
+                            <button id="botonCompartirIframe" type="button" class="btn btn btn-primary">
+                                <i class="fas fa-code me-1">
+                            </i>Código</button>
+                        </div>
+                    </div>
+                    <div class="row bg-secondary bg-opacity-25 rounded-3 m-1 p-3">
+                        <div id="contenedorCompartir" class="col">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="container-fluid px-4">
         <h1 class="mt-4">Encuestas</h1>
         <div class="card mb-4">
@@ -186,6 +276,7 @@
     <script src="https://formbuilder.online/assets/js/form-builder.min.js"></script>
     <script text="text/javascript">
         var fbEditor, formBuilder, fbEditor2, formBuilder2;
+        var encuestaACompartir = 0;
         $(document).ready(function () {
             var options = {
                 showActionButtons: false,
@@ -305,7 +396,8 @@
                     yes: 'Yes'
                     }
                     }
-                }
+                },
+                showActionButtons: false
             };
             fbEditor = document.getElementById('fb-editor');
             fbEditor2 = document.getElementById('fb-editor2');
@@ -351,11 +443,11 @@
                                         '<i class="fas fa-edit me-1">'+
                                     '</i>&nbsp;Editar'+
                                     '</button>'+
-                                    '<button id="btnConfigurarUsuario_'+data.id+'" class ="btn btn-primary">'+
+                                    '<button id="btnConfigurarUsuario_'+data.id+'" onclick="cargarConfiguracion('+data.id+')" class ="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalConfigurar">'+
                                         '<i class="fas fa-gear me-1">'+
                                     '</i>&nbsp;Configurar'+
                                     '</button>'+
-                                    '<form action="{{url('/')}}/encuestas/iniciar-periodo-' + data.id + '" method="post">'+
+                                    '<form id="formularioIniciarEncuesta" onsubmit="efectoCargando()" action="{{url('/')}}/encuestas/iniciar-periodo-' + data.id + '" method="post">'+
                                         '<input type="hidden" value="{{csrf_token()}}" name="_token">'+
                                         '<button class ="btn btn-success">'+
                                             '<i class="fas fa-play">'+
@@ -366,7 +458,7 @@
                                     '';
                             var enCurso =
                                 @can('encuestas.modificar')
-                                    '<form action="{{url('/')}}/encuestas/finalizar-periodo-' + data.id + '" method="post">'+
+                                    '<form id="formularioCerrarEncuesta" onsubmit="efectoCargando()" action="{{url('/')}}/encuestas/finalizar-periodo-' + data.id + '" method="post">'+
                                         '<input type="hidden" value="{{csrf_token()}}" name="_token">'+
                                         '<button class ="btn btn-secondary">'+
                                             '<i class="fas fa-stop">'+
@@ -374,11 +466,19 @@
                                         '</button>'+
                                     '</form>'+
                                 @endcan
-                                '<button id="btnEnviarCorreoUsuario_'+data.id+'" class ="btn btn-dark">'+
-                                    '<i class="fas fa-envelope">'+
+                                '<button id="btnEnviarCorreoUsuario_'+data.id+'" class ="btn btn-dark" onclick="cargarCompatir('+data.id+')" data-bs-toggle="modal" data-bs-target="#modalCompartir" >'+
+                                    '<i class="fas fa-share">'+
                                 '</i>&nbsp;Compartir'+
                                 '</button>';
 
+                            var finalizado =
+                            @can('encuestas.modificar')
+                                '<button id="btnConfigurarUsuario_'+data.id+'" onclick="cargarConfiguracion('+data.id+')" class ="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalConfigurar">'+
+                                    '<i class="fas fa-gear me-1">'+
+                                '</i>&nbsp;Configurar'+
+                                '</button>'+
+                            @endcan
+                            '';
                             botones = '';
 
                             if(data.estatus == 'CREANDO'){
@@ -387,56 +487,112 @@
                             else if(data.estatus == 'ENCURSO'){
                                 botones += enCurso;
                             }
+                            else if(data.estatus == 'FINALIZADO'){
+                                botones += finalizado;
+                            }
                             botones +=
-                            '<form id="formularioBorrar_'+data.id+'" action="{{url('/')}}/encuestas/duplicar-' + data.id + '" method="post">'+
-                                '<input type="hidden" value="{{csrf_token()}}" name="_token">'+
-                                '<button id="btnCerrarEncuestaUsuario_'+data.id+'" class ="btn btn-ligth">'+
-                                    '<i class="fas fa-clone">'+
-                                '</i>&nbsp;Clonar'+
-                                '</button>'+
-                            '</form>'+
-                            '<form id="formularioBorrar_'+data.id+'" action="{{url('/')}}/encuestas/borrar-' + data.id + '" method="post">'+
-                                '<input type="hidden" value="{{csrf_token()}}" name="_token">'+
-                                `<button id="borrarUsuario_${data.id}" type="button" onclick="clickBorrar('${data.estatus}', '${data.id}')" class="btn btn btn-danger">`+
-                                    '<i class="fas fa-close me-1">'+
-                                '</i>Borrar</button>'+
-                            '</form>';
+                            @can('encuestas.modificar')
+                                '<form id="formularioClonar_'+data.id+'" onsubmit="efectoCargando()" action="{{url('/')}}/encuestas/duplicar-' + data.id + '" method="post">'+
+                                    '<input type="hidden" value="{{csrf_token()}}" name="_token">'+
+                                    '<button id="btnCerrarEncuestaUsuario_'+data.id+'" class ="btn btn-ligth">'+
+                                        '<i class="fas fa-clone">'+
+                                    '</i>&nbsp;Clonar'+
+                                    '</button>'+
+                                '</form>'+
+                                '<form id="formularioBorrar_'+data.id+'" action="{{url('/')}}/encuestas/borrar-' + data.id + '" method="post">'+
+                                    '<input type="hidden" value="{{csrf_token()}}" name="_token">'+
+                                    `<button id="borrarUsuario_${data.id}" type="button" onclick="clickBorrar('${data.estatus}', '${data.id}')" class="btn btn btn-danger">`+
+                                        '<i class="fas fa-close me-1">'+
+                                    '</i>Borrar</button>'+
+                                '</form>'+
+                            @endcan
+                            '';
                             return botones;
                         }},
                     // Agrega más columnas según tus datos
                 ]
             });
 
+            $.when(
+                $.ajax({
+                        type: "get",
+                        url: "{{route('encuestas.cargarSecciones')}}",
+                        data: [],
+                        contentType: "application/x-www-form-urlencoded",
+                    success: function (response) {
+                        console.log(response);
+                        $.each(response, function (indexInArray, valueOfElement) {
+                            $('.seccionesSeleccionadas').append($('<option>').html(valueOfElement));
+                        });
+                        $('.seccionesSeleccionadas').trigger('change');
+                    },
+                    error: function( data, textStatus, jqXHR){
+                        if (jqXHR.status === 0) {
+                            console.log('Not connect: Verify Network.');
+                        } else if (jqXHR.status == 404) {
+                            console.log('Requested page not found [404]');
+                        } else if (jqXHR.status == 500) {
+                            console.log('Internal Server Error [500].');
+                        } else if (textStatus === 'parsererror') {
+                            console.log('Requested JSON parse failed.');
+                        } else if (textStatus === 'timeout') {
+                            console.log('Time out error.');
+                        } else if (textStatus === 'abort') {
+                            console.log('Ajax request aborted.');
+                        } else {
+                            console.log('Uncaught Error: ' + jqXHR.responseText);
+                        }
+                    }
+                })
+            ).then(
+                function( data, textStatus, jqXHR ) {
+                    $('.selectToo').select2({
+                    language: {
+
+                        noResults: function() {
+
+                        return "No hay resultado";
+                        },
+                        searching: function() {
+
+                        return "Buscando..";
+                        }
+                    }
+                });
+            });
         });
 
         $('#formularioCrearEncuesta').submit(function (e) {
-            Swal.fire({
-                title: 'Cargando...',
-                allowOutsideClick: false,
-                showConfirmButton: false,
-                html: '<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>'
-            });
+            efectoCargando();
             var preguntasString = JSON.stringify(formBuilder.actions.getData());
             $('#formularioCrearEncuesta').append($('<input>').attr('type', 'hidden').attr('name', 'preguntasJSON').val(preguntasString));
         });
         $('#formularioModificarEncuesta').submit(function (e) {
-            Swal.fire({
-                title: 'Cargando...',
-                allowOutsideClick: false,
-                showConfirmButton: false,
-                html: '<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>'
-            });
+            efectoCargando();
             var preguntasString = JSON.stringify(formBuilder2.actions.getData());
             $('[name="ModificarPreguntasJSON"]').remove();
             $('#formularioModificarEncuesta').append($('<input>').attr('type', 'hidden').attr('name', 'ModificarPreguntasJSON').val(preguntasString));
         });
-        function cargarEncuesta(idEncuesta){
+
+        $('#botonCompartirLink').click(function (e) {
+            $('#contenedorCompartir').html($('<a>').html('este sera el enlace' + encuestaACompartir));
+        });
+
+        $('#botonCompartirIframe').click(function (e) {
+            $('#contenedorCompartir').html($('<div>').html('Este sera el codigo iframe' + encuestaACompartir));
+        });
+
+        function efectoCargando(){
             Swal.fire({
                 title: 'Cargando...',
                 allowOutsideClick: false,
                 showConfirmButton: false,
                 html: '<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>'
             });
+        }
+
+        function cargarEncuesta(idEncuesta){
+            efectoCargando();
             $('.mensajesErrores').remove();
             var ruta = "{{url('/')}}/encuestas/ver-" + idEncuesta;
                 $.when(
@@ -453,6 +609,10 @@
                     $('#descripcion').val(response.nombre);
                     $('#fechaInicio').val(response.fecha_inicio);
                     $('#fechaFinalizacion').val(response.fecha_fin);
+                    console.log(response);
+                    if(response.buscarBaseDatos){
+                        $('#buscarBaseDatosModificar').prop('checked', true);
+                    }
                     formBuilder2.actions.setData(response.jsonPregunta);
                     // $('#modificarNombre').val(response[0].nombre);
                     // $('#modificarApellidoPaterno').val(response[0].apellido_paterno);
@@ -497,6 +657,58 @@
             });
         }
 
+        function cargarConfiguracion(idEncuesta){
+            efectoCargando();
+            $('.mensajesErrores').remove();
+            var ruta = "{{url('/')}}/encuestas/ver-" + idEncuesta;
+                $.when(
+                $.ajax({
+                type: "get",
+                url: ruta,
+                data: [],
+                contentType: "application/x-www-form-urlencoded",
+                success: function (response) {
+                    var ruta = "{{url('/')}}/encuestas/configurar-"+response.id;
+
+                    $('#formularioConfigurar')[0].reset();
+                    $('#formularioConfigurar').attr('action', ruta);
+                    $('#formularioConfigurar').css('display', 'block');
+
+                    $('#tipoGrafica').val(response.tipoGrafica);
+                    $('#tipoGrafica').trigger('change');
+                    let seccionesSeparadas = (response.seccionesObjetivo != null) ? response.seccionesObjetivo.split(',') : [];
+                    console.log(seccionesSeparadas);
+                    $('#seccionesObjetivo').val(seccionesSeparadas);
+                    $('#seccionesObjetivo').trigger('change');
+                },
+                error: function( data, textStatus, jqXHR){
+                    if (jqXHR.status === 0) {
+                        console.log('Not connect: Verify Network.');
+                    } else if (jqXHR.status == 404) {
+                        console.log('Requested page not found [404]');
+                    } else if (jqXHR.status == 500) {
+                        console.log('Internal Server Error [500].');
+                    } else if (textStatus === 'parsererror') {
+                        console.log('Requested JSON parse failed.');
+                    } else if (textStatus === 'timeout') {
+                        console.log('Time out error.');
+                    } else if (textStatus === 'abort') {
+                        console.log('Ajax request aborted.');
+                    } else {
+                        console.log('Uncaught Error: ' + jqXHR.responseText);
+                    }
+                }
+            })
+            ).then(
+            function( data, textStatus, jqXHR ) {
+                Swal.close();
+            });
+        }
+
+        function cargarCompatir(idEncuesta){
+            encuestaACompartir = idEncuesta;
+        }
+
         function clickBorrar(estatus, id) {
             var formulario = $(`#formularioBorrar_${id}`);
             console.log(formulario);
@@ -525,7 +737,7 @@
                 if (result.isConfirmed) {
 
                 } else if (result.isDenied) {
-
+                    efectoCargando();
                     formulario.submit();
                 }
             });
