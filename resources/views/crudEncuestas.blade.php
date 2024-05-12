@@ -7,6 +7,10 @@
 
 @section('cuerpo')
 <style>
+    textarea {
+  position: absolute;
+  left: -100%;
+}
     :root {
         --purple: #0d6efd;
         --off-white: #f8f8f8;
@@ -222,12 +226,26 @@
                             <button id="botonCompartirIframe" type="button" class="btn btn btn-primary">
                                 <i class="fas fa-code me-1">
                             </i>Código</button>
+
                         </div>
                     </div>
                     <div class="row bg-secondary bg-opacity-25 rounded-3 m-1 p-3">
-                        <div id="contenedorCompartir" class="col">
+                        <div class="row"> 
+                            <div class="col">
 
+                            </div>
+                            <div class="col">
+
+                            </div>
+                            <div class="col" style="float:left;text-align:right;">
+                                <button id="button" type="button" class="btn btn btn-success" onclick="copyFunction()">
+                                    <i class="fa-regular fa-clipboard me-1">
+                                </i>Copiar</button>
+                            </div>
                         </div>
+                        <pre id="contenedorCompartir">
+
+                        </pre>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -742,6 +760,19 @@
                 }
             });
         }
+        function copyFunction() {
+            const copyText = document.getElementById("contenedorCompartir").textContent;
+            navigator.clipboard.writeText(copyText);
+
+            Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Copiado",
+            showConfirmButton: false,
+            timer: 1500
+            });
+
+            }
 
     </script>
 @endsection
