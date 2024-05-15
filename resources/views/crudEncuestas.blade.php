@@ -7,10 +7,7 @@
 
 @section('cuerpo')
 <style>
-    textarea {
-  position: absolute;
-  left: -100%;
-}
+    
     :root {
         --purple: #0d6efd;
         --off-white: #f8f8f8;
@@ -254,6 +251,66 @@
             </div>
         </div>
     </div>
+    <!-- Modal VISTA PREVIA -->
+    <div class="modal fade" id="PreviaModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                {{-- FORMULARIO Vista Previa USUARIO --}}
+                <form id="formularioModificarEncuesta"
+                action="#"
+                method="post">
+                <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Vista Previa de la Encuestas</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            @csrf
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <h4>Descripción</h4>
+                                    <input disabled type="text" id="descripcionPrevia" name="descripcionPrevia" class="form-control" value="{{old('descripcion')}}" minlength="3" maxlength="255">
+                                    @error('descripcion')
+                                        <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <h4>Fecha de Inicio</h4>
+                                    <input disabled type="date" id="fechaInicioPrevia" name="fechaInicioPrevia" class="form-control" value="{{old('fechaInicio')}}">
+                                    @error('fechaInicio')
+                                        <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                    @enderror
+                                </div>
+                                <div class="col">
+                                    <h4>Fecha de Finalización</h4>
+                                    <input disabled type="date" id="fechaFinalizacionPrevia" name="fechaFinPrevia" class="form-control" value="{{old('fechaFin')}}">
+                                    @error('fechaFinalizacion')
+                                        <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col">
+                                    <h4>Buscar personas en base de datos:</h4>
+                                    <input disabled type="checkbox" name="buscarBaseDatosPrevia" id="buscarBaseDatosModificarPrevia" class="form-check-input" @checked(old('buscarBaseDatos') == true)> <span>Activado</span>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <h4>Gestor de preguntas</h4>
+                                <div id="fb-editorPrevio"></div>
+                                <div id="formrender"></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+    </div>
     <div class="container-fluid px-4">
         <h1 class="mt-4">Encuestas</h1>
         <div class="card mb-4">
@@ -290,10 +347,30 @@
 
 @section('scripts')
     <script src="/js/generador-contrasenias.js" text="text/javascript"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js"></script>
     <script src="https://formbuilder.online/assets/js/form-builder.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.4.0/highlight.min.js"></script>
+    <script src="https://formbuilder.online/assets/js/form-render.min.js"></script>
+    <script>
+    jQuery($ => {
+        const escapeEl = document.createElement("textarea");
+        const code = document.getElementById("formrender");
+        const formData = "{\"type\":\"header\",\"subtype\":\"h1\",\"label\":\"Titulo 2\",\"access\":false}]";//Your JSON data goes here
+        const addLineBreaks = html => html.replace(new RegExp("><", "g"), ">\n<");
+
+        // Grab markup and escape it
+        const $markup = $("<div/>");
+        $markup.formRender({ formData });
+
+        // set < code > innerText with escaped markup
+        code.innerHTML = addLineBreaks($markup.formRender("html"));
+
+        hljs.highlightBlock(code);
+    });
+</script>
+
     <script text="text/javascript">
-        var fbEditor, formBuilder, fbEditor2, formBuilder2;
+        var fbEditor, formBuilder, fbEditor2, formBuilder2,fbEditorPrevio, formBuilderPrevio;
         var encuestaACompartir = 0;
         $(document).ready(function () {
             var options = {
@@ -419,8 +496,11 @@
             };
             fbEditor = document.getElementById('fb-editor');
             fbEditor2 = document.getElementById('fb-editor2');
+            fbEditorPrevio = document.getElementById('fb-editorPrevio');
+
             formBuilder = $(fbEditor).formBuilder(options);
             formBuilder2 = $(fbEditor2).formBuilder(options);
+            formBuilderPrevio = $(fbEditorPrevio).formBuilder(options);
             @if (session()->has('encuestaCrearErrores'))
                 const modalCrear = new bootstrap.Modal(document.getElementById('modalAgregarEscuesta'));
                 modalCrear.show();
@@ -453,7 +533,7 @@
                         render: function(data, type, row){
                             var botones = '';
                             var creando = @can('encuestas.modificar')
-                                    '<button id="btnVistaPrevia_'+data.id+'"  class ="btn btn-primary">'+
+                                    '<button id="btnVistaPrevia_'+data.id+'" onclick="cargarEncuesta('+data.id+')" class ="btn btn-primary" data-bs-toggle="modal" data-bs-target="#PreviaModal" >'+
                                         '<i class="fas fa-file me-1">'+
                                     '</i>&nbsp;VistaPrevia'+
                                     '</button>'+
@@ -627,11 +707,16 @@
                     $('#descripcion').val(response.nombre);
                     $('#fechaInicio').val(response.fecha_inicio);
                     $('#fechaFinalizacion').val(response.fecha_fin);
+                    $('#descripcionPrevia').val(response.nombre);
+                    $('#fechaInicioPrevia').val(response.fecha_inicio);
+                    $('#fechaFinalizacionPrevia').val(response.fecha_fin);
                     console.log(response);
                     if(response.buscarBaseDatos){
                         $('#buscarBaseDatosModificar').prop('checked', true);
+                        $('#buscarBaseDatosModificarPrevia').prop('checked', true);
                     }
                     formBuilder2.actions.setData(response.jsonPregunta);
+                    formBuilderPrevio.actions.setData(response.jsonPregunta);
                     // $('#modificarNombre').val(response[0].nombre);
                     // $('#modificarApellidoPaterno').val(response[0].apellido_paterno);
                     // $('#modificarApellidoMaterno').val(response[0].apellido_materno);
@@ -725,6 +810,7 @@
 
         function cargarCompatir(idEncuesta){
             encuestaACompartir = idEncuesta;
+            $('#botonCompartirLink').click();
         }
 
         function clickBorrar(estatus, id) {
