@@ -11,8 +11,10 @@ use App\Models\persona;
 use App\Models\pregunta;
 use App\Models\seccion;
 use App\Models\User;
+use DateTime;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -35,6 +37,14 @@ class crudEncuestasController extends Controller
         return view('crudEncuestas');
     }
     public function cargarEncuestas(Request $formulario){
+        if(isset($formulario->fechaInicio)){
+            $fechaInicio = DateTime::createFromFormat('Y-m-d', $formulario->fechaInicio);
+            $fechaInicio = $fechaInicio->format('Y/m/d');
+        }
+        if(isset($formulario->fechaFin)){
+            $fechaFin = DateTime::createFromFormat('Y-m-d', $formulario->fechaFin);
+            $fechaFin = $fechaFin->format('Y/m/d');
+        }
         try {
             $draw = ($formulario->get('draw') != null) ? $formulario->get('draw') : 1;
             $start = ($formulario->get('start') != null) ? $formulario->get('start') : 0;
@@ -50,6 +60,12 @@ class crudEncuestasController extends Controller
                         ->orWhere('fecha_inicio', 'LIKE', '%' . $search . '%')
                         ->orWhere('fecha_fin', 'LIKE', '%' . $search . '%');
                 });
+            }
+            if(isset($formulario->fechaInicio)){
+                $encuestasQuery->where('created_at', '>=', $fechaInicio);
+            }
+            if(isset($formulario->fechaFin)){
+                $encuestasQuery->where('created_at', '<=', $fechaFin);
             }
             $total = $encuestasQuery->count();
 
@@ -169,11 +185,13 @@ class crudEncuestasController extends Controller
         try{
             DB::beginTransaction();
             $cadenaToArray = '';
-            foreach ($formulario->seccionesObjetivo as $seccion) {
-                $cadenaToArray .= $seccion . ',';
+            if(isset($formulario->seccionesObjetivo)){
+                foreach ($formulario->seccionesObjetivo as $seccion) {
+                    $cadenaToArray .= $seccion . ',';
+                }
+                $cadenaToArray = substr($cadenaToArray, 0, -1);
+                $encuesta->seccionesObjetivo = $cadenaToArray;
             }
-            $cadenaToArray = substr($cadenaToArray, 0, -1);
-            $encuesta->seccionesObjetivo = $cadenaToArray;
             $encuesta->tipoGrafica = $formulario->tipoGrafica;
             $encuesta->save();
             DB::commit();

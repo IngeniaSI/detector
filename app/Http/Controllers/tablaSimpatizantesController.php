@@ -105,18 +105,35 @@ class tablaSimpatizantesController extends Controller
             }
             $total = $personaQuery->count();
 
-            $personas = $personaQuery->orderBy('supervisado', 'ASC')
-            ->select(
-                'personas.id',
-                DB::raw('IF(apellido_paterno != "", CONCAT(nombres, " ", apellido_paterno), nombres) as nombre_completo'),
-                'telefono_celular',
-                'seccions.id as seccionId',
-                'seccions.distrito_local_id as distritoLocalId',
-                'supervisado',
-            )
-            ->skip($start)
-            ->take($length)
-            ->get();
+            if($user->getRoleNames()->first() == 'CAPTURISTA'){
+                $personas = $personaQuery->orderBy('supervisado', 'ASC')->orderBy('id', 'DESC')
+                    ->select(
+                    'personas.id',
+                    DB::raw('IF(apellido_paterno != "", CONCAT(nombres, " ", apellido_paterno), nombres) as nombre_completo'),
+                    'telefono_celular',
+                    'seccions.id as seccionId',
+                    'seccions.distrito_local_id as distritoLocalId',
+                    'supervisado',
+                )
+                ->skip($start)
+                ->take($length)
+                ->get();
+            }
+            else{
+                $personas = $personaQuery->orderBy('supervisado', 'DESC')->orderBy('id', 'DESC')
+                ->select(
+                    'personas.id',
+                    DB::raw('IF(apellido_paterno != "", CONCAT(nombres, " ", apellido_paterno), nombres) as nombre_completo'),
+                    'telefono_celular',
+                    'seccions.id as seccionId',
+                    'seccions.distrito_local_id as distritoLocalId',
+                    'supervisado',
+                )
+                ->skip($start)
+                ->take($length)
+                ->get();
+            }
+
 
             $personaQuery->where('supervisado', 0)
             ->count();

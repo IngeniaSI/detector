@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('nombre_en_facebook')->nullable();
             $table->string('escolaridad')->nullable();
             $table->string('afiliado')->nullable();
+            $table->string('tipoRegistro')->nullable();
             $table->string('simpatizante')->nullable();
             $table->string('programa')->nullable();
             $table->string('funcion_en_campania')->nullable();
