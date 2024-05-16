@@ -61,7 +61,12 @@
                                     <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                     Encuestas
                                 </a>
+                                
                             @endcan
+                            <a class="nav-link" href="{{url('/')}}/respuestasEncuestas">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-file"></i></div>
+                                    Respuestas de las Encuestas
+                            </a>
                             {{-- @can('agregarSimpatizante.index')
                                 <a class="nav-link" href="{{url('/')}}/simpatizantes/agregar">
                                     <div class="sb-nav-link-icon"><i class="fas fa-file"></i></div>

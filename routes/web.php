@@ -9,6 +9,8 @@ use App\Http\Controllers\iniciarSesionController;
 use App\Http\Controllers\mapaController;
 use App\Http\Controllers\tablaSimpatizantesController;
 use App\Http\Controllers\crudEncuestasController;
+use App\Http\Controllers\repuestasEncuestasController;
+
 use App\Models\bitacora;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
@@ -116,7 +118,9 @@ Route::prefix('/')->middleware('auth')->group(function (){
 
     Route::get('/mapa', [mapaController::class, 'index'])->middleware(['can:mapa.index']);
     Route::get('/bitacora', [bitacoraController::class, 'index'])->name('bitacora.index')->middleware(['can:bitacora.index']);
-
+    Route::get("/respuestasEncuestas", function(){
+        return View::make("respuestasEncuestas");
+     });
 
 
 });

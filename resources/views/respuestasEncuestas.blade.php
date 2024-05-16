@@ -1,7 +1,7 @@
 @extends('Pages.plantilla')
 
 @section('tittle')
-    Encuestas
+    Respuestas de Encuestas
 @endsection
 
 
@@ -39,7 +39,6 @@
         z-index: 9999999
     }
 </style>
-    {{-- MODAL DE CREAR --}}
     @can('encuestas.agregar')
         <!-- Modal Agregar Encuesta -->
         <div class="modal fade" id="modalAgregarEscuesta" tabindex="-1" aria-labelledby="modalAgregarEscuesta" aria-hidden="true">
@@ -81,7 +80,7 @@
                             <br>
                             <div class="row">
                                 <div class="col">
-                                    <h4>Preguntas para identificar una persona:</h4>
+                                    <h4>Buscar personas en base de datos:</h4>
                                     <input type="checkbox" name="buscarBaseDatos" id="buscarBaseDatos" class="form-check-input"> <span>Activado</span>
                                 </div>
                             </div>
@@ -106,7 +105,7 @@
                 <form id="formularioConfigurar" action="#" method="post">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel"> Configurar encuesta</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">VINCULAR CON PERSONA</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -115,41 +114,23 @@
 
                                 <div class="row">
                                     <div class="col">
-                                        <h4>Secciones a encuestar:</h4>
-                                        <select id="seccionesObjetivo" name="seccionesObjetivo[]" class="form-select selectToo seccionesSeleccionadas"
-                                        multiple="multiple" style="width:100%">
+                                        <h4>Secciones a persona:</h4>
+                                        <select id="seccionesObjetivo" name="seccionesObjetivo[]" class="form-select selectToo seccionesSeleccionadas" multiple="multiple" style="width:100%">
 
                                         </select>
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col">
-                                    <h4>Grafica para mostrar resultados:</h4>
-                                    <select id="tipoGrafica" name="tipoGrafica" class="form-select selectToo" style="width:100%">
-                                        <option>ÁREA BAJO LA CURVA</option>
-                                        <option>BARRAS</option>
-                                        <option>BURBUJAS</option>
-                                        <option>DONAS</option>
-                                        <option>CIRCULAR</option>
-                                        <option>LINEAL</option>
-                                        <option>ÁREA POLAR</option>
-                                        <option>RADAR</option>
-                                        <option>DISPERCIÓN</option>
-                                    </select>
-                                </div>
-                            </div>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-primary">Guardar</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button class="btn btn-primary">Guardar Cambios</button>
+                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
     @endcan
-    {{-- MODAL DE MODIFICAR --}}
     @can('encuestas.editar')
         <!-- Modal Modificar Encuesta -->
         <div class="modal fade" id="ModificarModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -204,7 +185,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-primary">Guardar Cambios</button>
+                            <button class="btn btn-primary">Crear</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                         </div>
                     </div>
@@ -212,48 +193,6 @@
             </div>
         </div>
     @endcan
-    <!-- Modal COMPARTIR -->
-    <div class="modal fade" id="modalCompartir" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="row mb-3">
-                        <div class="col">
-                            <h4>Opciones para compartir</h4>
-                            <button id="botonCompartirLink" type="button" class="btn btn btn-primary">
-                                <i class="fas fa-link me-1">
-                            </i>Enlace</button>
-                            <button id="botonCompartirIframe" type="button" class="btn btn btn-primary">
-                                <i class="fas fa-code me-1">
-                            </i>Código</button>
-
-                        </div>
-                    </div>
-                    <div class="row bg-secondary bg-opacity-25 rounded-3 m-1 p-3">
-                        <div class="row"> 
-                            <div class="col">
-
-                            </div>
-                            <div class="col">
-
-                            </div>
-                            <div class="col" style="float:left;text-align:right;">
-                                <button id="button" type="button" class="btn btn btn-success" onclick="copyFunction()">
-                                    <i class="fa-regular fa-clipboard me-1">
-                                </i>Copiar</button>
-                            </div>
-                        </div>
-                        <pre id="contenedorCompartir">
-
-                        </pre>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
     <!-- Modal VISTA PREVIA -->
     <div class="modal fade" id="PreviaModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl">
@@ -302,7 +241,7 @@
                             </div>
                             <br>
                             <div class="row">
-                                <h4>- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - </h4>
+                                <h4>Gestor de preguntas</h4>
                                 <div id="fb-editorPrevio" style="pointer-events:none;"></div>
                             </div>
                         </div>
@@ -314,40 +253,29 @@
             </div>
     </div>
     <div class="container-fluid px-4">
-        <h1 class="mt-4">Encuestas</h1>
+        <h1 class="mt-4">Respuestas de las Encuestas</h1>
         <div class="card mb-4">
             <div class="card-header">
-                <div class="d-flex justify-content-end">
+                <center>
+                <button class="btnExportarExcel btn btn-success" ><i class="fas fa-file-excel me-1"></i> Exportar Excel</button>
 
-                    @can('encuestas.agregar')
-                        <button class="btnCrearUsuario btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarEscuesta" ><i class="fas fa-file me-1"></i> Agregar Encuesta</button>
-                    @endcan
-                </div>
+                </center>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col">
-                        <h4>Desde:</h4>
-                        <input type="date" id="fechaInicioFiltro" class="form-control">
-                    </div>
-                    <div class="col">
-                        <h4>Hasta:</h4>
-                        <input type="date" id="fechaFinFiltro" class="form-control">
-                    </div>
-                </div>
-                <table id="tablaUsuarios2" class="table table-striped table-bordered " style="width:100%">
+                <table id="tablaUsuarios2" class="table table-striped table-bordered" style="width:100%">
                     <thead>
                         <tr>
                             <th>Id</th>
-                            <th>Descripción</th>
-                            <th>Periodo</th>
-                            <th>Estatus</th>
+                            <th>Nombre de la Encuesta</th>
+                            <th>Origen</th>
+                            <th>Tipo</th>
                             <th>Acción</th>
                         </tr>
                     </thead>
                     <tbody>
                     </tbody>
                 </table>
+                
             </div>
         </div>
     </div>
@@ -369,7 +297,6 @@
     <script text="text/javascript">
         var fbEditor, formBuilder, fbEditor2, formBuilder2,fbEditorPrevio, formBuilderPrevio;
         var encuestaACompartir = 0;
-        var table;
         $(document).ready(function () {
             var options = {
                 showActionButtons: false,
@@ -507,7 +434,12 @@
                 const modalModificar = new bootstrap.Modal(document.getElementById('ModificarModal'));
                 modalModificar.show();
             @endif
-            table = $('#tablaUsuarios2').DataTable({
+            var table = $('#tablaUsuarios2').DataTable({
+                layout: {
+                    topStart: {
+                        buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
+                    }
+                },
                 order: [[0, 'desc']],
                 scrollX: true,
                 lengthChange: true,
@@ -518,84 +450,34 @@
                 "serverSide": true,
                 ajax: {
                     url: "{{route('encuestas.cargar')}}",
-                    data: function(d) {
-                        d.fechaInicio = $('#fechaInicioFiltro').val();
-                        d.fechaFin = $('#fechaFinFiltro').val();
-                    }
                 },
                 columns: [
                     { data: 'id' },
                     { data: 'nombre'},
                     { data: null,
                         render: function(data, type, row){
-                            return (data.fecha_inicio != null) ? `${data.fecha_inicio} - ${data.fecha_fin}` : 'SIN PERIODO';
+                            return ('SIN ORIGEN');
                         }},
-                    { data: 'estatus' },
                     { data: null,
                         render: function(data, type, row){
-                            var botones = '';
-                            var creando = @can('encuestas.modificar')
+                            return ('ANONIMO');
+                        }},
+                    { data: null,
+                        render: function(data, type, row){
+                            
+                            var botones = @can('encuestas.modificar')
                                     '<button id="btnVistaPrevia_'+data.id+'" onclick="cargarEncuesta('+data.id+')" class ="btn btn-primary" data-bs-toggle="modal" data-bs-target="#PreviaModal" >'+
                                         '<i class="fas fa-file me-1">'+
-                                    '</i>&nbsp;VistaPrevia'+
+                                    '</i>&nbsp;VER RESULTADO'+
                                     '</button>'+
-                                    '<button id="btnModificarEncuesta_'+data.id+'" onclick="cargarEncuesta('+data.id+')" class ="btn btn-warning" data-bs-toggle="modal" data-bs-target="#ModificarModal" >'+
-                                        '<i class="fas fa-edit me-1">'+
-                                    '</i>&nbsp;Editar'+
+                                    '<button id="btnConfigurarUsuario_'+data.id+'" onclick="cargarConfiguracion('+data.id+')" class ="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalConfigurar">'+
+                                        '<i class="fas fa-gear me-1">'+
+                                    '</i>&nbsp;VINCULAR CON PERSONA'+
                                     '</button>'+
-                                    '<form id="formularioIniciarEncuesta" onsubmit="efectoCargando()" action="{{url('/')}}/encuestas/iniciar-periodo-' + data.id + '" method="post">'+
-                                        '<input type="hidden" value="{{csrf_token()}}" name="_token">'+
-                                        '<button class ="btn btn-success">'+
-                                            '<i class="fas fa-play">'+
-                                        '</i>&nbsp;Iniciar Encuesta'+
-                                        '</button>'+
                                     '</form>'+
                                     @endcan
                                     '';
-                            var enCurso =
-                                @can('encuestas.modificar')
-                                    '<form id="formularioCerrarEncuesta" onsubmit="efectoCargando()" action="{{url('/')}}/encuestas/finalizar-periodo-' + data.id + '" method="post">'+
-                                        '<input type="hidden" value="{{csrf_token()}}" name="_token">'+
-                                        '<button class ="btn btn-secondary">'+
-                                            '<i class="fas fa-stop">'+
-                                        '</i>&nbsp;Cerrar Encuesta'+
-                                        '</button>'+
-                                    '</form>'+
-                                @endcan
-                                '<button id="btnEnviarCorreoUsuario_'+data.id+'" class ="btn btn-dark" onclick="cargarCompatir('+data.id+')" data-bs-toggle="modal" data-bs-target="#modalCompartir" >'+
-                                    '<i class="fas fa-share">'+
-                                '</i>&nbsp;Compartir'+
-                                '</button>';
-
-                            botones = '';
-
-                            if(data.estatus == 'CREANDO'){
-                                botones += creando;
-                            }
-                            else if(data.estatus == 'ENCURSO'){
-                                botones += enCurso;
-                            }
-                            botones +=
-                            @can('encuestas.modificar')
-                                '<button id="btnConfigurarUsuario_'+data.id+'" onclick="cargarConfiguracion('+data.id+')" class ="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalConfigurar">'+
-                                        '<i class="fas fa-gear me-1">'+
-                                    '</i>&nbsp;Configurar'+
-                                    '</button>'+
-                                '<form id="formularioClonar_'+data.id+'" onsubmit="efectoCargando()" action="{{url('/')}}/encuestas/duplicar-' + data.id + '" method="post">'+
-                                    '<input type="hidden" value="{{csrf_token()}}" name="_token">'+
-                                    '<button id="btnCerrarEncuestaUsuario_'+data.id+'" class ="btn btn-ligth">'+
-                                        '<i class="fas fa-clone">'+
-                                    '</i>&nbsp;Clonar'+
-                                    '</button>'+
-                                '</form>'+
-                                '<form id="formularioBorrar_'+data.id+'" action="{{url('/')}}/encuestas/borrar-' + data.id + '" method="post">'+
-                                    '<input type="hidden" value="{{csrf_token()}}" name="_token">'+
-                                    `<button id="borrarUsuario_${data.id}" type="button" onclick="clickBorrar('${data.estatus}', '${data.id}')" class="btn btn btn-danger">`+
-                                        '<i class="fas fa-close me-1">'+
-                                    '</i>Borrar</button>'+
-                                '</form>'+
-                            @endcan
-                            '';
+                            
                             return botones;
                         }},
                     // Agrega más columnas según tus datos
@@ -661,14 +543,6 @@
             var preguntasString = JSON.stringify(formBuilder2.actions.getData());
             $('[name="ModificarPreguntasJSON"]').remove();
             $('#formularioModificarEncuesta').append($('<input>').attr('type', 'hidden').attr('name', 'ModificarPreguntasJSON').val(preguntasString));
-        });
-
-        $('#botonCompartirLink').click(function (e) {
-            $('#contenedorCompartir').html($('<a>').html('este sera el enlace' + encuestaACompartir));
-        });
-
-        $('#botonCompartirIframe').click(function (e) {
-            $('#contenedorCompartir').html($('<div>').html('Este sera el codigo iframe' + encuestaACompartir));
         });
 
         function efectoCargando(){
@@ -777,12 +651,6 @@
                     console.log(seccionesSeparadas);
                     $('#seccionesObjetivo').val(seccionesSeparadas);
                     $('#seccionesObjetivo').trigger('change');
-                    if(response.estatus != 'CREANDO'){
-                        $('#seccionesObjetivo').prop('disabled', true);
-                    }
-                    else{
-                        $('#seccionesObjetivo').prop('disabled', false);
-                    }
                 },
                 error: function( data, textStatus, jqXHR){
                     if (jqXHR.status === 0) {
@@ -807,62 +675,7 @@
                 Swal.close();
             });
         }
+    
 
-        function cargarCompatir(idEncuesta){
-            encuestaACompartir = idEncuesta;
-            $('#botonCompartirLink').click();
-        }
-
-        function clickBorrar(estatus, id) {
-            var formulario = $(`#formularioBorrar_${id}`);
-            console.log(formulario);
-            var texto;
-            switch (estatus) {
-                case 'CREANDO':
-                    texto = "¿Seguro que deseas borrar la encuesta?";
-                    break;
-                case 'ENCURSO':
-                    texto = "¿Seguro que deseas borrar la encuesta?. Se perderán los resultados obtenidos.";
-                    break;
-                case 'FINALIZADO':
-                    texto = "¿Seguro que deseas borrar la encuesta?. Se perderán los resultados obtenidos.";
-                    break;
-
-                default:
-                    break;
-            }
-            Swal.fire({
-                title: texto,
-                showDenyButton: true,
-                showCancelButton: false,
-                confirmButtonText: "Cancelar",
-                denyButtonText: `Borrar`
-            }).then((result) => {
-                if (result.isConfirmed) {
-
-                } else if (result.isDenied) {
-                    efectoCargando();
-                    formulario.submit();
-                }
-            });
-        }
-        function copyFunction() {
-            const copyText = document.getElementById("contenedorCompartir").textContent;
-            navigator.clipboard.writeText(copyText);
-
-            Swal.fire({
-            position: "top-end",
-            icon: "success",
-            title: "Copiado",
-            showConfirmButton: false,
-            timer: 1500
-            });
-
-            }
-
-        $('#fechaInicioFiltro, #fechaFinFiltro').change(function (e) {
-            table.ajax.reload();
-
-        });
     </script>
 @endsection
