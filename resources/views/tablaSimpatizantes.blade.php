@@ -81,11 +81,6 @@ Tabla de Simpatizantes
     // FUNCION PARA CARGAR TABLA DE USUARIOS
     $(document).ready(function () {
         var table = $('#tablaUsuarios').DataTable( {
-            @if($user->getRoleNames()->first() == 'CAPTURISTA')
-                order: [[1, 'asc'], [0, 'desc']],
-            @else
-                order: [[1, 'desc'], [0, 'desc']],
-            @endif
             scrollX: true,
             lengthChange: true,
             // responsive: true,
