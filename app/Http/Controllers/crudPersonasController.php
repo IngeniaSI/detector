@@ -65,6 +65,7 @@ class crudPersonasController extends Controller
                     $persona->apellido_paterno = strtoupper($formulario->apellido_paterno);
                     $persona->apellido_materno = strtoupper($formulario->apellido_materno);
                     $persona->nombres = strtoupper($formulario->nombre);
+                    $persona->tipoRegistro = $formulario->tipoRegistro;
                     $persona->genero = strtoupper($formulario->genero);
                     $persona->telefono_celular = strtoupper($formulario->telefonoCelular);
                     $persona->correo = strtoupper($formulario->correo);

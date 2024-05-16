@@ -39,6 +39,7 @@
         z-index: 9999999
     }
 </style>
+    {{-- MODAL DE CREAR --}}
     @can('encuestas.agregar')
         <!-- Modal Agregar Encuesta -->
         <div class="modal fade" id="modalAgregarEscuesta" tabindex="-1" aria-labelledby="modalAgregarEscuesta" aria-hidden="true">
@@ -80,7 +81,7 @@
                             <br>
                             <div class="row">
                                 <div class="col">
-                                    <h4>Buscar personas en base de datos:</h4>
+                                    <h4>Preguntas para identificar una persona:</h4>
                                     <input type="checkbox" name="buscarBaseDatos" id="buscarBaseDatos" class="form-check-input"> <span>Activado</span>
                                 </div>
                             </div>
@@ -115,7 +116,8 @@
                                 <div class="row">
                                     <div class="col">
                                         <h4>Secciones a encuestar:</h4>
-                                        <select id="seccionesObjetivo" name="seccionesObjetivo[]" class="form-select selectToo seccionesSeleccionadas" multiple="multiple" style="width:100%">
+                                        <select id="seccionesObjetivo" name="seccionesObjetivo[]" class="form-select selectToo seccionesSeleccionadas"
+                                        multiple="multiple" style="width:100%">
 
                                         </select>
                                     </div>
@@ -147,6 +149,7 @@
             </div>
         </div>
     @endcan
+    {{-- MODAL DE MODIFICAR --}}
     @can('encuestas.editar')
         <!-- Modal Modificar Encuesta -->
         <div class="modal fade" id="ModificarModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -315,12 +318,23 @@
         <div class="card mb-4">
             <div class="card-header">
                 <div class="d-flex justify-content-end">
+
                     @can('encuestas.agregar')
                         <button class="btnCrearUsuario btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarEscuesta" ><i class="fas fa-file me-1"></i> Agregar Encuesta</button>
                     @endcan
                 </div>
             </div>
             <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h4>Desde:</h4>
+                        <input type="date" id="fechaInicioFiltro" class="form-control">
+                    </div>
+                    <div class="col">
+                        <h4>Hasta:</h4>
+                        <input type="date" id="fechaFinFiltro" class="form-control">
+                    </div>
+                </div>
                 <table id="tablaUsuarios2" class="table table-striped table-bordered " style="width:100%">
                     <thead>
                         <tr>
@@ -355,6 +369,7 @@
     <script text="text/javascript">
         var fbEditor, formBuilder, fbEditor2, formBuilder2,fbEditorPrevio, formBuilderPrevio;
         var encuestaACompartir = 0;
+        var table;
         $(document).ready(function () {
             var options = {
                 showActionButtons: false,
@@ -492,7 +507,7 @@
                 const modalModificar = new bootstrap.Modal(document.getElementById('ModificarModal'));
                 modalModificar.show();
             @endif
-            var table = $('#tablaUsuarios2').DataTable({
+            table = $('#tablaUsuarios2').DataTable({
                 order: [[0, 'desc']],
                 scrollX: true,
                 lengthChange: true,
@@ -503,6 +518,10 @@
                 "serverSide": true,
                 ajax: {
                     url: "{{route('encuestas.cargar')}}",
+                    data: function(d) {
+                        d.fechaInicio = $('#fechaInicioFiltro').val();
+                        d.fechaFin = $('#fechaFinFiltro').val();
+                    }
                 },
                 columns: [
                     { data: 'id' },
@@ -523,10 +542,6 @@
                                     '<button id="btnModificarEncuesta_'+data.id+'" onclick="cargarEncuesta('+data.id+')" class ="btn btn-warning" data-bs-toggle="modal" data-bs-target="#ModificarModal" >'+
                                         '<i class="fas fa-edit me-1">'+
                                     '</i>&nbsp;Editar'+
-                                    '</button>'+
-                                    '<button id="btnConfigurarUsuario_'+data.id+'" onclick="cargarConfiguracion('+data.id+')" class ="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalConfigurar">'+
-                                        '<i class="fas fa-gear me-1">'+
-                                    '</i>&nbsp;Configurar'+
                                     '</button>'+
                                     '<form id="formularioIniciarEncuesta" onsubmit="efectoCargando()" action="{{url('/')}}/encuestas/iniciar-periodo-' + data.id + '" method="post">'+
                                         '<input type="hidden" value="{{csrf_token()}}" name="_token">'+
@@ -552,14 +567,6 @@
                                 '</i>&nbsp;Compartir'+
                                 '</button>';
 
-                            var finalizado =
-                            @can('encuestas.modificar')
-                                '<button id="btnConfigurarUsuario_'+data.id+'" onclick="cargarConfiguracion('+data.id+')" class ="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalConfigurar">'+
-                                    '<i class="fas fa-gear me-1">'+
-                                '</i>&nbsp;Configurar'+
-                                '</button>'+
-                            @endcan
-                            '';
                             botones = '';
 
                             if(data.estatus == 'CREANDO'){
@@ -568,11 +575,12 @@
                             else if(data.estatus == 'ENCURSO'){
                                 botones += enCurso;
                             }
-                            else if(data.estatus == 'FINALIZADO'){
-                                botones += finalizado;
-                            }
                             botones +=
                             @can('encuestas.modificar')
+                                '<button id="btnConfigurarUsuario_'+data.id+'" onclick="cargarConfiguracion('+data.id+')" class ="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalConfigurar">'+
+                                        '<i class="fas fa-gear me-1">'+
+                                    '</i>&nbsp;Configurar'+
+                                    '</button>'+
                                 '<form id="formularioClonar_'+data.id+'" onsubmit="efectoCargando()" action="{{url('/')}}/encuestas/duplicar-' + data.id + '" method="post">'+
                                     '<input type="hidden" value="{{csrf_token()}}" name="_token">'+
                                     '<button id="btnCerrarEncuestaUsuario_'+data.id+'" class ="btn btn-ligth">'+
@@ -769,6 +777,12 @@
                     console.log(seccionesSeparadas);
                     $('#seccionesObjetivo').val(seccionesSeparadas);
                     $('#seccionesObjetivo').trigger('change');
+                    if(response.estatus != 'CREANDO'){
+                        $('#seccionesObjetivo').prop('disabled', true);
+                    }
+                    else{
+                        $('#seccionesObjetivo').prop('disabled', false);
+                    }
                 },
                 error: function( data, textStatus, jqXHR){
                     if (jqXHR.status === 0) {
@@ -846,5 +860,9 @@
 
             }
 
+        $('#fechaInicioFiltro, #fechaFinFiltro').change(function (e) {
+            table.ajax.reload();
+
+        });
     </script>
 @endsection

@@ -94,6 +94,27 @@
                             @enderror
                         </div>
                     </div>
+                    <div class="row row-cols-1 row-cols-sm-3">
+                        <div class="col">
+                            <h4>Tipo de Registro</h4>
+                            <select id="tipoRegistro" name="tipoRegistro" class="form-select selectToo" aria-label="Tipo de Registro">
+                                <option value="0">Seleciona el tipo del registro</option>
+                                <option value="Prospecto">Prospecto</option>
+                                <option value="Simpatizante">Simpatizante</option>
+                                <option value="Promovido">Promovido</option>
+                                <option value="Afiliado">Afiliado</option>
+                            </select>
+                            @error('tipoRegistro')
+                                <div id="fechaRegistroError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </div>
+                        <div class="col">
+
+                        </div>
+                        <div class="col">
+
+                        </div>
+                    </div>
                 </div>
                 <br>
                 <div id="datosPersonales" class="p-4 border rounded-3 bg-secondary bg-opacity-10">
@@ -102,7 +123,7 @@
                         <div class="col">
                             <h4 class="fw-bold">Apellido paterno (*)</h4>
                             <input type="text" class="form-control" id="apellido_paterno" name="apellido_paterno" value="{{old('apellido_paterno')}}"
-                            minlength="3" maxlength="255" onkeydown="return /[a-z, ]/i.test(event.key)"
+                            minlength="3" maxlength="255"
                             onblur="if (this.value == '') {this.value = '';}" onfocus="if (this.value == '') {this.value = '';}">
                             @error('apellido_paterno')
                                 <div id="apellidoPaternoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -111,7 +132,7 @@
                         <div class="col">
                             <h4>Apellido materno</h4>
                             <input type="text" class="form-control" id="apellido_materno" name="apellido_materno" value="{{old('apellido_materno')}}"
-                            minlength="3" maxlength="255" onkeydown="return /[a-z, ]/i.test(event.key)"
+                            minlength="3" maxlength="255"
                             onblur="if (this.value == '') {this.value = '';}" onfocus="if (this.value == '') {this.value = '';}">
                             @error('apellido_materno')
                                 <div id="apellidoMaternoError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
@@ -120,7 +141,7 @@
                         <div class="col">
                             <h4 class="fw-bold">Nombre(s) (*)</h4>
                             <input type="text" class="form-control" id="nombre" name="nombre" value="{{old('nombre')}}" minlength="3" maxlength="255"
-                            onkeydown="return /[a-z, ]/i.test(event.key)"
+
                             onblur="if (this.value == '') {this.value = '';}"
                             onfocus="if (this.value == '') {this.value = '';}">
                             @error('nombre')
@@ -242,7 +263,7 @@
                         <div class="col">
                             <h4>Calle</h4>
                             <input type="text" class="form-control" id="calle" name="calle" value="{{old('calle')}}"
-                            onkeydown="return /[a-z, ]/i.test(event.key)"
+
                             onblur="if (this.value == '') {this.value = '';}"
                             onfocus="if (this.value == '') {this.value = '';}">
                             @error('calle')
@@ -521,37 +542,9 @@
         </div>
     </form>
 </div>
-
-
-    </script>
-
-
-
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Tipo de Registro</h5>
-      </div>
-      <div class="modal-body">
-      <select id="tipoRegistro" class="form-select" aria-label="Tipo de Registro">
-            <option value="Prospecto" selected>Prospecto</option>
-            <option value="Simpatizante">Simpatizante</option>
-            <option value="Promovido">Promovido</option>
-            <option value="Afiliado">Afiliado</option>
-      </select>
-      <div class="mt-3">
-          <small>*Los campos de color azul seran supervisados</small>
-      </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" onclick="tipoRegistro()">Guardar Cambios</button>
-      </div>
-    </div>
-  </div>
-
 @endsection
+
+
 
 @section('scripts')
 @if (session()->has('validarCamposFormPersona'))
@@ -563,7 +556,7 @@
         });
     </script>
 @endif
-  {{-- PASAR LIBRERIAS A PLANTILLA --}}
+    {{-- PASAR LIBRERIAS A PLANTILLA --}}
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDg60SDcmNRPnG1tzZNBBGFx02cW2VkWWQ&callback=initMap&v=weekly" defer></script>
 <script src="{{url('/')}}/js/validacionesFormulario.js" text="text/javascript"></script>
 
@@ -760,12 +753,8 @@
         return resultado;
     }
 
-    var myModal = new bootstrap.Modal(document.getElementById('exampleModal'))
     // FUNCION PARA CARGAR TABLA DE USUARIOS
     $(document).ready(function () {
-        @if(!session()->has('validarCamposFormPersona') && explode('/', url()->current()) [count(explode('/', url()->current())) - 1] == 'agregar')
-            myModal.show()
-        @endif
         Swal.fire({
             title: 'Cargando...',
             allowOutsideClick: false,
@@ -885,6 +874,9 @@
                                 $('input[name="fechaNacimiento"]').val(response.persona.fecha_nacimiento.substring(0, 10));
                                 $('#fechaNacimiento').trigger('change');
                             }
+                            $('#tipoRegistro').val(response.persona.tipoRegistro);
+                            $('#tipoRegistro').trigger('change');
+
                             $('select[name="escolaridad"]').val(response.persona.escolaridad);
                             $('input[name="telefonoCelular"]').val(response.persona.telefono_celular);
                             $('input[name="telefonoFijo"]').val(response.persona.telefono_fijo);
@@ -1222,8 +1214,25 @@
     });
 
 
-    function tipoRegistro(){
-        myModal.hide()
+    $('#tipoRegistro').change(function (e) {
+        $("#apellido_materno").removeClass('bg-info');
+        $("#apellido_paterno").removeClass("bg-info")
+        $("#nombre").removeClass('bg-info');
+        $("#telefonoCelular").removeClass('bg-info');
+        $("#telefonoFijo").removeClass("bg-info")
+        $("#correo").removeClass('bg-info');
+        $("#calle").removeClass('bg-info');
+        $("#numeroExterior").removeClass("bg-info")
+        $("#numeroInterior").removeClass('bg-info');
+        $("#colonias").removeClass('bg-info');
+        $("#codigoPostal").removeClass('bg-info');
+        $("#municipios").removeClass('bg-info');
+        $("#fondoDelegacion").removeClass('bg-info');
+        $("#fondoColonia").removeClass('bg-info');
+        $("#fondoSeccion").removeClass('bg-info');
+        $("#claveElectoral").removeClass('bg-info');
+        $("#datosRelacion").addClass('bg-secondary bg-opacity-10');
+        $("#datosRelacion").removeClass('bg-info');
 
         if($("#tipoRegistro").val()=="Prospecto"){
             $("#nombre").addClass('bg-info');
@@ -1295,7 +1304,7 @@
             $("#datosRelacion").removeClass('bg-secondary bg-opacity-10');
             $("#datosRelacion").addClass('bg-info');
         }
-    }
+    });
 
 
 

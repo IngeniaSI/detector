@@ -230,6 +230,7 @@ class formularioSimpatizanteController extends Controller
                     $personaNueva->apellido_paterno = strtoupper($formulario->apellido_paterno);
                     $personaNueva->apellido_materno = strtoupper($formulario->apellido_materno);
                     $personaNueva->nombres = strtoupper($formulario->nombre);
+                    $personaNueva->tipoRegistro = $formulario->tipoRegistro;
                     $personaNueva->genero = strtoupper($formulario->genero);
                     $personaNueva->telefono_celular = strtoupper($formulario->telefonoCelular);
                     $personaNueva->correo = strtoupper($formulario->correo);
