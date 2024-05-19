@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('nombre');
             $table->text('jsonPregunta')->nullable();
             $table->text('seccionesObjetivo')->nullable();
-            $table->string('tipoGrafica')->nullable();
+            // $table->string('tipoGrafica')->nullable();
             $table->date('fecha_inicio_sistema')->nullable();
             $table->date('fecha_fin_sistema')->nullable();
             $table->boolean('buscarBaseDatos')->default(false);

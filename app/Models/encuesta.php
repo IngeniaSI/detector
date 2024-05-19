@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class encuesta extends Model
 {
     use HasFactory;
+    public function respuestas(){
+        return $this->hasMany(respuesta::class);
+    }
 }

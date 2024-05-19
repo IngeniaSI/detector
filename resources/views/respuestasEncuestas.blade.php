@@ -7,7 +7,7 @@
 
 @section('cuerpo')
 <style>
-    
+
     :root {
         --purple: #0d6efd;
         --off-white: #f8f8f8;
@@ -39,229 +39,103 @@
         z-index: 9999999
     }
 </style>
-    @can('encuestas.agregar')
-        <!-- Modal Agregar Encuesta -->
-        <div class="modal fade" id="modalAgregarEscuesta" tabindex="-1" aria-labelledby="modalAgregarEscuesta" aria-hidden="true">
-            <div class="modal-dialog modal-xl">
-                {{-- FORMULARIO DE AGREGAR  --}}
-                <form id="formularioCrearEncuesta" action="{{route('encuestas.agregar')}}" method="post">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel"> Agregar Encuesta</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            @csrf
-                            <div class="row mb-3">
-                                <div class="col">
-                                    <h4>Descripción</h4>
-                                    <input type="text" name="nombreEncuesta" class="form-control" value="{{old('nombreEncuesta')}}" minlength="3" maxlength="255">
-                                    @error('nombreEncuesta')
-                                        <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <h4>Fecha de Inicio</h4>
-                                    <input type="date" name="fechaInicio" class="form-control">
-                                    @error('fechaInicio')
-                                        <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
-                                    @enderror
-                                </div>
-                                <div class="col">
-                                    <h4>Fecha de Finalización</h4>
-                                    <input type="date" name="fechaFin" class="form-control">
-                                    @error('fechaFin')
-                                        <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <br>
-                            <div class="row">
-                                <div class="col">
-                                    <h4>Buscar personas en base de datos:</h4>
-                                    <input type="checkbox" name="buscarBaseDatos" id="buscarBaseDatos" class="form-check-input"> <span>Activado</span>
-                                </div>
-                            </div>
-                            <br>
-                            <div class="row">
-                                <h4>Gestor de preguntas</h4>
-                                <div id="fb-editor"></div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-primary">Crear</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <!-- Modal Configurar -->
-        <div class="modal fade" id="modalConfigurar" tabindex="-1" aria-labelledby="modalConfigurar" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                {{-- FORMULARIO DE CONFIGURAR  --}}
-                <form id="formularioConfigurar" action="#" method="post">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">VINCULAR CON PERSONA</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            @csrf
-                            <div class="row mb-3">
-
-                                <div class="row">
-                                    <div class="col">
-                                        <h4>Secciones a persona:</h4>
-                                        <select id="seccionesObjetivo" name="seccionesObjetivo[]" class="form-select selectToo seccionesSeleccionadas" multiple="multiple" style="width:100%">
-
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-primary">Guardar Cambios</button>
-                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    @endcan
-    @can('encuestas.editar')
-        <!-- Modal Modificar Encuesta -->
-        <div class="modal fade" id="ModificarModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl">
-                {{-- FORMULARIO DE MODIFICAR USUARIO --}}
-                <form id="formularioModificarEncuesta"
-                action="#"
-                method="post">
+    <!-- Modal Configurar -->
+    <div class="modal fade" id="modalConfigurar" tabindex="-1" aria-labelledby="modalConfigurar" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            {{-- FORMULARIO DE CONFIGURAR  --}}
+            <form id="formularioConfigurar" action="#" method="post">
                 <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Modificar Encuestas</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            @csrf
-                            <div class="row mb-3">
-                                <div class="col">
-                                    <h4>Descripción</h4>
-                                    <input type="text" id="descripcion" name="descripcion" class="form-control" value="{{old('descripcion')}}" minlength="3" maxlength="255">
-                                    @error('descripcion')
-                                        <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
-                                    @enderror
-                                </div>
-                            </div>
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">VINCULAR CON PERSONA</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        @csrf
+                        <div class="row mb-3">
+
                             <div class="row">
                                 <div class="col">
-                                    <h4>Fecha de Inicio</h4>
-                                    <input type="date" id="fechaInicio" name="fechaInicio" class="form-control" value="{{old('fechaInicio')}}">
-                                    @error('fechaInicio')
-                                        <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
-                                    @enderror
-                                </div>
-                                <div class="col">
-                                    <h4>Fecha de Finalización</h4>
-                                    <input type="date" id="fechaFinalizacion" name="fechaFin" class="form-control" value="{{old('fechaFin')}}">
-                                    @error('fechaFinalizacion')
-                                        <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
-                                    @enderror
+                                    <h4>Seleccionar a la persona:</h4>
+                                    <select id="personaVinculada" name="personaVinculada" class="form-select selectToo" style="width:100%">
+
+                                    </select>
                                 </div>
                             </div>
-                            <br>
-                            <div class="row">
-                                <div class="col">
-                                    <h4>Buscar personas en base de datos:</h4>
-                                    <input type="checkbox" name="buscarBaseDatos" id="buscarBaseDatosModificar" class="form-check-input" @checked(old('buscarBaseDatos') == true)> <span>Activado</span>
-                                </div>
-                            </div>
-                            <br>
-                            <div class="row">
-                                <h4>Gestor de preguntas</h4>
-                                <div id="fb-editor2"></div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-primary">Crear</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                         </div>
                     </div>
-                </form>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary">Guardar Cambios</button>
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+     <!-- Modal VISTA PREVIA -->
+     <div class="modal fade" id="PreviaModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            {{-- FORMULARIO Vista Previa USUARIO --}}
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Vista Previa de la Encuestas</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="row">
+                        <h3 id="encabezadoPrevio"></h3>
+                        <h4>- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - </h4>
+                        <div id="fb-editorPrevio" style="pointer-events:none;"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                </div>
             </div>
         </div>
-    @endcan
-    <!-- Modal VISTA PREVIA -->
-    <div class="modal fade" id="PreviaModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl">
-                {{-- FORMULARIO Vista Previa USUARIO --}}
-                <form id="formularioModificarEncuesta"
-                action="#"
-                method="post">
-                <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Vista Previa de la Encuestas</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            @csrf
-                            <div class="row mb-3">
-                                <div class="col">
-                                    <h4>Descripción</h4>
-                                    <input disabled type="text" id="descripcionPrevia" name="descripcionPrevia" class="form-control" value="{{old('descripcion')}}" minlength="3" maxlength="255">
-                                    @error('descripcion')
-                                        <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <h4>Fecha de Inicio</h4>
-                                    <input disabled type="date" id="fechaInicioPrevia" name="fechaInicioPrevia" class="form-control" value="{{old('fechaInicio')}}">
-                                    @error('fechaInicio')
-                                        <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
-                                    @enderror
-                                </div>
-                                <div class="col">
-                                    <h4>Fecha de Finalización</h4>
-                                    <input disabled type="date" id="fechaFinalizacionPrevia" name="fechaFinPrevia" class="form-control" value="{{old('fechaFin')}}">
-                                    @error('fechaFinalizacion')
-                                        <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <br>
-                            <div class="row">
-                                <div class="col">
-                                    <h4>Buscar personas en base de datos:</h4>
-                                    <input disabled type="checkbox" name="buscarBaseDatosPrevia" id="buscarBaseDatosModificarPrevia" class="form-check-input" @checked(old('buscarBaseDatos') == true)> <span>Activado</span>
-                                </div>
-                            </div>
-                            <br>
-                            <div class="row">
-                                <h4>Gestor de preguntas</h4>
-                                <div id="fb-editorPrevio" style="pointer-events:none;"></div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
-                        </div>
+    </div>
+    <!-- Modal EXPORTAR -->
+    <div class="modal fade" id="modalExportar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            {{-- FORMULARIO Vista Previa USUARIO --}}
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Exportando a excel</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <h4>Seleccione una encuesta:</h4>
+                        <select id="excelAExportar" class="form-select selectToo encuestasExistentes" style="width:100%">
+                        </select>
                     </div>
-                </form>
+                </div>
+                <div class="modal-footer">
+                    <a id="ligaExportar" href="#" target="_blank">
+                        <button type="button" class="btn btn-success" data-bs-dismiss="modal">Exportar</button>
+                    </a>
+                </div>
             </div>
+        </div>
     </div>
     <div class="container-fluid px-4">
         <h1 class="mt-4">Respuestas de las Encuestas</h1>
         <div class="card mb-4">
             <div class="card-header">
                 <center>
-                <button class="btnExportarExcel btn btn-success" ><i class="fas fa-file-excel me-1"></i> Exportar Excel</button>
+                <button class="btnExportarExcel btn btn-success" data-bs-toggle="modal" data-bs-target="#modalExportar"><i class="fas fa-file-excel me-1"></i> Exportar Excel</button>
 
                 </center>
             </div>
             <div class="card-body">
+                <div class="row">
+                    <div class="col">
+                        <h4>Filtrar resultados por:</h4>
+                        <select id="selectNombre" name="selectNombre" class="form-select selectToo encuestasExistentes " style="width:100%">
+                            <option value="TODOS">TODOS</option>
+                        </select>
+                    </div>
+                </div>
                 <table id="tablaUsuarios2" class="table table-striped table-bordered" style="width:100%">
                     <thead>
                         <tr>
@@ -275,7 +149,7 @@
                     <tbody>
                     </tbody>
                 </table>
-                
+
             </div>
         </div>
     </div>
@@ -292,11 +166,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.4.0/highlight.min.js"></script>
     <script src="https://formbuilder.online/assets/js/form-render.min.js"></script>
-    
+
 
     <script text="text/javascript">
         var fbEditor, formBuilder, fbEditor2, formBuilder2,fbEditorPrevio, formBuilderPrevio;
         var encuestaACompartir = 0;
+        var table;
         $(document).ready(function () {
             var options = {
                 showActionButtons: false,
@@ -426,15 +301,7 @@
             formBuilder = $(fbEditor).formBuilder(options);
             formBuilder2 = $(fbEditor2).formBuilder(options);
             formBuilderPrevio = $(fbEditorPrevio).formBuilder(options);
-            @if (session()->has('encuestaCrearErrores'))
-                const modalCrear = new bootstrap.Modal(document.getElementById('modalAgregarEscuesta'));
-                modalCrear.show();
-            @endif
-            @if (session()->has('encuestaModificarErrores'))
-                const modalModificar = new bootstrap.Modal(document.getElementById('ModificarModal'));
-                modalModificar.show();
-            @endif
-            var table = $('#tablaUsuarios2').DataTable({
+            table = $('#tablaUsuarios2').DataTable({
                 layout: {
                     topStart: {
                         buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
@@ -449,22 +316,29 @@
                 "processing": true,
                 "serverSide": true,
                 ajax: {
-                    url: "{{route('encuestas.cargar')}}",
+                    url: "{{route('respuestas.paginacion')}}",
+                    data: function(d) {
+                        d.selectNombre = $('#selectNombre').val();
+                    }
                 },
                 columns: [
                     { data: 'id' },
                     { data: 'nombre'},
+                    { data: 'origen'},
                     { data: null,
                         render: function(data, type, row){
-                            return ('SIN ORIGEN');
+                            let tipo = '';
+                            if(data.tipo != null){
+                                tipo = 'PERSONA REGISTRADA';
+                            }
+                            else{
+                                tipo = 'ANONIMO';
+                            }
+                            return tipo;
                         }},
                     { data: null,
                         render: function(data, type, row){
-                            return ('ANONIMO');
-                        }},
-                    { data: null,
-                        render: function(data, type, row){
-                            
+
                             var botones = @can('encuestas.modificar')
                                     '<button id="btnVistaPrevia_'+data.id+'" onclick="cargarEncuesta('+data.id+')" class ="btn btn-primary" data-bs-toggle="modal" data-bs-target="#PreviaModal" >'+
                                         '<i class="fas fa-file me-1">'+
@@ -477,7 +351,7 @@
                                     '</form>'+
                                     @endcan
                                     '';
-                            
+
                             return botones;
                         }},
                     // Agrega más columnas según tus datos
@@ -487,15 +361,21 @@
             $.when(
                 $.ajax({
                         type: "get",
-                        url: "{{route('encuestas.cargarSecciones')}}",
+                        url: "{{route('respuestas.inicializar')}}",
                         data: [],
                         contentType: "application/x-www-form-urlencoded",
                     success: function (response) {
-                        console.log(response);
-                        $.each(response, function (indexInArray, valueOfElement) {
-                            $('.seccionesSeleccionadas').append($('<option>').html(valueOfElement));
+                        $.each(response.encuestas, function (indexInArray, valueOfElement) {
+                            $('.encuestasExistentes').append($('<option>').html(valueOfElement.nombre).val(valueOfElement.id));
                         });
-                        $('.seccionesSeleccionadas').trigger('change');
+                        $('.encuestasExistentes').trigger('change');
+                        $.each(response.personas, function (indexInArray, valueOfElement) {
+                            $('#personaVinculada').append($('<option>')
+                                .html(`${valueOfElement.nombres} ${valueOfElement.apellido_paterno}, ${valueOfElement.telefono_celular}`)
+                                .val(valueOfElement.id));
+                        });
+                        $('#personaVinculada').trigger('change');
+
                     },
                     error: function( data, textStatus, jqXHR){
                         if (jqXHR.status === 0) {
@@ -533,17 +413,6 @@
             });
         });
 
-        $('#formularioCrearEncuesta').submit(function (e) {
-            efectoCargando();
-            var preguntasString = JSON.stringify(formBuilder.actions.getData());
-            $('#formularioCrearEncuesta').append($('<input>').attr('type', 'hidden').attr('name', 'preguntasJSON').val(preguntasString));
-        });
-        $('#formularioModificarEncuesta').submit(function (e) {
-            efectoCargando();
-            var preguntasString = JSON.stringify(formBuilder2.actions.getData());
-            $('[name="ModificarPreguntasJSON"]').remove();
-            $('#formularioModificarEncuesta').append($('<input>').attr('type', 'hidden').attr('name', 'ModificarPreguntasJSON').val(preguntasString));
-        });
 
         function efectoCargando(){
             Swal.fire({
@@ -557,7 +426,7 @@
         function cargarEncuesta(idEncuesta){
             efectoCargando();
             $('.mensajesErrores').remove();
-            var ruta = "{{url('/')}}/encuestas/ver-" + idEncuesta;
+            var ruta = "{{url('/')}}/encuestas/resultados/cargar-resultado-" + idEncuesta;
                 $.when(
                 $.ajax({
                 type: "get",
@@ -565,44 +434,47 @@
                 data: [],
                 contentType: "application/x-www-form-urlencoded",
                 success: function (response) {
-                    var ruta = "{{url('/')}}/encuestas/modificar-"+response.id;
-                    $('#formularioModificarEncuesta')[0].reset();
-                    $('#formularioModificarEncuesta').attr('action', ruta);
-                    $('#formularioModificarEncuesta').css('display', 'block');
-                    $('#descripcion').val(response.nombre);
-                    $('#fechaInicio').val(response.fecha_inicio);
-                    $('#fechaFinalizacion').val(response.fecha_fin);
-                    $('#descripcionPrevia').val(response.nombre);
-                    $('#fechaInicioPrevia').val(response.fecha_inicio);
-                    $('#fechaFinalizacionPrevia').val(response.fecha_fin);
-                    console.log(response);
-                    if(response.buscarBaseDatos){
-                        $('#buscarBaseDatosModificar').prop('checked', true);
-                        $('#buscarBaseDatosModificarPrevia').prop('checked', true);
-                    }
-                    formBuilder2.actions.setData(response.jsonPregunta);
+                    $('#encabezadoPrevio').text(response.nombre);
                     $(fbEditorPrevio).formRender({
                         dataType: 'json',
-                        formData: response.jsonPregunta
+                        formData: response.preguntas
                     });
-                    // $('#modificarNombre').val(response[0].nombre);
-                    // $('#modificarApellidoPaterno').val(response[0].apellido_paterno);
-                    // $('#modificarApellidoMaterno').val(response[0].apellido_materno);
-                    // $('#modificarCorreo').val(response[0].email);
-                    // $('#modificarTelefono').val(response[0].telefono);
-                    // if(response[1] == 'SUPER ADMINISTRADOR'){
-                    //     $('#modificarRolUsuario').prop('disabled', true);
-                    // }
-                    // else{
-                    //     $('#modificarRolUsuario').prop('disabled', false);
-                    // }
-                    // $('#modificarRolUsuario').val(response[1]);
-                    // $('#modificarNivelAcceso').val(response[0].nivel_acceso);
-                    // $('.nivelAcceso').trigger('change');
-                    // let nivelesSeparados = (response[0].niveles != null) ? response[0].niveles.split(',') : [];
-                    // console.log(nivelesSeparados);
-                    // $('.nivelesSeleccionados').val(nivelesSeparados);
-
+                    console.log(response);
+                    let preguntas = JSON.parse(response.preguntas);
+                    let respuestas = JSON.parse(response.resultados);
+                    console.log(preguntas, respuestas);
+                    //CARGAR RESPUESTAS
+                    let arregloRespuesta = Object.keys(respuestas).map((key) => [key, respuestas[key]]);
+                $.each(preguntas, function (indexInArray, valueOfElement) {
+                    let valorObtenido;
+                    arregloRespuesta.forEach(element => {
+                        if(element[0] == valueOfElement.name){
+                            valorObtenido = element[1];
+                        }
+                    });
+                    switch (valueOfElement.type) {
+                        case 'checkbox-group':
+                            $(`[name="${valueOfElement.name}[]"]`).val(valorObtenido);
+                            break;
+                        case 'radio-group':
+                            $(`[name="${valueOfElement.name}"][value="${valorObtenido}"]`).prop('checked', true);
+                            break;
+                        case 'date':
+                            $(`[name="${valueOfElement.name}"]`).val(valorObtenido);
+                            break;
+                        case 'number':
+                            $(`[name="${valueOfElement.name}"]`).val(valorObtenido);
+                            break;
+                        case 'textarea':
+                            $(`[name="${valueOfElement.name}"]`).val(valorObtenido);
+                            break;
+                        case 'text':
+                            $(`[name="${valueOfElement.name}"]`).val(valorObtenido);
+                            break;
+                        default:
+                            break;
+                    }
+                });
                 },
                 error: function( data, textStatus, jqXHR){
                     if (jqXHR.status === 0) {
@@ -629,53 +501,61 @@
         }
 
         function cargarConfiguracion(idEncuesta){
-            efectoCargando();
-            $('.mensajesErrores').remove();
-            var ruta = "{{url('/')}}/encuestas/ver-" + idEncuesta;
-                $.when(
-                $.ajax({
-                type: "get",
-                url: ruta,
-                data: [],
-                contentType: "application/x-www-form-urlencoded",
-                success: function (response) {
-                    var ruta = "{{url('/')}}/encuestas/configurar-"+response.id;
+            // efectoCargando();
+            // $('.mensajesErrores').remove();
+            // var ruta = "{{url('/')}}/encuestas/ver-" + idEncuesta;
+            //     $.when(
+            //     $.ajax({
+            //     type: "get",
+            //     url: ruta,
+            //     data: [],
+            //     contentType: "application/x-www-form-urlencoded",
+            //     success: function (response) {
+            //         var ruta = "{{url('/')}}/encuestas/configurar-"+response.id;
 
-                    $('#formularioConfigurar')[0].reset();
-                    $('#formularioConfigurar').attr('action', ruta);
-                    $('#formularioConfigurar').css('display', 'block');
+            //         $('#formularioConfigurar')[0].reset();
+            //         $('#formularioConfigurar').attr('action', ruta);
+            //         $('#formularioConfigurar').css('display', 'block');
 
-                    $('#tipoGrafica').val(response.tipoGrafica);
-                    $('#tipoGrafica').trigger('change');
-                    let seccionesSeparadas = (response.seccionesObjetivo != null) ? response.seccionesObjetivo.split(',') : [];
-                    console.log(seccionesSeparadas);
-                    $('#seccionesObjetivo').val(seccionesSeparadas);
-                    $('#seccionesObjetivo').trigger('change');
-                },
-                error: function( data, textStatus, jqXHR){
-                    if (jqXHR.status === 0) {
-                        console.log('Not connect: Verify Network.');
-                    } else if (jqXHR.status == 404) {
-                        console.log('Requested page not found [404]');
-                    } else if (jqXHR.status == 500) {
-                        console.log('Internal Server Error [500].');
-                    } else if (textStatus === 'parsererror') {
-                        console.log('Requested JSON parse failed.');
-                    } else if (textStatus === 'timeout') {
-                        console.log('Time out error.');
-                    } else if (textStatus === 'abort') {
-                        console.log('Ajax request aborted.');
-                    } else {
-                        console.log('Uncaught Error: ' + jqXHR.responseText);
-                    }
-                }
-            })
-            ).then(
-            function( data, textStatus, jqXHR ) {
-                Swal.close();
-            });
+            //         $('#tipoGrafica').val(response.tipoGrafica);
+            //         $('#tipoGrafica').trigger('change');
+            //         let seccionesSeparadas = (response.seccionesObjetivo != null) ? response.seccionesObjetivo.split(',') : [];
+            //         console.log(seccionesSeparadas);
+            //         $('#seccionesObjetivo').val(seccionesSeparadas);
+            //         $('#seccionesObjetivo').trigger('change');
+            //     },
+            //     error: function( data, textStatus, jqXHR){
+            //         if (jqXHR.status === 0) {
+            //             console.log('Not connect: Verify Network.');
+            //         } else if (jqXHR.status == 404) {
+            //             console.log('Requested page not found [404]');
+            //         } else if (jqXHR.status == 500) {
+            //             console.log('Internal Server Error [500].');
+            //         } else if (textStatus === 'parsererror') {
+            //             console.log('Requested JSON parse failed.');
+            //         } else if (textStatus === 'timeout') {
+            //             console.log('Time out error.');
+            //         } else if (textStatus === 'abort') {
+            //             console.log('Ajax request aborted.');
+            //         } else {
+            //             console.log('Uncaught Error: ' + jqXHR.responseText);
+            //         }
+            //     }
+            // })
+            // ).then(
+            // function( data, textStatus, jqXHR ) {
+            //     Swal.close();
+            // });
         }
-    
+
+        $('#selectNombre').change(function (e) {
+            table.ajax.reload();
+
+        });
+        $('#excelAExportar').change(function (e) {
+            let idEncuesta = $(this).val();
+            $('#ligaExportar').attr('href', `{{url('/')}}/encuestas/resultados/exportar-${idEncuesta}`);
+        });
 
     </script>
 @endsection
