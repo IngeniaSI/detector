@@ -23,123 +23,129 @@ class formularioSimpatizanteController extends Controller
         return view('formularioSimpatizante');
     }
     public function inicializar(){
-        $user = auth()->user();
-        switch ($user->nivel_acceso) {
-            case 'TODO':
-                //HACER CONSULTA SIN FILTROS
-                $seccionesParaBuscar = seccion::pluck('id')->toArray();
+        try{
+            $user = auth()->user();
+            switch ($user->nivel_acceso) {
+                case 'TODO':
+                    //HACER CONSULTA SIN FILTROS
+                    $seccionesParaBuscar = seccion::pluck('id')->toArray();
 
-                break;
-            case 'ENTIDAD':
-                //HACER CONSULTA FILTRAR PERSONAS QUE SU IDENTIFICACION
-                //PERTENEZCA A LA LISTA DE SECCIONES PERTENECIENTES A LAS ENTIDADES SELECCIONADAS
-                $nivelesConAcceso = explode(',', $user->niveles);
-                $seccionesParaBuscar = entidad::whereIn('entidads.id', $nivelesConAcceso)
-                ->join('distrito_federals', 'entidads.id', '=','distrito_federals.entidad_id')
-                ->join('municipios', 'distrito_federals.id', '=','municipios.distrito_federal_id')
-                ->join('distrito_locals', 'municipios.id', '=','distrito_locals.municipio_id')
-                ->join('seccions', 'distrito_locals.id', '=','seccions.distrito_local_id')
-                ->pluck('seccions.id')
-                ->toArray();
+                    break;
+                case 'ENTIDAD':
+                    //HACER CONSULTA FILTRAR PERSONAS QUE SU IDENTIFICACION
+                    //PERTENEZCA A LA LISTA DE SECCIONES PERTENECIENTES A LAS ENTIDADES SELECCIONADAS
+                    $nivelesConAcceso = explode(',', $user->niveles);
+                    $seccionesParaBuscar = entidad::whereIn('entidads.id', $nivelesConAcceso)
+                    ->join('distrito_federals', 'entidads.id', '=','distrito_federals.entidad_id')
+                    ->join('municipios', 'distrito_federals.id', '=','municipios.distrito_federal_id')
+                    ->join('distrito_locals', 'municipios.id', '=','distrito_locals.municipio_id')
+                    ->join('seccions', 'distrito_locals.id', '=','seccions.distrito_local_id')
+                    ->pluck('seccions.id')
+                    ->toArray();
 
-                break;
-            case 'DISTRITO FEDERAL':
-                //HACER CONSULTA FILTRAR PERSONAS QUE SU IDENTIFICACION
-                //PERTENEZCA A LA LISTA DE SECCIONES PERTENECIENTES A LOS DISTRITOS FEDERALES SELECCIONADAS
-                $nivelesConAcceso = explode(',', $user->niveles);
-                $seccionesParaBuscar = distritoFederal::whereIn('distrito_federals.id', $nivelesConAcceso)
-                ->join('municipios', 'distrito_federals.id', '=','municipios.distrito_federal_id')
-                ->join('distrito_locals', 'municipios.id', '=','distrito_locals.municipio_id')
-                ->join('seccions', 'distrito_locals.id', '=','seccions.distrito_local_id')
-                ->pluck('seccions.id')
-                ->toArray();
+                    break;
+                case 'DISTRITO FEDERAL':
+                    //HACER CONSULTA FILTRAR PERSONAS QUE SU IDENTIFICACION
+                    //PERTENEZCA A LA LISTA DE SECCIONES PERTENECIENTES A LOS DISTRITOS FEDERALES SELECCIONADAS
+                    $nivelesConAcceso = explode(',', $user->niveles);
+                    $seccionesParaBuscar = distritoFederal::whereIn('distrito_federals.id', $nivelesConAcceso)
+                    ->join('municipios', 'distrito_federals.id', '=','municipios.distrito_federal_id')
+                    ->join('distrito_locals', 'municipios.id', '=','distrito_locals.municipio_id')
+                    ->join('seccions', 'distrito_locals.id', '=','seccions.distrito_local_id')
+                    ->pluck('seccions.id')
+                    ->toArray();
 
-                break;
-            case 'DISTRITO LOCAL':
-                //HACER CONSULTA FILTRAR PERSONAS QUE SU IDENTIFICACION
-                //PERTENEZCA A LA LISTA DE SECCIONES PERTENECIENTES A LOS DISTRITOS LOCALES SELECCIONADAS
-                $nivelesConAcceso = explode(',', $user->niveles);
-                $seccionesParaBuscar = distritoLocal::whereIn('distrito_locals.id', $nivelesConAcceso)
-                ->join('seccions', 'distrito_locals.id', '=','seccions.distrito_local_id')
-                ->pluck('seccions.id')
-                ->toArray();
+                    break;
+                case 'DISTRITO LOCAL':
+                    //HACER CONSULTA FILTRAR PERSONAS QUE SU IDENTIFICACION
+                    //PERTENEZCA A LA LISTA DE SECCIONES PERTENECIENTES A LOS DISTRITOS LOCALES SELECCIONADAS
+                    $nivelesConAcceso = explode(',', $user->niveles);
+                    $seccionesParaBuscar = distritoLocal::whereIn('distrito_locals.id', $nivelesConAcceso)
+                    ->join('seccions', 'distrito_locals.id', '=','seccions.distrito_local_id')
+                    ->pluck('seccions.id')
+                    ->toArray();
 
-                break;
-            case 'SECCION':
-                //HACER CONSULTA FILTRAR PERSONAS QUE SU IDENTIFICACION
-                //PERTENEZCA A LA LISTA DE SECCIONES PERTENECIENTES A LAS SECCIONES SELECCIONADAS
-                $seccionesParaBuscar = explode(',', $user->niveles);
-                $seccionesParaBuscar = array_map('intval', $seccionesParaBuscar);
+                    break;
+                case 'SECCION':
+                    //HACER CONSULTA FILTRAR PERSONAS QUE SU IDENTIFICACION
+                    //PERTENEZCA A LA LISTA DE SECCIONES PERTENECIENTES A LAS SECCIONES SELECCIONADAS
+                    $seccionesParaBuscar = explode(',', $user->niveles);
+                    $seccionesParaBuscar = array_map('intval', $seccionesParaBuscar);
 
-                break;
-        }
+                    break;
+            }
 
-        $colonias = colonia::join('seccion_colonias', 'colonias.id', '=', 'seccion_colonias.colonia_id')
-        ->join('seccions', 'seccions.id', '=', 'seccion_colonias.seccion_id')
-        ->join('distrito_locals', 'distrito_locals.id', '=', 'seccions.distrito_local_id')
-        ->join('municipios', 'distrito_locals.municipio_id', '=', 'municipios.id')
-        ->select('colonias.id', 'colonias.nombre', 'municipios.nombre as nombreMunicipio')
-        ->distinct()
-        ->whereIn('seccion_colonias.seccion_id', $seccionesParaBuscar)
-        ->get();
+            $colonias = colonia::join('seccion_colonias', 'colonias.id', '=', 'seccion_colonias.colonia_id')
+            ->join('seccions', 'seccions.id', '=', 'seccion_colonias.seccion_id')
+            ->join('distrito_locals', 'distrito_locals.id', '=', 'seccions.distrito_local_id')
+            ->join('municipios', 'distrito_locals.municipio_id', '=', 'municipios.id')
+            ->select('colonias.id', 'colonias.nombre', 'municipios.nombre as nombreMunicipio')
+            ->distinct()
+            ->whereIn('seccion_colonias.seccion_id', $seccionesParaBuscar)
+            ->get();
 
-        //FILTRADO DE COLONIAS PARA ENCONTRAR REPETIDOS Y CONCATENAR NOMBRE MUNICIPIO
-        $colección = collect($colonias);
-        $grupos = $colección->groupBy('nombre');
-        $nombresRepetidos = $grupos->filter(function ($grupo) {
-            return $grupo->count() > 1;
-        });
-        $nombresRepetidos->each(function ($grupo) {
-            $grupo->transform(function ($item) {
-                $item['nombre'] .= ', ' . $item['nombreMunicipio'];
-                return $item;
+            //FILTRADO DE COLONIAS PARA ENCONTRAR REPETIDOS Y CONCATENAR NOMBRE MUNICIPIO
+            $colección = collect($colonias);
+            $grupos = $colección->groupBy('nombre');
+            $nombresRepetidos = $grupos->filter(function ($grupo) {
+                return $grupo->count() > 1;
             });
-        });
-        $secciones = seccion::whereIn('id', $seccionesParaBuscar)
-        ->distinct()
-        ->orderBy('seccions.id', 'ASC')
-        ->get(['seccions.id']);
+            $nombresRepetidos->each(function ($grupo) {
+                $grupo->transform(function ($item) {
+                    $item['nombre'] .= ', ' . $item['nombreMunicipio'];
+                    return $item;
+                });
+            });
+            $secciones = seccion::whereIn('id', $seccionesParaBuscar)
+            ->distinct()
+            ->orderBy('seccions.id', 'ASC')
+            ->get(['seccions.id']);
 
-        $distritosLocales = distritoLocal::join('seccions', 'seccions.distrito_local_id', '=', 'distrito_locals.id')
-        ->whereIn('seccions.id', $seccionesParaBuscar)
-        ->distinct()
-        ->orderBy('distrito_locals.id', 'ASC')
-        ->get(['distrito_locals.id']);
+            $distritosLocales = distritoLocal::join('seccions', 'seccions.distrito_local_id', '=', 'distrito_locals.id')
+            ->whereIn('seccions.id', $seccionesParaBuscar)
+            ->distinct()
+            ->orderBy('distrito_locals.id', 'ASC')
+            ->get(['distrito_locals.id']);
 
-        $distritosFederales = distritoFederal::join('municipios', 'distrito_federals.id', '=', 'municipios.distrito_federal_id')
-        ->join('distrito_locals', 'distrito_locals.municipio_id', '=', 'municipios.id')
-        ->join('seccions', 'seccions.distrito_local_id', '=', 'distrito_locals.id')
-        ->whereIn('seccions.id', $seccionesParaBuscar)
-        ->distinct()
-        ->orderBy('distrito_federals.id', 'ASC')
-        ->get(['distrito_federals.id']);
+            $distritosFederales = distritoFederal::join('municipios', 'distrito_federals.id', '=', 'municipios.distrito_federal_id')
+            ->join('distrito_locals', 'distrito_locals.municipio_id', '=', 'municipios.id')
+            ->join('seccions', 'seccions.distrito_local_id', '=', 'distrito_locals.id')
+            ->whereIn('seccions.id', $seccionesParaBuscar)
+            ->distinct()
+            ->orderBy('distrito_federals.id', 'ASC')
+            ->get(['distrito_federals.id']);
 
-        $municipios = municipio::join('distrito_locals', 'distrito_locals.municipio_id', '=', 'municipios.id')
-        ->join('seccions', 'seccions.distrito_local_id', '=', 'distrito_locals.id')
-        ->whereIn('seccions.id', $seccionesParaBuscar)
-        ->distinct()
-        ->orderBy('municipios.id', 'ASC')
-        ->get(['municipios.id', 'municipios.nombre']);
+            $municipios = municipio::join('distrito_locals', 'distrito_locals.municipio_id', '=', 'municipios.id')
+            ->join('seccions', 'seccions.distrito_local_id', '=', 'distrito_locals.id')
+            ->whereIn('seccions.id', $seccionesParaBuscar)
+            ->distinct()
+            ->orderBy('municipios.id', 'ASC')
+            ->get(['municipios.id', 'municipios.nombre']);
 
-        $entidades = entidad::join('distrito_federals', 'distrito_federals.entidad_id', '=', 'entidads.id')
-        ->join('municipios', 'distrito_federals.id', '=', 'municipios.distrito_federal_id')
-        ->join('distrito_locals', 'distrito_locals.municipio_id', '=', 'municipios.id')
-        ->join('seccions', 'seccions.distrito_local_id', '=', 'distrito_locals.id')
-        ->whereIn('seccions.id', $seccionesParaBuscar)
-        ->distinct()
-        ->orderBy('entidads.id', 'ASC')
-        ->get(['entidads.id', 'entidads.nombre']);
+            $entidades = entidad::join('distrito_federals', 'distrito_federals.entidad_id', '=', 'entidads.id')
+            ->join('municipios', 'distrito_federals.id', '=', 'municipios.distrito_federal_id')
+            ->join('distrito_locals', 'distrito_locals.municipio_id', '=', 'municipios.id')
+            ->join('seccions', 'seccions.distrito_local_id', '=', 'distrito_locals.id')
+            ->whereIn('seccions.id', $seccionesParaBuscar)
+            ->distinct()
+            ->orderBy('entidads.id', 'ASC')
+            ->get(['entidads.id', 'entidads.nombre']);
 
-        $promotores = persona::where('rolEstructura', 'PROMOTOR')->get();
+            $promotores = persona::where('rolEstructura', 'PROMOTOR')->get();
 
-        /*
-        PROGRAMAS
-        */
-        return [
-            'colonias' => $colonias, 'municipios' => $municipios, 'secciones' => $secciones,
-            'entidades' => $entidades, 'distritosFederales' => $distritosFederales,
-            'distritosLocales' => $distritosLocales, 'promotores' => $promotores
-        ];
+            /*
+            PROGRAMAS
+            */
+            return [
+                'colonias' => $colonias, 'municipios' => $municipios, 'secciones' => $secciones,
+                'entidades' => $entidades, 'distritosFederales' => $distritosFederales,
+                'distritosLocales' => $distritosLocales, 'promotores' => $promotores
+            ];
+        }
+        catch(Exception $e){
+            Log::info($e->getLine(). ' | ' . $e->getMessage());
+            return null;
+        }
     }
     public function filtrarColonias($colonia){
         try{

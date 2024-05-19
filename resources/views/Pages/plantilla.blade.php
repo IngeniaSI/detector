@@ -61,9 +61,9 @@
                                     <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                                     Encuestas
                                 </a>
-                                
+
                             @endcan
-                            <a class="nav-link" href="{{url('/')}}/respuestasEncuestas">
+                            <a class="nav-link" href="{{url('/')}}/encuestas/resultados">
                                     <div class="sb-nav-link-icon"><i class="fas fa-file"></i></div>
                                     Respuestas de las Encuestas
                             </a>

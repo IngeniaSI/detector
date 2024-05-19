@@ -7,7 +7,7 @@
 
 @section('cuerpo')
 <style>
-    
+
     :root {
         --purple: #0d6efd;
         --off-white: #f8f8f8;
@@ -56,7 +56,7 @@
                             <div class="row mb-3">
                                 <div class="col">
                                     <h4>Descripción</h4>
-                                    <input type="text" name="nombreEncuesta" class="form-control" value="{{old('nombreEncuesta')}}" minlength="3" maxlength="255">
+                                    <input type="text" id="nombreEncuestaCreando" name="nombreEncuesta" class="form-control" value="{{old('nombreEncuesta')}}" minlength="3" maxlength="255">
                                     @error('nombreEncuesta')
                                         <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                                     @enderror
@@ -123,7 +123,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
+                            {{-- <div class="row">
                                 <div class="col">
                                     <h4>Grafica para mostrar resultados:</h4>
                                     <select id="tipoGrafica" name="tipoGrafica" class="form-select selectToo" style="width:100%">
@@ -138,7 +138,7 @@
                                         <option>DISPERCIÓN</option>
                                     </select>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-primary">Guardar</button>
@@ -230,7 +230,7 @@
                         </div>
                     </div>
                     <div class="row bg-secondary bg-opacity-25 rounded-3 m-1 p-3">
-                        <div class="row"> 
+                        <div class="row">
                             <div class="col">
 
                             </div>
@@ -258,59 +258,23 @@
     <div class="modal fade" id="PreviaModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 {{-- FORMULARIO Vista Previa USUARIO --}}
-                <form id="formularioModificarEncuesta"
-                action="#"
-                method="post">
                 <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Vista Previa de la Encuestas</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            @csrf
-                            <div class="row mb-3">
-                                <div class="col">
-                                    <h4>Descripción</h4>
-                                    <input disabled type="text" id="descripcionPrevia" name="descripcionPrevia" class="form-control" value="{{old('descripcion')}}" minlength="3" maxlength="255">
-                                    @error('descripcion')
-                                        <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <h4>Fecha de Inicio</h4>
-                                    <input disabled type="date" id="fechaInicioPrevia" name="fechaInicioPrevia" class="form-control" value="{{old('fechaInicio')}}">
-                                    @error('fechaInicio')
-                                        <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
-                                    @enderror
-                                </div>
-                                <div class="col">
-                                    <h4>Fecha de Finalización</h4>
-                                    <input disabled type="date" id="fechaFinalizacionPrevia" name="fechaFinPrevia" class="form-control" value="{{old('fechaFin')}}">
-                                    @error('fechaFinalizacion')
-                                        <div class="mensajesErrores p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <br>
-                            <div class="row">
-                                <div class="col">
-                                    <h4>Buscar personas en base de datos:</h4>
-                                    <input disabled type="checkbox" name="buscarBaseDatosPrevia" id="buscarBaseDatosModificarPrevia" class="form-check-input" @checked(old('buscarBaseDatos') == true)> <span>Activado</span>
-                                </div>
-                            </div>
-                            <br>
-                            <div class="row">
-                                <h4>- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - </h4>
-                                <div id="fb-editorPrevio" style="pointer-events:none;"></div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Vista Previa de la Encuestas</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="row">
+                            <h3 id="encabezadoPrevio"></h3>
+                            <h4>- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - </h4>
+                            <div id="fb-editorPrevio" style="pointer-events:none;"></div>
                         </div>
                     </div>
-                </form>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
             </div>
     </div>
     <div class="container-fluid px-4">
@@ -318,13 +282,15 @@
         <div class="card mb-4">
             <div class="card-header">
                 <div class="d-flex justify-content-end">
-
                     @can('encuestas.agregar')
                         <button class="btnCrearUsuario btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarEscuesta" ><i class="fas fa-file me-1"></i> Agregar Encuesta</button>
                     @endcan
                 </div>
             </div>
             <div class="card-body">
+                @error('errorValidacion')
+                    <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                 @enderror
                 <div class="row">
                     <div class="col">
                         <h4>Desde:</h4>
@@ -364,9 +330,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.4.0/highlight.min.js"></script>
     <script src="https://formbuilder.online/assets/js/form-render.min.js"></script>
-    
+
 
     <script text="text/javascript">
+        var codigoUsuario = `user_${@json($codigoUsuario)}`;
         var fbEditor, formBuilder, fbEditor2, formBuilder2,fbEditorPrevio, formBuilderPrevio;
         var encuestaACompartir = 0;
         var table;
@@ -528,16 +495,27 @@
                     { data: 'nombre'},
                     { data: null,
                         render: function(data, type, row){
-                            return (data.fecha_inicio != null) ? `${data.fecha_inicio} - ${data.fecha_fin}` : 'SIN PERIODO';
+                            if(data.fecha_inicio == null && data.fecha_fin == null){
+                                return 'SIN PERIODO';
+                            }
+                            else if(data.fecha_inicio == null){
+                                return `ACTUALIDAD - ${data.fecha_fin}`;
+                            }
+                            else if(data.fecha_fin == null){
+                                return `${data.fecha_inicio} - EN ADELANTE`;
+                            }
+                            else{
+                                return `${data.fecha_inicio} - ${data.fecha_fin}`;
+                            }
                         }},
                     { data: 'estatus' },
                     { data: null,
                         render: function(data, type, row){
                             var botones = '';
                             var creando = @can('encuestas.modificar')
-                                    '<button id="btnVistaPrevia_'+data.id+'" onclick="cargarEncuesta('+data.id+')" class ="btn btn-primary" data-bs-toggle="modal" data-bs-target="#PreviaModal" >'+
+                                    '<button id="btnVistaPrevia_'+data.id+'" onclick="cargarEncuesta2('+data.id+')" class ="btn btn-primary" data-bs-toggle="modal" data-bs-target="#PreviaModal" >'+
                                         '<i class="fas fa-file me-1">'+
-                                    '</i>&nbsp;VistaPrevia'+
+                                    '</i>&nbsp;Vista Previa'+
                                     '</button>'+
                                     '<button id="btnModificarEncuesta_'+data.id+'" onclick="cargarEncuesta('+data.id+')" class ="btn btn-warning" data-bs-toggle="modal" data-bs-target="#ModificarModal" >'+
                                         '<i class="fas fa-edit me-1">'+
@@ -655,20 +633,40 @@
             efectoCargando();
             var preguntasString = JSON.stringify(formBuilder.actions.getData());
             $('#formularioCrearEncuesta').append($('<input>').attr('type', 'hidden').attr('name', 'preguntasJSON').val(preguntasString));
+            let nombreEncuestaCreando = $("#nombreEncuestaCreando").val();
+            if(nombreEncuestaCreando == null || nombreEncuestaCreando == ''){
+                Swal.fire({
+                    'title':"Error",
+                    'text':"El campo Descripción es obligatorio para crear una encuesta",
+                    'icon':"error"
+                });
+                return false;
+            }
         });
         $('#formularioModificarEncuesta').submit(function (e) {
             efectoCargando();
             var preguntasString = JSON.stringify(formBuilder2.actions.getData());
             $('[name="ModificarPreguntasJSON"]').remove();
             $('#formularioModificarEncuesta').append($('<input>').attr('type', 'hidden').attr('name', 'ModificarPreguntasJSON').val(preguntasString));
+            let valorDescripcion = $("#descripcion").val();
+            if(valorDescripcion == null || valorDescripcion == ''){
+                Swal.fire({
+                    'title':"Error",
+                    'text':"El campo Descripción es obligatorio para que la encuesta exista",
+                    'icon':"error"
+                });
+                return false;
+            }
         });
 
         $('#botonCompartirLink').click(function (e) {
-            $('#contenedorCompartir').html($('<a>').html('este sera el enlace' + encuestaACompartir));
+            $('#contenedorCompartir').html($('<a>').html(`{{url('/')}}/encuestas/contestar-encuesta-${encuestaACompartir}?codigoUsuario=${codigoUsuario}`));
         });
 
         $('#botonCompartirIframe').click(function (e) {
-            $('#contenedorCompartir').html($('<div>').html('Este sera el codigo iframe' + encuestaACompartir));
+            $('#contenedorCompartir').html($('<div>').text(
+                `<iframe src="{{url('/')}}/encuestas/contestar-encuesta-${encuestaACompartir}?codigoUsuario=${codigoUsuario}" frameborder="0"></iframe>`
+            ));
         });
 
         function efectoCargando(){
@@ -701,7 +699,7 @@
                     $('#descripcionPrevia').val(response.nombre);
                     $('#fechaInicioPrevia').val(response.fecha_inicio);
                     $('#fechaFinalizacionPrevia').val(response.fecha_fin);
-                    console.log(response);
+                    $('#encabezadoPrevio').text(response.nombre);
                     if(response.buscarBaseDatos){
                         $('#buscarBaseDatosModificar').prop('checked', true);
                         $('#buscarBaseDatosModificarPrevia').prop('checked', true);
@@ -710,6 +708,122 @@
                     $(fbEditorPrevio).formRender({
                         dataType: 'json',
                         formData: response.jsonPregunta
+                    });
+                    // $('#modificarNombre').val(response[0].nombre);
+                    // $('#modificarApellidoPaterno').val(response[0].apellido_paterno);
+                    // $('#modificarApellidoMaterno').val(response[0].apellido_materno);
+                    // $('#modificarCorreo').val(response[0].email);
+                    // $('#modificarTelefono').val(response[0].telefono);
+                    // if(response[1] == 'SUPER ADMINISTRADOR'){
+                    //     $('#modificarRolUsuario').prop('disabled', true);
+                    // }
+                    // else{
+                    //     $('#modificarRolUsuario').prop('disabled', false);
+                    // }
+                    // $('#modificarRolUsuario').val(response[1]);
+                    // $('#modificarNivelAcceso').val(response[0].nivel_acceso);
+                    // $('.nivelAcceso').trigger('change');
+                    // let nivelesSeparados = (response[0].niveles != null) ? response[0].niveles.split(',') : [];
+                    // console.log(nivelesSeparados);
+                    // $('.nivelesSeleccionados').val(nivelesSeparados);
+
+                },
+                error: function( data, textStatus, jqXHR){
+                    if (jqXHR.status === 0) {
+                        console.log('Not connect: Verify Network.');
+                    } else if (jqXHR.status == 404) {
+                        console.log('Requested page not found [404]');
+                    } else if (jqXHR.status == 500) {
+                        console.log('Internal Server Error [500].');
+                    } else if (textStatus === 'parsererror') {
+                        console.log('Requested JSON parse failed.');
+                    } else if (textStatus === 'timeout') {
+                        console.log('Time out error.');
+                    } else if (textStatus === 'abort') {
+                        console.log('Ajax request aborted.');
+                    } else {
+                        console.log('Uncaught Error: ' + jqXHR.responseText);
+                    }
+                }
+            })
+            ).then(
+            function( data, textStatus, jqXHR ) {
+                Swal.close();
+            });
+        }
+        function cargarEncuesta2(idEncuesta){
+            efectoCargando();
+            $('.mensajesErrores').remove();
+            var ruta = "{{url('/')}}/encuestas/ver-" + idEncuesta;
+                $.when(
+                $.ajax({
+                type: "get",
+                url: ruta,
+                data: [],
+                contentType: "application/x-www-form-urlencoded",
+                success: function (response) {
+                    var ruta = "{{url('/')}}/encuestas/modificar-"+response.id;
+                    $('#formularioModificarEncuesta')[0].reset();
+                    $('#formularioModificarEncuesta').attr('action', ruta);
+                    $('#formularioModificarEncuesta').css('display', 'block');
+                    $('#descripcion').val(response.nombre);
+                    $('#fechaInicio').val(response.fecha_inicio);
+                    $('#fechaFinalizacion').val(response.fecha_fin);
+                    $('#descripcionPrevia').val(response.nombre);
+                    $('#fechaInicioPrevia').val(response.fecha_inicio);
+                    $('#fechaFinalizacionPrevia').val(response.fecha_fin);
+                    $('#encabezadoPrevio').text(response.nombre);
+                    if(response.buscarBaseDatos){
+                        $('#buscarBaseDatosModificar').prop('checked', true);
+                        $('#buscarBaseDatosModificarPrevia').prop('checked', true);
+                    }
+                    let objPreguntas = JSON.parse(response.jsonPregunta);
+                    console.log(response.jsonPregunta);
+                    if(response.buscarBaseDatos){
+                        let titulo = {
+                            "type" :"header",
+                            "subtype": "h3",
+                            "label": "Datos de identificación",
+                            "access": false
+                        };
+                        let preugntaNombre =  {
+                            "type": "text",
+                            "required": false,
+                            "label": "Nombres",
+                            "className": "form-control",
+                            "name": "nombres",
+                            "access": false,
+                            "subtype": "text"
+                        };
+                        let preguntaApellidoPaterno =  {
+                            "type": "text",
+                            "required": false,
+                            "label": "Apellido paterno",
+                            "className": "form-control",
+                            "name": "apellidoPaterno",
+                            "access": false,
+                            "subtype": "text"
+                        };
+                        let preguntaTelefono =  {
+                            "type": "text",
+                            "required": false,
+                            "label": "Telefono",
+                            "className": "form-control",
+                            "name": "telefono",
+                            "access": false,
+                            "subtype": "text"
+                        };
+                        objPreguntas.push(titulo);
+                        objPreguntas.push(preugntaNombre);
+                        objPreguntas.push(preguntaApellidoPaterno);
+                        objPreguntas.push(preguntaTelefono);
+                    }
+
+                    console.log(objPreguntas);
+                    formBuilder2.actions.setData(JSON.stringify(objPreguntas));
+                    $(fbEditorPrevio).formRender({
+                        dataType: 'json',
+                        formData: JSON.stringify(objPreguntas)
                     });
                     // $('#modificarNombre').val(response[0].nombre);
                     // $('#modificarApellidoPaterno').val(response[0].apellido_paterno);
@@ -846,6 +960,7 @@
                 }
             });
         }
+
         function copyFunction() {
             const copyText = document.getElementById("contenedorCompartir").textContent;
             navigator.clipboard.writeText(copyText);
@@ -858,7 +973,7 @@
             timer: 1500
             });
 
-            }
+        }
 
         $('#fechaInicioFiltro, #fechaFinFiltro').change(function (e) {
             table.ajax.reload();

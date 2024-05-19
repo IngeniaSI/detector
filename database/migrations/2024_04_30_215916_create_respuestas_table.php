@@ -15,8 +15,12 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('folio');
             $table->text('jsonRespuestas');
+            $table->string('origen');
             $table->foreignId('persona_id')->nullable()->constrained();
             $table->foreignId('encuesta_id')->constrained();
+            $table->string('nombres')->nullable();
+            $table->string('apellidos')->nullable();
+            $table->string('telefono')->nullable();
             $table->timestamps();
         });
     }
