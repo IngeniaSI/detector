@@ -63,10 +63,16 @@
                                 </a>
 
                             @endcan
+
                             <a class="nav-link" href="{{url('/')}}/encuestas/resultados">
                                     <div class="sb-nav-link-icon"><i class="fas fa-file"></i></div>
                                     Respuestas de las Encuestas
                             </a>
+                            <a class="nav-link" href="{{url('/')}}/crudOportunidades">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-file"></i></div>
+                                    Oportunidades
+                            </a>
+
                             {{-- @can('agregarSimpatizante.index')
                                 <a class="nav-link" href="{{url('/')}}/simpatizantes/agregar">
                                     <div class="sb-nav-link-icon"><i class="fas fa-file"></i></div>
