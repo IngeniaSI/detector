@@ -142,8 +142,14 @@ Route::prefix('/')->middleware('auth')->group(function (){
 
     Route::get('/mapa', [mapaController::class, 'index'])->middleware(['can:mapa.index']);
     Route::get('/bitacora', [bitacoraController::class, 'index'])->name('bitacora.index')->middleware(['can:bitacora.index']);
+    
+    Route::get("/crudOportunidades", function(){
+        return View::make("crudOportunidades");
+     });
 
-
+     Route::get("/crudPromotores", function(){
+        return View::make("crudPromotores");
+     });
 
 
 });
