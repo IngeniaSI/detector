@@ -30,7 +30,8 @@
                             <div class="card-body">
                                 <form id="rendered-form-container" action="{{route('encuestas.contestarEncuesta', $idEncuesta)}}" method="POST">
                                     @csrf
-                                    <input type="hidden" name="usuarioRelacionado" value="{{$codigoUsuario}}">
+                                    <input type="hidden" name="usuarioRelacionado" value="{{$codigoPromotor}}">
+                                    <input type="hidden" name="origen" value="{{$origen}}">
                                     <div id="rendered-form"></div>
                                     <button id="submit-form" class="btn btn-primary">Enviar respuestas</button>
                                 </form>

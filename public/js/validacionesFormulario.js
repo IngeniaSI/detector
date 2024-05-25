@@ -98,18 +98,6 @@ $('#nombre').blur(function(){
         $('#nombresError').remove();
     }
 });
-$('#telefonoCelular').blur(function(){
-    if($('#telefonoCelular').val()==''){
-        Swal.fire({
-            title: "Campo Vacio",
-            text: "Verifica el campo",
-            icon: "info"
-            });
-    }
-    else{
-        $('#telefonoCelularError').remove();
-    }
-});
 $('#telefonoFijo').blur(function(){
     if($('#telefonoFijo').val()==''){
         // Swal.fire({
@@ -201,12 +189,7 @@ document.getElementById("fechaNacimiento").addEventListener("change",()=>{
     }
   })
 
-// Se valida el telefono celular
-var inputCelular = document.getElementById('telefonoCelular');
-inputCelular.addEventListener('input', function () {
-            if (this.value.length > 12)
-                this.value = this.value.slice(0, 12);
-        })
+
 // Se valida el telefono fijo
 var inputCelular = document.getElementById('telefonoFijo');
 inputCelular.addEventListener('input', function () {

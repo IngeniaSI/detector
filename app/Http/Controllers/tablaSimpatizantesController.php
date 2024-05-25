@@ -75,7 +75,6 @@ class tablaSimpatizantesController extends Controller
                     break;
             }
 
-            $user = auth()->user();
             $draw = ($formulario->get('draw') != null) ? $formulario->get('draw') : 1;
             $start = ($formulario->get('start') != null) ? $formulario->get('start') : 0;
             $length = ($formulario->get('length') != null) ? $formulario->get('length') : 10;
@@ -88,7 +87,7 @@ class tablaSimpatizantesController extends Controller
             ->join('identificacions', 'personas.id', '=', 'identificacions.persona_id')
             ->leftjoin('seccions', 'seccions.id', '=', 'identificacions.seccion_id');
 
-            if($user->nivel_acceso != 'TODO'){
+            if(($user->getRoleNames()->first() != 'SUPER ADMINISTRADOR' || $user->getRoleNames()->first() != 'ADMINISTRADOR') && $user->nivel_acceso != 'TODO'){
                 $personaQuery->where(function($query) use ($user, $seccionesParaBuscar) {
                         $query->whereIn('seccion_id', $seccionesParaBuscar)
                         ->orWhere('user_id', $user->id);

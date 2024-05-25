@@ -1149,23 +1149,52 @@
         createTag(tagInput.value);
     });
     $('#formularioAgregarSimpatizante').submit(function (e) {
-        if($('#inputEtiquetaCrear').is(':focus')){
-            return false;
+        let txtCelular = $("#telefonoCelular").val();
+        let telefonoFijo = $("#telefonoFijo").val();
+        let nombres = $("#nombre").val();
+        let apellidoPaterno = $("#apellido_paterno").val();
+        let correo = $("#correo").val();
+        let calle = $("#calle").val();
+        let numeroExterior = $("#numeroExterior").val();
+        let colonia = $("#colonias").val();
+        let codigoPostal = $("#codigoPostal").val();
+        let municipio = $("#municipios").val();
+        console.log(nombres, apellidoPaterno, correo, txtCelular, telefonoFijo, calle, numeroExterior, colonia, codigoPostal, municipio);
+        if(nombres.length > 0 && apellidoPaterno.length > 0 &&
+            (
+                (txtCelular.length == 10 ) ||
+                (telefonoFijo.length == 11) ||
+                (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(correo)) ||
+                (calle.length > 0 && numeroExterior.length > 0 && colonia != 0 && municipio != 0 && codigoPostal.length == 5)
+            )
+        ){
+            if($('#inputEtiquetaCrear').is(':focus')){
+                return false;
+            }
+            else{
+                if($('#formularioAgregarSimpatizante #etiquetas').length == 0){
+                    let etiquetas = "";
+                    $.each(tags, function (i, value) {
+                        etiquetas += `${value.childNodes[0].innerHTML},`;
+                        if(etiquetas.length > 0 && tags.length - 1 == i){
+                            etiquetas = etiquetas.slice(0, -1);
+                        }
+                    });
+                    $('#formularioAgregarSimpatizante').append(
+                        $('<input>').attr('name', 'etiquetas').attr('id', 'etiquetas').attr('type', 'hidden')
+                        .val(etiquetas)
+                    );
+                }
+            }
         }
         else{
-            if($('#formularioAgregarSimpatizante #etiquetas').length == 0){
-                let etiquetas = "";
-                $.each(tags, function (i, value) {
-                    etiquetas += `${value.childNodes[0].innerHTML},`;
-                    if(etiquetas.length > 0 && tags.length - 1 == i){
-                        etiquetas = etiquetas.slice(0, -1);
-                    }
-                });
-                $('#formularioAgregarSimpatizante').append(
-                    $('<input>').attr('name', 'etiquetas').attr('id', 'etiquetas').attr('type', 'hidden')
-                    .val(etiquetas)
-                );
-            }
+            Swal.close();
+            Swal.fire({
+                'title':"Error",
+                'text':"Verifique los datos de contacto ingresados.",
+                'icon':"error"
+            });
+            return false;
         }
     });
 

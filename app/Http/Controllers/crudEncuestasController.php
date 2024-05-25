@@ -12,6 +12,7 @@ use App\Models\pregunta;
 use App\Models\respuesta;
 use App\Models\seccion;
 use App\Models\User;
+use Carbon\Carbon;
 use DateTime;
 use Exception;
 use Illuminate\Http\Request;
@@ -35,8 +36,30 @@ class crudEncuestasController extends Controller
 
         // $roles = Role::where('name', '!=', 'SUPER ADMINISTRADOR')->get(['name']);
         // return view('crudEncuestas', compact('roles'));
+
+        $encuestas = encuesta::where('deleted_at', null)
+        ->where('estatus', 'ENCURSO')
+        ->get();
+        foreach ($encuestas as $encuesta) {
+            if($encuesta->cierreAutomatico && isset($encuesta->fecha_fin)){
+                $fechaCierre = Carbon::parse($encuesta->fecha_fin);
+                if ($fechaCierre->isToday() || $fechaCierre->isPast()) {
+                    try{
+                        DB::beginTransaction();
+                        $encuesta->estatus = "FINALIZADO";
+                        $encuesta->fecha_fin_sistema = Date("Y-m-d H:i:s");
+                        $encuesta->save();
+                        DB::commit();
+                    }
+                    catch(Exception $e){
+                        DB::rollBack();
+                        Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
+                    }
+                }
+            }
+        }
         $user = auth()->user();
-        return view('crudEncuestas', ['codigoUsuario' => $user->id]);
+        return view('crudEncuestas', ['codigoPromotor' => $user->id]);
     }
     public function cargarEncuestas(Request $formulario){
         if(isset($formulario->fechaInicio)){
@@ -98,7 +121,11 @@ class crudEncuestasController extends Controller
         }
     }
     public function cargarSecciones(){
-        return  seccion::pluck('id')->toArray();
+        return  [
+            'secciones' => seccion::pluck('id')->toArray(),
+            'promotores' => persona::where('deleted_at', null)->where('rolEstructura', 'PROMOTOR')->get()
+        ];
+
     }
     public function agregar(Request $formulario){
         session()->flash('encuestaCrearErrores', true);
@@ -112,6 +139,9 @@ class crudEncuestasController extends Controller
             $nuevaEncuesta->fecha_fin = $formulario->fechaFin;
             if(isset($formulario->buscarBaseDatos) && $formulario->buscarBaseDatos == true){
                 $nuevaEncuesta->buscarBaseDatos = true;
+            }
+            if(isset($formulario->cierreAutomatico) && $formulario->cierreAutomatico == true){
+                $nuevaEncuesta->cierreAutomatico = true;
             }
             if(isset($formulario->preguntasJSON) && $formulario->preguntasJSON != ''){
                 $nuevaEncuesta->jsonPregunta = $formulario->preguntasJSON;
@@ -146,6 +176,12 @@ class crudEncuestasController extends Controller
                 }
                 else{
                     $encuesta->buscarBaseDatos = false;
+                }
+                if(isset($formulario->cierreAutomaticoModificar) && $formulario->cierreAutomaticoModificar == true){
+                    $encuesta->cierreAutomatico = true;
+                }
+                else{
+                    $encuesta->cierreAutomatico = false;
                 }
                 if(isset($formulario->ModificarPreguntasJSON) && $formulario->ModificarPreguntasJSON != ''){
                     $encuesta->jsonPregunta = $formulario->ModificarPreguntasJSON;
@@ -214,10 +250,11 @@ class crudEncuestasController extends Controller
             $nuevaEncuesta = new encuesta();
             $nuevaEncuesta->user_id = $user->id;
             $nuevaEncuesta->nombre = $encuesta->nombre . '-COPIA';
+            $nuevaEncuesta->buscarBaseDatos = $encuesta->buscarBaseDatos;
             $nuevaEncuesta->fecha_inicio = $encuesta->fecha_inicio;
             $nuevaEncuesta->fecha_fin = $encuesta->fecha_fin;
             if(isset($encuesta->jsonPregunta) && $encuesta->jsonPregunta != ''){
-                $nuevaEncuesta->jsonPregunta = $encuesta->jsonPregunta;
+                $nuevaEncuesta->jsonPregunta = str_replace(",{\"type\":\"header\",\"subtype\":\"h3\",\"label\":\"Datos de identificaci\\u00f3n\",\"access\":false},{\"type\":\"text\",\"required\":false,\"label\":\"Nombres\",\"className\":\"form-control\",\"name\":\"nombres\",\"access\":false,\"subtype\":\"text\"},{\"type\":\"text\",\"required\":false,\"label\":\"Apellido paterno\",\"className\":\"form-control\",\"name\":\"apellidoPaterno\",\"access\":false,\"subtype\":\"text\"},{\"type\":\"text\",\"required\":false,\"label\":\"Telefono\",\"className\":\"form-control\",\"name\":\"telefono\",\"access\":false,\"subtype\":\"text\"}", '',  $encuesta->jsonPregunta);
             }
             $nuevaEncuesta->save();
             DB::commit();
@@ -358,20 +395,37 @@ class crudEncuestasController extends Controller
     }
 
     public function visualizarEncuesta(encuesta $encuesta, Request $formulario){
+        if($encuesta->cierreAutomatico && isset($encuesta->fechFin)){
+            $fechaCierre = Carbon::parse($encuesta->fecha_fin);
+            if ($fechaCierre->isToday() || $fechaCierre->isPast()) {
+                try{
+                    DB::beginTransaction();
+                    $encuesta->estatus = "FINALIZADO";
+                    $encuesta->fecha_fin_sistema = Date("Y-m-d H:i:s");
+                    $encuesta->save();
+                    DB::commit();
+                }
+                catch(Exception $e){
+                    DB::rollBack();
+                    Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
+                }
+            }
+        }
         if($encuesta->estatus == 'ENCURSO'){
             try{
-                $codigoUsuario = 0;
-                if(isset($formulario->codigoUsuario) && preg_match("/user_\d/", $formulario->codigoUsuario)){
-                    $usuarioExiste = user::find(explode('_', $formulario->codigoUsuario)[1]);
-                    $codigoUsuario = $usuarioExiste->id;
+                $codigoPromotor = 0;
+                if(isset($formulario->codigoPromotor) && $formulario->codigoPromotor > 0){
+                    $usuarioExiste = persona::find($formulario->codigoPromotor);
+                    $codigoPromotor = $usuarioExiste->id;
                 }
                 return view('responderEncuesta',
-                ['idEncuesta' =>$encuesta->id, 'codigoUsuario' => $codigoUsuario,
+                ['idEncuesta' =>$encuesta->id, 'codigoPromotor' => $codigoPromotor,
+                'origen' => $formulario->origen,
                 'nombreEncuesta' => $encuesta->nombre]);
             }
             catch(Exception $e){
-               // Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
-               // return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario'])->withInput();
+                Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
+                return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario'])->withInput();
             }
         }else{
             return abort(403);
@@ -381,7 +435,7 @@ class crudEncuestasController extends Controller
         return $encuesta->jsonPregunta;
     }
     public function contestarEncuesta(encuesta $encuesta, Request $formulario){
-        $preguntasDinamicas = $formulario->except('_token', 'usuarioRelacionado');
+        $preguntasDinamicas = $formulario->except('_token', 'usuarioRelacionado', 'origen');
         $preguntasDinamicas = json_encode($preguntasDinamicas);
         try{
             DB::beginTransaction();
@@ -390,10 +444,11 @@ class crudEncuestasController extends Controller
                 if($encuesta->buscarBaseDatos){
                     $nuevaRespuesta->nombres = $formulario->nombres;
                     $nuevaRespuesta->apellidos = $formulario->apellidoPaterno;
-                    $nuevaRespuesta->apellidos = $formulario->telefono;
+                    $nuevaRespuesta->telefono = $formulario->telefono;
                 }
+                $nuevaRespuesta->persona_id = $formulario->usuarioRelacionado;
                 $nuevaRespuesta->encuesta_id = $encuesta->id;
-                $nuevaRespuesta->origen = 'Desconocido';
+                $nuevaRespuesta->origen = $formulario->origen;
                 $nuevaRespuesta->jsonRespuestas = $preguntasDinamicas;
                 $nuevaRespuesta->save();
 
