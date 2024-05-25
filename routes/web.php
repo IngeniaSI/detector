@@ -147,6 +147,10 @@ Route::prefix('/')->middleware('auth')->group(function (){
         return View::make("crudOportunidades");
      });
 
+     Route::get("/crudPromotores", function(){
+        return View::make("crudPromotores");
+     });
+
 
 });
 

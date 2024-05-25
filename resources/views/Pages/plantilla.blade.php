@@ -58,19 +58,23 @@
                             @endcan
                             @can('encuestas.index')
                                 <a class="nav-link" href="{{route('encuestas.index')}}">
-                                    <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                                    <div class="sb-nav-link-icon"><i class="fas fa-file"></i></div>
                                     Encuestas
                                 </a>
 
                             @endcan
 
                             <a class="nav-link" href="{{url('/')}}/encuestas/resultados">
-                                    <div class="sb-nav-link-icon"><i class="fas fa-file"></i></div>
+                                    <div class="sb-nav-link-icon"><i class="fa-solid fa-file-signature"></i></div>
                                     Respuestas de las Encuestas
                             </a>
                             <a class="nav-link" href="{{url('/')}}/crudOportunidades">
-                                    <div class="sb-nav-link-icon"><i class="fas fa-file"></i></div>
+                                    <div class="sb-nav-link-icon"><i class="fa-solid fa-person-burst"></i></div>
                                     Oportunidades
+                            </a>
+                            <a class="nav-link" href="{{url('/')}}/crudPromotores">
+                                    <div class="sb-nav-link-icon"><i class="fas fa-user-group"></i></div>
+                                    Promotores
                             </a>
 
                             {{-- @can('agregarSimpatizante.index')
@@ -87,7 +91,7 @@
                             @endcan
                             @can('mapa.index')
                                 <a class="nav-link" href="{{url('/')}}/mapa">
-                                    <div class="sb-nav-link-icon"><i class="fas fa-map"></i></div>
+                                    <div class="sb-nav-link-icon"><i class="fa-solid fa-location-dot"></i></div>
                                     Mapa de Personas
                                 </a>
                             @endcan
