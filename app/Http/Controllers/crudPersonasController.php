@@ -184,7 +184,7 @@ class crudPersonasController extends Controller
                     DB::commit();
                     session()->forget('validarCamposFormPersona');
                     session()->forget('noEsCargaInicial');
-                    session()->flash('mensajeExito', 'Usuario modificado con éxito');
+                    session()->flash('mensajeExito', 'La persona se ha modificado con éxito');
                     return redirect()->route('crudSimpatizantes.index');
                 } catch (Exception $e) {
                     DB::rollBack();

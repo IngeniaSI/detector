@@ -55,12 +55,7 @@
     </div>
     <div class="card-body">
         {{-- FORMULARIO DE AGREGAR USUARIO --}}
-        <form id="formularioAgregarSimpatizante" action="
-            {{
-                (explode('/', url()->current()) [count(explode('/', url()->current())) - 1] == 'agregar') ?
-                route('agregarSimpatizante.agregandoSimpatizante') : route('crudPersonas.modificarPersona', $persona)
-            }}
-        " method="post" style="">
+        <form id="formularioAgregarSimpatizante" action=" {{ (explode('/', url()->current()) [count(explode('/', url()->current())) - 1] == 'agregar') ? route('agregarSimpatizante.agregandoSimpatizante') : route('crudPersonas.modificarPersona', $persona) }} " method="post" style="">
             @csrf
             <div class="container">
                 @error('errorValidacion')
@@ -529,7 +524,7 @@
             <br>
             <div>
                 <center>
-                    <button id="BotonAgregarPersona"  class="btn btn-primary" hidden></button>
+                    <button id="BotonAgregarPersona" class="btn btn-primary" hidden></button>
                     <a id="BotonValidador" onclick="validar()" class="btn btn-primary" >
                         {{
                             (explode('/', url()->current()) [count(explode('/', url()->current())) - 1] == 'agregar') ?
@@ -1159,13 +1154,12 @@
         let colonia = $("#colonias").val();
         let codigoPostal = $("#codigoPostal").val();
         let municipio = $("#municipios").val();
-        console.log(nombres, apellidoPaterno, correo, txtCelular, telefonoFijo, calle, numeroExterior, colonia, codigoPostal, municipio);
         if(nombres.length > 0 && apellidoPaterno.length > 0 &&
             (
                 (txtCelular.length == 10 ) ||
                 (telefonoFijo.length == 11) ||
                 (/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(correo)) ||
-                (calle.length > 0 && numeroExterior.length > 0 && colonia != 0 && municipio != 0 && codigoPostal.length == 5)
+                (calle.length > 0 || numeroExterior.length > 0 || colonia != 0 || municipio != 0 || codigoPostal.length == 5)
             )
         ){
             if($('#inputEtiquetaCrear').is(':focus')){

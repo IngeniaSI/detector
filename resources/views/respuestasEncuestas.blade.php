@@ -64,7 +64,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-primary">Guardar Cambios</button>
+                        <button type="button" id="botonVinculante" class="btn btn-primary">Guardar Cambios</button>
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
                     </div>
                 </div>
@@ -122,10 +122,11 @@
         <h1 class="mt-4">Respuestas de las Encuestas</h1>
         <div class="card mb-4">
             <div class="card-header">
-                <center>
-                <button class="btnExportarExcel btn btn-success" data-bs-toggle="modal" data-bs-target="#modalExportar"><i class="fas fa-file-excel me-1"></i> Exportar Excel</button>
-
-                </center>
+                <div class="d-flex justify-content-end">
+                    @can('respuestasEncuesta.exportar')
+                        <button class="btnExportarExcel btn btn-success" data-bs-toggle="modal" data-bs-target="#modalExportar"><i class="fas fa-file-excel me-1"></i> Exportar Excel</button>
+                    @endcan
+                </div>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -172,6 +173,7 @@
         var fbEditor, formBuilder, fbEditor2, formBuilder2,fbEditorPrevio, formBuilderPrevio;
         var encuestaACompartir = 0;
         var table;
+        var encuestaVincular;
         $(document).ready(function () {
             var options = {
                 showActionButtons: false,
@@ -328,7 +330,7 @@
                     { data: null,
                         render: function(data, type, row){
                             let tipo = '';
-                            if(data.tipo != null){
+                            if(data.persona_id != null){
                                 tipo = 'PERSONA REGISTRADA';
                             }
                             else{
@@ -339,7 +341,7 @@
                     { data: null,
                         render: function(data, type, row){
 
-                            var botones = @can('encuestas.modificar')
+                            var botones =
                                     '<button id="btnVistaPrevia_'+data.id+'" onclick="cargarEncuesta('+data.id+')" class ="btn btn-primary" data-bs-toggle="modal" data-bs-target="#PreviaModal" >'+
                                         '<i class="fas fa-file me-1">'+
                                     '</i>&nbsp;VER RESULTADO'+
@@ -349,7 +351,6 @@
                                     '</i>&nbsp;VINCULAR CON PERSONA'+
                                     '</button>'+
                                     '</form>'+
-                                    @endcan
                                     '';
 
                             return botones;
@@ -501,9 +502,14 @@
         }
 
         function cargarConfiguracion(idEncuesta){
+            encuestaVincular = idEncuesta;
+            $('#formularioConfigurar')[0].reset();
+            // var ruta = "{{url('/')}}/encuestas/resultados/vincular-" + idEncuesta + "-" + ;
+            // $('#formularioConfigurar')[0].reset();
+            // $('#formularioConfigurar').attr('action', ruta);
+
             // efectoCargando();
             // $('.mensajesErrores').remove();
-            // var ruta = "{{url('/')}}/encuestas/ver-" + idEncuesta;
             //     $.when(
             //     $.ajax({
             //     type: "get",
@@ -513,9 +519,6 @@
             //     success: function (response) {
             //         var ruta = "{{url('/')}}/encuestas/configurar-"+response.id;
 
-            //         $('#formularioConfigurar')[0].reset();
-            //         $('#formularioConfigurar').attr('action', ruta);
-            //         $('#formularioConfigurar').css('display', 'block');
 
             //         $('#tipoGrafica').val(response.tipoGrafica);
             //         $('#tipoGrafica').trigger('change');
@@ -557,5 +560,12 @@
             $('#ligaExportar').attr('href', `{{url('/')}}/encuestas/resultados/exportar-${idEncuesta}`);
         });
 
+        $('#botonVinculante').click(function (e) {
+            efectoCargando();
+            let personaSeleccionada = $('#personaVinculada').val();
+            var ruta = "{{url('/')}}/encuestas/resultados/vincular-" + encuestaVincular + "-" + personaSeleccionada;
+            $('#formularioConfigurar').attr('action', ruta);
+            $('#formularioConfigurar').trigger('submit');
+        });
     </script>
 @endsection

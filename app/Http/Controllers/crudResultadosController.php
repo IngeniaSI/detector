@@ -103,4 +103,19 @@ class crudResultadosController extends Controller
         });
         return Excel::download(new resultadoExport($respuestas, $preguntasName, $preguntas), 'resultados_' . $encuesta->nombre . '.xlsx');
     }
+    public function vincularPersona(respuesta $respuesta, persona $persona, Request $formulario){
+        try{
+            DB::beginTransaction();
+                $respuesta->persona_id = $persona->id;
+                $respuesta->save();
+            DB::commit();
+            session()->flash('mensajeExito', 'Se ha vinculado a una persona con éxito');
+            return redirect()->route('respuestas.index');
+        }
+        catch(Exception $e){
+            DB::rollBack();
+            Log::error($e->getMessage(). ' | Linea: ' . $e->getLine());
+            return back()->withErrors(['errorValidacion' => 'Ha ocurrido un error al registrar el usuario'])->withInput();
+        }
+    }
 }

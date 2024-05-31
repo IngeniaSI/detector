@@ -50,6 +50,8 @@
                     <div class="sb-sidenav-menu">
                         <div class="nav">
                             <div class="sb-sidenav-menu-heading">Menú</div>
+
+
                             @can('estadistica.index')
                                 <a class="nav-link" href="{{url('/')}}/estadistica">
                                     <div class="sb-nav-link-icon"><i class="fas fa-chart-bar"></i></div>
@@ -63,7 +65,6 @@
                                 </a>
 
                             @endcan
-
                             <a class="nav-link" href="{{url('/')}}/encuestas/resultados">
                                     <div class="sb-nav-link-icon"><i class="fa-solid fa-file-signature"></i></div>
                                     Respuestas de las Encuestas
@@ -72,11 +73,10 @@
                                     <div class="sb-nav-link-icon"><i class="fa-solid fa-person-burst"></i></div>
                                     Oportunidades
                             </a>
-                            <a class="nav-link" href="{{url('/')}}/crudPromotores">
+                            {{-- <a class="nav-link" href="{{url('/')}}/crudPromotores">
                                     <div class="sb-nav-link-icon"><i class="fas fa-user-group"></i></div>
                                     Promotores
-                            </a>
-
+                            </a> --}}
                             {{-- @can('agregarSimpatizante.index')
                                 <a class="nav-link" href="{{url('/')}}/simpatizantes/agregar">
                                     <div class="sb-nav-link-icon"><i class="fas fa-file"></i></div>
