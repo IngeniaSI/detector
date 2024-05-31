@@ -49,5 +49,10 @@ class RoleSeeder extends Seeder
         Permission::create(['name' => 'estadistica.index'])->syncRoles([$rolSU, $rolAdmin, $rolSupervisor, $rolConsultas]);
         Permission::create(['name' => 'estadistica.cambiarMeta'])->syncRoles([$rolSU, $rolAdmin]);
         Permission::create(['name' => 'mapa.index'])->syncRoles([$rolSU, $rolAdmin, $rolSupervisor, $rolConsultas]);
+
+        Permission::create(['name' => 'respuestasEncuesta.exportar'])->syncRoles([$rolSU, $rolAdmin]);
+        Permission::create(['name' => 'crudOportunidades.exportar'])->syncRoles([$rolSU, $rolAdmin]);
+
+
     }
 }

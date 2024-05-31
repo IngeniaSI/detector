@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->text('descripcion');
-            $table->int('numeroPasos');
-            $table->name('arrayPasos');
+            $table->integer('numeroPasos');
+            $table->text('arrayPasos');
             $table->date('deleted_at')->nullable();
             $table->timestamps();
         });

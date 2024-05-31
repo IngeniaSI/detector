@@ -355,7 +355,7 @@ class formularioSimpatizanteController extends Controller
                     $bitacora->save();
                     DB::commit();
                     session()->forget('validarCamposFormPersona');
-                    session()->flash('mensajeExito', 'Usuario creado con éxito');
+                    session()->flash('mensajeExito', 'La persona se ha creado con éxito');
                     return redirect()->route('crudSimpatizantes.index');
                 }
                 else{

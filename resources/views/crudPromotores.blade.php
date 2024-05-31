@@ -13,15 +13,8 @@
     <div class="container-fluid px-4">
         <h1 class="mt-4">Promotores</h1>
         <div class="card mb-4">
-            <div class="card-header">
-                <div class="d-flex justify-content-center">
-                   
-                        <button class="btn btn btn-success" ><i class="fas fa-file-excel me-1"></i>Exportar Excel</button>
-                    
-                </div>
-            </div>
             <div class="card-body">
-                
+
                 <table id="tabla" class="table table-striped table-bordered " style="width:100%">
                     <thead>
                         <tr>
@@ -50,8 +43,17 @@
         var fbEditor, formBuilder, fbEditor2, formBuilder2,fbEditorPrevio, formBuilderPrevio;
         var encuestaACompartir = 0;
         var table;
+        function efectoCargando(){
+            Swal.fire({
+                title: 'Cargando...',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                html: '<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>'
+            });
+        }
+
         $(document).ready(function () {
-            
+            // efectoCargando();
             table = $('#tabla').DataTable({
                 order: [[0, 'desc']],
                 scrollX: true,
@@ -62,7 +64,7 @@
                 "processing": true,
                 "serverSide": true,
                 ajax: {
-                    url: "{{route('encuestas.cargar')}}",
+                    url: "{{route('promotores.cargarPromotores')}}",
                     data: function(d) {
                         d.fechaInicio = $('#fechaInicioFiltro').val();
                         d.fechaFin = $('#fechaFinFiltro').val();
@@ -70,7 +72,7 @@
                 },
                 columns: [
                     { data: 'id' },
-                    { data: 'nombre'},
+                    { data: 'nombre_completo'},
                     { data: null,
                         render: function(data, type, row){
                             var botones ='<button class="btn btn btn-success" ><i class="fas fa-file-excel me-1"></i>Exportar Excel</button>';
@@ -79,13 +81,6 @@
                     // Agrega más columnas según tus datos
                 ]
             });
-
-           
         });
-
-        
-        
-
-       
     </script>
 @endsection

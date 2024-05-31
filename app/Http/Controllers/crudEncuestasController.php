@@ -350,7 +350,7 @@ class crudEncuestasController extends Controller
                 $encuesta->fecha_inicio_sistema = Date("Y-m-d H:i:s");
                 $encuesta->save();
                 DB::commit();
-                session()->flash('mensajeExito', 'La encuesta ' . $encuesta->nombre . ' esta en curso. Puede compartir la encuesta por un enlace o por correo.');
+                session()->flash('mensajeExito', 'La encuesta ' . $encuesta->nombre . ' esta en curso. Ahora puede compartir el enlace de la encuesta.');
                 return redirect()->route('encuestas.index');
             }
             catch(Exception $e){
@@ -442,11 +442,18 @@ class crudEncuestasController extends Controller
                 $nuevaRespuesta = new respuesta();
                 $nuevaRespuesta->folio = 1;
                 if($encuesta->buscarBaseDatos){
-                    $nuevaRespuesta->nombres = $formulario->nombres;
-                    $nuevaRespuesta->apellidos = $formulario->apellidoPaterno;
+                    $nuevaRespuesta->nombres = strtoupper($formulario->nombres);
+                    $nuevaRespuesta->apellidos = strtoupper($formulario->apellidoPaterno);
                     $nuevaRespuesta->telefono = $formulario->telefono;
+                    $personaEncontrada = persona::where('nombres', strtoupper($formulario->nombres))
+                    ->where('apellido_paterno', strtoupper($formulario->apellidoPaterno))
+                    ->where('telefono_celular', $formulario->telefono)
+                    ->first();
+                    if(isset($personaEncontrada)){
+                        $nuevaRespuesta->persona_id = $personaEncontrada->id;
+                    }
                 }
-                $nuevaRespuesta->persona_id = $formulario->usuarioRelacionado;
+                $nuevaRespuesta->promotor_id = $formulario->usuarioRelacionado;
                 $nuevaRespuesta->encuesta_id = $encuesta->id;
                 $nuevaRespuesta->origen = $formulario->origen;
                 $nuevaRespuesta->jsonRespuestas = $preguntasDinamicas;
@@ -465,4 +472,5 @@ class crudEncuestasController extends Controller
     public function graciasResponder(){
         return view('graciasEncuesta');
     }
+
 }

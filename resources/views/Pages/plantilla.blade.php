@@ -57,6 +57,8 @@
                     <div class="sb-sidenav-menu">
                         <div class="nav">
                             <div class="sb-sidenav-menu-heading">Menú</div>
+
+
                             @can('estadistica.index')
                                 
                                 <li>
@@ -163,6 +165,7 @@
                             </li>
                             
                            {{-- @can('agregarSimpatizante.index')
+
                                 <a class="nav-link" href="{{url('/')}}/simpatizantes/agregar">
                                     <div class="sb-nav-link-icon"><i class="fas fa-file"></i></div>
                                     Agregar Persona

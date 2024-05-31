@@ -218,7 +218,7 @@
         </div>
     @endcan
     <!-- Modal COMPARTIR -->
-    <div class="modal fade" id="modalCompartir" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalCqompartir" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-body">
@@ -1028,6 +1028,10 @@
                     `<iframe src="{{url('/')}}/encuestas/contestar-encuesta-${encuestaACompartir}?codigoPromotor=${codigoPromotor}" frameborder="0"></iframe>`
                 ));
             }
+        });
+
+        $('#formularioConfigurar').submit(function (e) {
+            efectoCargando();
         });
     </script>
 @endsection
