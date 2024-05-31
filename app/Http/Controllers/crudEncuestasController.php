@@ -350,7 +350,7 @@ class crudEncuestasController extends Controller
                 $encuesta->fecha_inicio_sistema = Date("Y-m-d H:i:s");
                 $encuesta->save();
                 DB::commit();
-                session()->flash('mensajeExito', 'La encuesta ' . $encuesta->nombre . ' esta en curso. Puede compartir la encuesta por un enlace o por correo.');
+                session()->flash('mensajeExito', 'La encuesta ' . $encuesta->nombre . ' esta en curso. Ahora puede compartir el enlace de la encuesta.');
                 return redirect()->route('encuestas.index');
             }
             catch(Exception $e){
@@ -472,5 +472,5 @@ class crudEncuestasController extends Controller
     public function graciasResponder(){
         return view('graciasEncuesta');
     }
- 
+
 }
