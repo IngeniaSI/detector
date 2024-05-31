@@ -83,6 +83,8 @@
                                 <div class="col">
                                     <h4>Preguntas para identificar una persona:</h4>
                                     <input type="checkbox" name="buscarBaseDatos" id="buscarBaseDatos" class="form-check-input"> <span>Activado</span>
+                                    <h4>Cerrar la encuesta al llegar a la fecha establecida:</h4>
+                                    <input type="checkbox" name="cierreAutomatico" id="cierreAutomatico" class="form-check-input"> <span>Activado</span>
                                 </div>
                             </div>
                             <br>
@@ -195,6 +197,9 @@
                                 <div class="col">
                                     <h4>Buscar personas en base de datos:</h4>
                                     <input type="checkbox" name="buscarBaseDatos" id="buscarBaseDatosModificar" class="form-check-input" @checked(old('buscarBaseDatos') == true)> <span>Activado</span>
+                                    <h4>Cerrar la encuesta al llegar a la fecha establecida:</h4>
+                                    <input type="checkbox" name="cierreAutomaticoModificar" id="cierreAutomaticoModificar" class="form-check-input" @checked(old('buscarBaseDatos') == true)> <span>Activado</span>
+
                                 </div>
                             </div>
                             <br>
@@ -226,7 +231,16 @@
                             <button id="botonCompartirIframe" type="button" class="btn btn btn-primary">
                                 <i class="fas fa-code me-1">
                             </i>Código</button>
-
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <h4>Seleccione un promotor:</h4>
+                            <select name="promotoresEncuesta" id="promotoresEncuesta" class="form-select selectToo" style=" width:100%;">
+                                <option value="0">SIN DATO</option>
+                            </select>
+                            <h4>Seleccione el medio por el cual se distribuira este enlace:</h4>
+                            <input type="text" name="origenLlenado" id="origenLlenado" class="w-100">
                         </div>
                     </div>
                     <div class="row bg-secondary bg-opacity-25 rounded-3 m-1 p-3">
@@ -277,6 +291,7 @@
                 </div>
             </div>
     </div>
+    {{-- CONTENEDOR PRINCIPAL DE LA TABLA Y FILTROS --}}
     <div class="container-fluid px-4">
         <h1 class="mt-4">Encuestas</h1>
         <div class="card mb-4">
@@ -333,10 +348,12 @@
 
 
     <script text="text/javascript">
-        var codigoUsuario = `user_${@json($codigoUsuario)}`;
+        var codigoPromotor = `user_0`;
+        var codigoOrigen = '';
         var fbEditor, formBuilder, fbEditor2, formBuilder2,fbEditorPrevio, formBuilderPrevio;
         var encuestaACompartir = 0;
         var table;
+        var focoCompartir = 'ENLACE';
         $(document).ready(function () {
             var options = {
                 showActionButtons: false,
@@ -587,11 +604,15 @@
                         data: [],
                         contentType: "application/x-www-form-urlencoded",
                     success: function (response) {
-                        console.log(response);
-                        $.each(response, function (indexInArray, valueOfElement) {
+                        $.each(response.secciones, function (indexInArray, valueOfElement) {
                             $('.seccionesSeleccionadas').append($('<option>').html(valueOfElement));
                         });
                         $('.seccionesSeleccionadas').trigger('change');
+                        $.each(response.promotores, function (indexInArray, valueOfElement) {
+                            $('#promotoresEncuesta').append($('<option>').html(`${valueOfElement.nombres} ${valueOfElement.apellido_paterno} ${valueOfElement.telefono_celular}`).val(valueOfElement.id));
+                        });
+                        $('#promotoresEncuesta').trigger('change');
+
                     },
                     error: function( data, textStatus, jqXHR){
                         if (jqXHR.status === 0) {
@@ -660,12 +681,14 @@
         });
 
         $('#botonCompartirLink').click(function (e) {
-            $('#contenedorCompartir').html($('<a>').html(`{{url('/')}}/encuestas/contestar-encuesta-${encuestaACompartir}?codigoUsuario=${codigoUsuario}`));
+            focoCompartir = "ENLACE";
+            $('#contenedorCompartir').html($('<a>').html(`{{url('/')}}/encuestas/contestar-encuesta-${encuestaACompartir}?codigoPromotor=${codigoPromotor}&origen=${codigoOrigen}`));
         });
 
         $('#botonCompartirIframe').click(function (e) {
+            focoCompartir = "IFRAME";
             $('#contenedorCompartir').html($('<div>').text(
-                `<iframe src="{{url('/')}}/encuestas/contestar-encuesta-${encuestaACompartir}?codigoUsuario=${codigoUsuario}" frameborder="0"></iframe>`
+                `<iframe src="{{url('/')}}/encuestas/contestar-encuesta-${encuestaACompartir}?codigoPromotor=${codigoPromotor}&origen=${codigoOrigen}" frameborder="0"></iframe>`
             ));
         });
 
@@ -704,6 +727,10 @@
                         $('#buscarBaseDatosModificar').prop('checked', true);
                         $('#buscarBaseDatosModificarPrevia').prop('checked', true);
                     }
+                    if(response.cierreAutomatico){
+                        $('#cierreAutomaticoModificar').prop('checked', true);
+                    }
+
                     formBuilder2.actions.setData(response.jsonPregunta);
                     $(fbEditorPrevio).formRender({
                         dataType: 'json',
@@ -977,7 +1004,30 @@
 
         $('#fechaInicioFiltro, #fechaFinFiltro').change(function (e) {
             table.ajax.reload();
+        });
 
+        $('#origenLlenado').keyup(function(){
+            codigoOrigen = $(this).val();
+            if(focoCompartir == "ENLACE"){
+                $('#contenedorCompartir').html($('<a>').html(`{{url('/')}}/encuestas/contestar-encuesta-${encuestaACompartir}?codigoPromotor=${codigoPromotor}&origen=${codigoOrigen}`));
+            }
+            else{
+                $('#contenedorCompartir').html($('<div>').text(
+                    `<iframe src="{{url('/')}}/encuestas/contestar-encuesta-${encuestaACompartir}?codigoPromotor=${codigoPromotor}" frameborder="0"></iframe>`
+                ));
+            }
+        });
+
+        $('#promotoresEncuesta').change(function(){
+            codigoPromotor = $(this).val();
+            if(focoCompartir == "ENLACE"){
+                $('#contenedorCompartir').html($('<a>').html(`{{url('/')}}/encuestas/contestar-encuesta-${encuestaACompartir}?codigoPromotor=${codigoPromotor}&origen=${codigoOrigen}`));
+            }
+            else{
+                $('#contenedorCompartir').html($('<div>').text(
+                    `<iframe src="{{url('/')}}/encuestas/contestar-encuesta-${encuestaACompartir}?codigoPromotor=${codigoPromotor}" frameborder="0"></iframe>`
+                ));
+            }
         });
     </script>
 @endsection

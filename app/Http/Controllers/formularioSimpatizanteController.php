@@ -201,7 +201,7 @@ class formularioSimpatizanteController extends Controller
             'apellido_materno' => 'nullable',
             'correo' => 'nullable|email',
             'genero' => 'nullable',
-            'telefonoCelular' => 'required',
+            'telefonoCelular' => 'nullable',
             'escolaridad' => 'nullable',
             'claveElectoral' => 'nullable|regex:/^([A-Z]{6})(\d{8})([B-DF-HJ-NP-TV-Z]{1})(\d{3})$/',
             'curp' => 'nullable|regex:/^([A-Z]{4})(\d{6})([HM])([A-Z]{5})([0-9A-Z]{2})$/',
