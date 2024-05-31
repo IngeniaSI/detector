@@ -60,7 +60,7 @@
 
 
                             @can('estadistica.index')
-                                
+
                                 <li>
                                     <a href="#submenu1" data-bs-toggle="collapse" class="nav-link collapsed" aria-expanded="false">
                                         <i class="fas fa-chart-bar"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Estadística</span> </a>
@@ -75,10 +75,10 @@
                                 </li>
                             @endcan
                             @can('encuestas.index')
-                                
+
                                 <li>
                                     <a href="#submenu2" data-bs-toggle="collapse" class="nav-link collapsed" aria-expanded="false">
-                                        <i class="fas fa-file"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Encuestas</span> 
+                                        <i class="fas fa-file"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Encuestas</span>
                                     </a>
                                     <ul class="collapse  nav flex-column ms-1" id="submenu2" data-bs-parent="#menu">
                                         <li class="w-100">
@@ -99,7 +99,7 @@
                             @endcan
                             <li>
                                 <a href="#submenu3" data-bs-toggle="collapse" class="nav-link collapsed" aria-expanded="false">
-                                    <i class="fas fa-id-card"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Contactos</span> 
+                                    <i class="fas fa-id-card"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Contactos</span>
                                 </a>
                                 <ul class="collapse  nav flex-column ms-1" id="submenu3" data-bs-parent="#menu">
                                     @can('crudSimpatizantes.index')
@@ -109,14 +109,14 @@
                                                 Personas
                                             </a>
                                         </li>
-                                        
+
                                     @endcan
-                                    <li class="w-100">
+                                    {{-- <li class="w-100">
                                         <a class="nav-link" href="{{url('/')}}/crudPromotores">
                                             <div class="sb-nav-link-icon"><i class="fas fa-user-group"></i></div>
                                             Promotores
                                         </a>
-                                    </li>
+                                    </li> --}}
                                     @can('mapa.index')
                                     <li class="w-100">
                                         <a class="nav-link" href="{{url('/')}}/mapa">
@@ -129,7 +129,7 @@
                             </li>
                             <li>
                                 <a href="#submenu5" data-bs-toggle="collapse" class="nav-link collapsed" aria-expanded="false">
-                                    <i class="fas fa-bullhorn"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Marketing</span> 
+                                    <i class="fas fa-bullhorn"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Marketing</span>
                                 </a>
                                 <ul class="collapse  nav flex-column ms-1" id="submenu5" data-bs-parent="#menu">
                                     <li class="w-100">
@@ -142,7 +142,7 @@
                             </li>
                             <li>
                                 <a href="#submenu4" data-bs-toggle="collapse" class="nav-link collapsed" aria-expanded="false">
-                                    <i class="fas fa-gear"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Configuración</span> 
+                                    <i class="fas fa-gear"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Configuración</span>
                                 </a>
                                 <ul class="collapse  nav flex-column ms-1" id="submenu4" data-bs-parent="#menu">
                                     <li class="w-100">
@@ -163,7 +163,7 @@
                                     </li>
                                 </ul>
                             </li>
-                            
+
                            {{-- @can('agregarSimpatizante.index')
 
                                 <a class="nav-link" href="{{url('/')}}/simpatizantes/agregar">
@@ -171,7 +171,7 @@
                                     Agregar Persona
                                 </a>
                             @endcan --}}
-                            
+
                         </div>
                     </div>
                     <div class="sb-sidenav-footer">
@@ -179,7 +179,7 @@
                         {{$role}}
                     </div>
                 </nav>
-               
+
             </div>
             <div id="layoutSidenav_content">
                 <main>
