@@ -1,4 +1,4 @@
-var cumpleFormulario =true;
+var cumpleFormulario = true;
 /////Validar si el campos si esta vacio al perder el foco e
 $('#fechaRegistro').blur(function(){
     if($('#fechaRegistro').val()==''){
@@ -249,10 +249,12 @@ function validarCurp(valor) {
 }
 
 function validar() {
-
-    if(cumpleFormulario ==true){
+    if(cumpleFormulario == true){
         $("#BotonAgregarPersona").prop("disabled", true);
         $("#BotonValidador").prop("disabled", true);
+        $("#BotonAgregarPersona").prop("disabled", false);
+        $("#BotonAgregarPersona").click();
+        $('#formularioAgregarSimpatizante').trigger('submit');
         //AVISO DE CARGANDO
         let timerInterval;
         Swal.fire({
@@ -264,9 +266,9 @@ function validar() {
         didOpen: () => {
             Swal.showLoading();
             const timer = Swal.getPopup().querySelector("b");
-            timerInterval = setInterval(() => {
-            timer.textContent = `${Swal.getTimerLeft()}`;
-            }, 100);
+            // timerInterval = setInterval(() => {
+            // timer.textContent = Swal.getTimerLeft();
+            // }, 100);
         },
         willClose: () => {
             clearInterval(timerInterval);
@@ -277,8 +279,7 @@ function validar() {
             console.log("I was closed by the timer");
         }
         });
-        $("#BotonAgregarPersona").prop("disabled", false);
-        $("#BotonAgregarPersona").click();
+
 
     }else{
 

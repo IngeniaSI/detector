@@ -21,6 +21,8 @@ use App\Models\entidad;
 use App\Models\identificacion;
 use App\Models\meta;
 use App\Models\municipio;
+use App\Models\objetivo;
+use App\Models\oportunidad;
 use App\Models\persona;
 use App\Models\seccion;
 use App\Models\seccionColonia;
@@ -107,6 +109,12 @@ class DatabaseSeeder extends Seeder
             'nivel_acceso' => 'TODO',
         ])->assignRole('CONSULTAS');
 
+        objetivo::Create([
+            'nombre' => 'DÍA DE',
+            'descripcion' => 'Confirmar la asistencia de los simpatizantes a el día de votaciones',
+            'numeroPasos' => 4,
+            'arrayPasos' => 'primer llamado, seguimiento, confirmar asistencia, asistió'
+        ]);
 
 
         // CARGA INICIAL ENTIDAD

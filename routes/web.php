@@ -9,6 +9,8 @@ use App\Http\Controllers\iniciarSesionController;
 use App\Http\Controllers\mapaController;
 use App\Http\Controllers\tablaSimpatizantesController;
 use App\Http\Controllers\crudEncuestasController;
+use App\Http\Controllers\crudOportunidadesController;
+use App\Http\Controllers\crudPromotoresController;
 use App\Http\Controllers\crudResultadosController;
 use App\Http\Controllers\repuestasEncuestasController;
 
@@ -133,23 +135,30 @@ Route::prefix('/')->middleware('auth')->group(function (){
             Route::get("/cargar-resultado-{respuesta}", 'cargarResultado')->name('respuestas.cargarResultado');
             Route::get("/tabla-respuestas", 'paginacion')->name('respuestas.paginacion');
             Route::get('/exportar-{encuesta}', "exportarResultados")->name('respuestas.exportarResultados');
+            Route::post('/vincular-{respuesta}-{persona}', "vincularPersona")->name('respuestas.vincularPersona');
         });
     });
 
-
-
-
-
     Route::get('/mapa', [mapaController::class, 'index'])->middleware(['can:mapa.index']);
     Route::get('/bitacora', [bitacoraController::class, 'index'])->name('bitacora.index')->middleware(['can:bitacora.index']);
-    
-    Route::get("/crudOportunidades", function(){
-        return View::make("crudOportunidades");
-     });
 
-     Route::get("/crudPromotores", function(){
-        return View::make("crudPromotores");
-     });
+    Route::get("/crudOportunidades", [crudOportunidadesController::class, 'index'])->name("oportunidades.index");
+    Route::get("/crudOportunidades/inicializar", [crudOportunidadesController::class, 'inicializar'])->name("oportunidades.inicializar");
+    Route::get("/crudOportunidades/exportarParaPromotor", [crudOportunidadesController::class, 'exportarParaPromotor'])->name("oportunidades.exportarParaPromotor");
+    Route::get("/crudOportunidades/cargarTabla", [crudOportunidadesController::class, 'cargarOportunidades'])->name("oportunidades.cargarOportunidades");
+    Route::get("/crudOportunidades/cargar-seguimientos-{oportunidad}", [crudOportunidadesController::class, 'obtenerSeguimiento'])->name("oportunidades.obtenerSeguimiento");
+    Route::post("/crudOportunidades/crearOportunidad", [crudOportunidadesController::class, 'agregar'])->name("oportunidades.agregar");
+    Route::post("/crudOportunidades/cambiarOportunidad", [crudOportunidadesController::class, 'cambiarEstado'])->name("oportunidades.cambiarEstatus");
+    Route::post("/crudOportunidades/agregar-actividad-{oportunidad}", [crudOportunidadesController::class, 'agregarActividad'])->name("oportunidades.agregarActividad");
+
+    Route::get("/promotores/cargarTabla", [crudPromotoresController::class, 'cargarPromotores'])->name("promotores.cargarPromotores");
+
+
+
+
+     //  Route::get("/crudPromotores", function(){
+    //     return View::make("crudPromotores");
+    //  });
 
 
 });
