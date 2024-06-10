@@ -21,10 +21,10 @@ class oportunidadesExport implements FromCollection, WithHeadings
     public function collection()
     {
         $actitivdades = DB::table('seguimientos as t1')
-        ->select('t1.oportunidad_id', 't1.accion', 't1.fecha_registro', 't1.hora_registro', DB::raw('COUNT(t2.id) as total_actividades'))
+        ->select('t1.oportunidad_id', 't1.accion', 't1.observacion', 't1.fecha_registro', 't1.hora_registro', DB::raw('COUNT(t2.id) as total_actividades'))
         ->join('seguimientos as t2', 't1.oportunidad_id', '=', 't2.oportunidad_id')
         ->whereRaw('CONCAT(t1.fecha_registro, " ", t1.hora_registro) = (SELECT MAX(CONCAT(fecha_registro, " ", hora_registro)) FROM seguimientos WHERE oportunidad_id = t1.oportunidad_id)')
-        ->groupBy('t1.oportunidad_id', 't1.accion', 't1.fecha_registro', 't1.hora_registro');
+        ->groupBy('t1.oportunidad_id', 't1.accion', 't1.observacion', 't1.fecha_registro', 't1.hora_registro');
 
         $query = oportunidad::
         leftJoinSub($actitivdades, 'ultima_actividad', function ($join){
@@ -42,7 +42,6 @@ class oportunidadesExport implements FromCollection, WithHeadings
             'personas.nombres',
             'personas.apellido_paterno',
             'personas.apellido_materno',
-            'estatus',
             'personas.telefono_celular',
             'personas.telefono_fijo',
             'calle',
@@ -52,16 +51,21 @@ class oportunidadesExport implements FromCollection, WithHeadings
             'colonias.codigo_postal',
             'municipios.nombre as nombreMunicipio',
             'identificacions.seccion_id',
+            'estatus',
             'ultima_actividad.total_actividades',
             'ultima_actividad.accion',
+            'ultima_actividad.observacion',
             'ultima_actividad.fecha_registro',
             'ultima_actividad.hora_registro',
-            )
-        ->where('oportunidads.promotor_id', $this->idPromotor)
-        ->whereIn('oportunidads.estatus', $this->estatus)
+        );
+        if ($this->idPromotor != 0 && $this->idPromotor != 'ALL') {
+            $query->where('oportunidads.promotor_id', $this->idPromotor);
+        }
+
+        return $query->whereIn('oportunidads.estatus', $this->estatus)
         ->orderBy('oportunidads.created_at', 'DESC')
         ->get();
-        return $query;
+
     }
 
     public function headings(): array
@@ -72,7 +76,6 @@ class oportunidadesExport implements FromCollection, WithHeadings
             'Nombres',
             'Apellido paterno',
             'Apellido materno',
-            'Estatus',
             'Telefono celular',
             'Telefono fijo',
             'Calle',
@@ -82,8 +85,10 @@ class oportunidadesExport implements FromCollection, WithHeadings
             'Código postal',
             'Municipio',
             'Sección',
+            'Estatus',
             'Número de actividades realizadas',
             'Ultima actividad',
+            'Observaciones de ultima actividad',
             'Fecha de ultima actividad',
             'Hora de ultima actividad',
         ];

@@ -133,6 +133,12 @@
                                 </a>
                                 <ul class="collapse  nav flex-column ms-1" id="submenu5" data-bs-parent="#menu">
                                     <li class="w-100">
+                                        <a class="nav-link" href="{{url('/')}}/objetivos">
+                                            <div class="sb-nav-link-icon"><i class="fa-solid fa-bullseye"></i></div>
+                                            Objetivos
+                                        </a>
+                                    </li>
+                                    <li class="w-100">
                                         <a class="nav-link" href="{{url('/')}}/crudOportunidades">
                                             <div class="sb-nav-link-icon"><i class="fa-solid fa-person-burst"></i></div>
                                             Oportunidades
