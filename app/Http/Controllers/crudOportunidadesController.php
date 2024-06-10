@@ -41,7 +41,9 @@ class crudOportunidadesController extends Controller
 
             $encuestasQuery = oportunidad::where('oportunidads.deleted_at', null)
             ->join('objetivos', 'oportunidads.objetivo_id', '=', 'objetivos.id')
-            ->join('personas', 'personas.id', '=', 'oportunidads.persona_id');
+            ->join('personas', 'personas.id', '=', 'oportunidads.persona_id')
+            ->where('objetivos.deleted_at', null)
+            ->where('objetivos.estatus', 'ACTIVADO');
             if ($search != false) {
                 $encuestasQuery->where(function($query) use ($search) {
                     $query->where('nombre', 'LIKE', '%' . $search . '%');
@@ -53,7 +55,7 @@ class crudOportunidadesController extends Controller
                 'oportunidads.id',
                 'nombre',
                 DB::raw('IF(apellido_paterno != "", CONCAT(nombres, " ", apellido_paterno), nombres) as nombre_completo'),
-                'estatus',
+                'oportunidads.estatus',
             )
             ->orderBy('id', 'DESC')
             ->skip($start)
@@ -77,7 +79,7 @@ class crudOportunidadesController extends Controller
 
     public function inicializar(Request $formulario){
         return [
-            'objetivos' => objetivo::all(),
+            'objetivos' => objetivo::where('deleted_at', null)->where('estatus', 'ACTIVADO')->get(),
             'personas' => persona::where('deleted_at', null)->get(),
             'promotores' => persona::where('deleted_at', null)->where('rolEstructura', 'PROMOTOR')
             ->orWhere('rolEstructuraTemporal', 'PROMOTOR')->get()
@@ -140,11 +142,11 @@ class crudOportunidadesController extends Controller
             $nuevoSeguimiento->hora_registro = $formulario->horaActividad;
             $nuevoSeguimiento->save();
 
-            if($oportunidad->estatus == 'PENDIENTE'){
+            if($formulario->estatusSeleccionado == 'PENDIENTE')
                 $oportunidad->estatus = 'INICIADO';
-
-                $oportunidad->save();
-            }
+            else
+                $oportunidad->estatus = $formulario->estatusSeleccionado;
+            $oportunidad->save();
             DB::commit();
             // session()->forget('encuestaCrearErrores');
             session()->flash('mensajeExito', 'Se ha registrado la actividad con éxito');
@@ -169,17 +171,25 @@ class crudOportunidadesController extends Controller
     }
 
     public function exportarParaPromotor(Request $formulario){
-        $promotor = persona::find($formulario->idPromotor);
+        $promotor = null;
+        if($formulario->idPromotor > 0)
+            $promotor = persona::find($formulario->idPromotor);
         $estatus = explode(',', $formulario->estatusSeleccionado);
 
-        if(isset($promotor)){
+        if(isset($promotor) || $formulario->idPromotor == 'ALL'){
             if($formulario->estatusSeleccionado == null){
                 $estatus = array('INICIADO', 'PENDIENTE', 'COMPROMISO', 'CUMPLIDO', 'PERDIDO');
             }
+            if($formulario->idPromotor == 'ALL'){
+                $nombreExportar = 'Seguimiento Día Del TODOS LOS PROMOTORES.xlsx';
+            }
+            else{
+                $nombreExportar = 'Seguimiento Día Del ' . $promotor->nombres . ' ' . $promotor->apellido_paterno . '_' . $promotor->id . '.xlsx';
+            }
             return Excel::download(
-                new oportunidadesExport($promotor->id, $estatus),
-            'Seguimiento Día Del ' . $promotor->nombres . ' ' . $promotor->apellido_paterno . '_' . $promotor->id
-            . '.xlsx');
+                new oportunidadesExport($formulario->idPromotor, $estatus),
+                $nombreExportar
+            );
         }
     }
 }

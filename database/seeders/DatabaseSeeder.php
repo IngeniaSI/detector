@@ -113,7 +113,8 @@ class DatabaseSeeder extends Seeder
             'nombre' => 'DÍA DE',
             'descripcion' => 'Confirmar la asistencia de los simpatizantes a el día de votaciones',
             'numeroPasos' => 4,
-            'arrayPasos' => 'primer llamado, seguimiento, confirmar asistencia, asistió'
+            'estatus' => 'ACTIVADO',
+            'arrayPasos' => 'primer llamado,seguimiento,confirmar asistencia,asistió'
         ]);
 
 

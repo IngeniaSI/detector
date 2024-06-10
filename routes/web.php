@@ -9,6 +9,7 @@ use App\Http\Controllers\iniciarSesionController;
 use App\Http\Controllers\mapaController;
 use App\Http\Controllers\tablaSimpatizantesController;
 use App\Http\Controllers\crudEncuestasController;
+use App\Http\Controllers\crudObjetivoController;
 use App\Http\Controllers\crudOportunidadesController;
 use App\Http\Controllers\crudPromotoresController;
 use App\Http\Controllers\crudResultadosController;
@@ -138,6 +139,27 @@ Route::prefix('/')->middleware('auth')->group(function (){
             Route::post('/vincular-{respuesta}-{persona}', "vincularPersona")->name('respuestas.vincularPersona');
         });
     });
+
+    Route::prefix('objetivos')->controller(crudObjetivoController::class)->group(function(){
+        Route::get('/', 'index')
+        ->name('objetivos.index');
+        Route::get('/inicializar', 'inicializar')
+        ->name('objetivos.inicializar');
+        Route::get('/cargar-tabla', 'cargarTabla')
+        ->name('objetivos.cargarTabla');
+        Route::post('/cambiar-estatus-{objetivo}', 'cambiarEstatus')
+        ->name('objetivos.cambiarEstatus');
+        Route::post('/agregar-objetivo', 'agregar')
+        ->name('objetivos.agregar');
+        Route::get('/cargar-objetivo-{objetivo}', 'cargar')
+        ->name('objetivos.cargarObjetivo');
+        Route::post('/modificar-objetivo-{objetivo}', 'editar')
+        ->name('objetivos.modificar');
+        Route::post('/borrar-{objetivo}', 'borrar')
+        ->name('objetivos.borrar');
+    });
+
+
 
     Route::get('/mapa', [mapaController::class, 'index'])->middleware(['can:mapa.index']);
     Route::get('/bitacora', [bitacoraController::class, 'index'])->name('bitacora.index')->middleware(['can:bitacora.index']);

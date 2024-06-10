@@ -28,7 +28,7 @@
                             <div class="col-10 col-md-8 col-xl-6">
 
                                 <ul id="lineaTiempoActividades" class="timeline">
-                                    
+
                                 </ul>
 
                             </div>
@@ -102,6 +102,14 @@
                             <input type="text" id="actividadRealizada" name="actividadRealizada" class="form-control">
                             <h4>Observaciones/Respuesta por parte de la Persona:</h4>
                             <textarea name="respuestaPersona" id="respuestaPersona" cols="30" rows="10" class="form-control"></textarea>
+                            <h4>Estatus de la oportunidad:</h4>
+                            <select name="estatusSeleccionado" id="estatusSeleccionadoRegistroActividad" class="form-select">
+                                <option>PENDIENTE</option>
+                                <option>INICIADO</option>
+                                <option>COMPROMISO</option>
+                                <option>CUMPLIDO</option>
+                                <option>PERDIDO</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -127,6 +135,7 @@
                     <h4>Seleccione un promotor:</h4>
                     <select id="selectPromotores" name="selectPromotores" class="form-select selectToo" style="width:100%">
                         <option value="0">SIN DATO</option>
+                        <option value="ALL">TODOS LOS PROMOTORES</option>
                     </select>
                     <h4>Filtrar por estatus:</h4>
                     <select id="estatusSeleccionados" class="form-select selectToo" style="width:100%;" name="estatusSeleccionados[]" multiple="multiple">
@@ -264,7 +273,6 @@
                     // Agrega más columnas según tus datos
                 ]
             });
-
 
             $.when(
                 $.ajax({
@@ -431,6 +439,8 @@
             $('#actividadRealizada').val('');
             $('#fechaRegistro').val('{{date("Y-m-d")}}');
             $('#horaActividad').val('{{date("H:i:s")}}');
+            let valorEstatusSelect = $('#estatusSelect' + idOportunidad).val();
+            $('#estatusSeleccionadoRegistroActividad').val(valorEstatusSelect);
         }
 
         $('#agregarActividadSubmit').click(function (e) {
@@ -475,7 +485,8 @@
                                         $('<div>').addClass("card border-0").append(
                                             $('<div>').addClass("card-body p-0").append(
                                                 $('<h5>').addClass("card-subtitle text-secondary mb-1").text(valueOfElement.fecha_registro + ' ' + valueOfElement.hora_registro),
-                                                $('<h2>').addClass("card-title mb-3").text(valueOfElement.accion)
+                                                $('<h2>').addClass("card-title mb-3").text(valueOfElement.accion),
+                                                $('<h4>').addClass("card-title mb-3").text(valueOfElement.observacion)
                                             )
                                         )
                                     )
@@ -524,7 +535,7 @@
 
         $('#selectPromotores').change(function (e) {
             promotorParaExportar = $('#selectPromotores').val();
-            if(promotorParaExportar > 0){
+            if(promotorParaExportar != 0){
                 $('#ligaExportar').attr('href', `{{route('oportunidades.exportarParaPromotor')}}?idPromotor=${promotorParaExportar}&estatusSeleccionado=${estatusParaExportar}`);
                 $('#ligaExportar').attr('target', '_blank');
             }
