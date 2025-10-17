@@ -7,6 +7,7 @@ use App\Models\distritoLocal;
 use App\Models\domicilio;
 use App\Models\entidad;
 use App\Models\persona;
+use App\Models\seccion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -71,7 +72,9 @@ class mapaController extends Controller
         }
 
         $puntos = domicilio::join('identificacions', 'identificacions.id', '=', 'domicilios.identificacion_id')
-        ->whereIn('seccion_id', $seccionesParaBuscar)
+        ->when($user->nivel_acceso != 'TODO', function ($query) use ($seccionesParaBuscar) {
+            $query->whereIn('identificacions.seccion_id', $seccionesParaBuscar);
+        })
         ->where('latitud', '!=', null)
         ->get(['latitud', 'longitud']);
 

@@ -136,7 +136,6 @@
                         <div class="col">
                             <h4 class="fw-bold">Nombre(s) (*)</h4>
                             <input type="text" class="form-control" id="nombre" name="nombre" value="{{old('nombre')}}" minlength="3" maxlength="255"
-
                             onblur="if (this.value == '') {this.value = '';}"
                             onfocus="if (this.value == '') {this.value = '';}">
                             @error('nombre')
@@ -553,94 +552,47 @@
 @endif
     {{-- PASAR LIBRERIAS A PLANTILLA --}}
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDg60SDcmNRPnG1tzZNBBGFx02cW2VkWWQ&callback=initMap&v=weekly" defer></script>
-<script src="{{url('/')}}/js/validacionesFormulario.js" text="text/javascript"></script>
+<script src="/detector/js/validacionesFormulario.js" text="text/javascript"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 
 <script text="text/javascript">
 
+  // Coordenadas iniciales (puedes usar tu ubicación o una por defecto)
 
+    var defaultLat = 24.112431; // Ciudad de México
+    var defaultLng = -110.304846;
 
+    // Crear mapa y centrarlo
+    var map = L.map('map').setView(
+        [defaultLat, defaultLng],
+        14
+    );
+    // Cargar el mapa base (OpenStreetMap)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+    }).addTo(map);
 
-
-
+    // Variable para guardar el marcador
     var marker;
-    var marker2;
-    const myLatLng = { lat: 24.123954, lng: - 110.311664 };
 
-    var map;
-    function placeMarker(location) {
-            if (marker == undefined) {
-                marker = new google.maps.Marker({
-                    position: location,
-                    map: map,
-                    title: "Ubicación",
-                    icon: {
-                        path: google.maps.SymbolPath.CIRCLE,
-                        scale: 15,
-                        fillColor: "#F00",
-                        fillOpacity: 0.4,
-                        strokeWeight: 0.4,
-                    },
-                    animation: google.maps.Animation.DROP,
-                });
-                marker2 = new google.maps.Marker({
-                    position: location,
-                    map: map,
-                    title: "Ubicación",
-                    animation: google.maps.Animation.DROP,
-                });
-            }
-            else {
-                marker.setPosition(location);
-                marker2.setPosition(location);
-            }
-            map.setCenter(location);
-    }
+    // Evento: clic en el mapa
+    map.on('click', function(e) {
+        var lat = e.latlng.lat.toFixed(6);
+        var lng = e.latlng.lng.toFixed(6);
 
-    function initMap() {
-        map = new google.maps.Map(document.getElementById("map"), {
-            disableDoubleClickZoom: true,
-            zoom: 17,
-            center: myLatLng,
-            title: "Ubicación",
-        });
+        // Si ya hay un marcador, muévelo
+        if (marker) {
+            marker.setLatLng([lat, lng]);
+        } else {
+            // Crear nuevo marcador
+            marker = L.marker([lat, lng]).addTo(map);
+        }
 
-        google.maps.event.addListener(map, 'dblclick', function (event) {
-            placeMarker(event.latLng);
-            document.getElementById("cordenada").value = event.latLng.lat() + ", " + event.latLng.lng();
-            document.getElementById("coordenadas").value = event.latLng.lat() + "," + event.latLng.lng();
-        });
-    }
-    window.initMap = initMap;
-    function buscarUbicacion(nombre) {
-
-        // Clave de API de Google Maps (reemplaza 'TU_API_KEY' con tu propia clave)
-        var apiKey = 'AIzaSyDg60SDcmNRPnG1tzZNBBGFx02cW2VkWWQ';
-
-        // URL de la API de Geocodificación de Google Maps
-        var url = 'https://maps.googleapis.com/maps/api/geocode/json?address=' + encodeURIComponent(nombre) + '&key=' + apiKey;
-
-        // Realizar la solicitud HTTP GET utilizando Fetch API
-        fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            // Verificar si la respuesta tiene resultados
-            if (data.results.length > 0) {
-                // Obtener las coordenadas de la primera ubicación encontrada
-                var ubicacion = data.results[0].geometry.location;
-                var latitud = ubicacion.lat;
-                var longitud = ubicacion.lng;
-
-                // Aquí puedes usar latitud y longitud como desees
-                document.getElementById("cordenada").value = latitud + ", " + longitud;
-                document.getElementById("coordenadas").value = latitud + "," + longitud;
-                placeMarker({lat: latitud, lng: longitud});
-            }
-        })
-        .catch(error => {
-            console.error('Error al buscar la ubicación:', error);
-        });
-    }
+        // Mostrar las coordenadas en los inputs
+        $('#coordenadas').val(lat + ',' + lng);
+    });
 
 
     //FIN MAPA
@@ -657,7 +609,7 @@
                     $('#municipios').val(response.municipio);
                     $('#municipios').trigger('change');
                     $('#codigoPostal').val(response.codigoPostal);
-                    buscarUbicacion(`${response.nombreColonia}, ${response.codigoPostal}, ${response.nombreMunicipio}, B.C.S, México`);
+                    //buscarUbicacion(`${response.nombreColonia}, ${response.codigoPostal}, ${response.nombreMunicipio}, B.C.S, México`);
                 },
                 error: function( data, textStatus, jqXHR){
                     if (jqXHR.status === 0) {
@@ -750,12 +702,20 @@
 
     // FUNCION PARA CARGAR TABLA DE USUARIOS
     $(document).ready(function () {
-        Swal.fire({
-            title: 'Cargando...',
-            allowOutsideClick: false,
-            showConfirmButton: false,
-            html: '<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>'
-        });
+        @if($errors->any())
+            Swal.fire({
+                'title':"Error",
+                'text':"Verifique los datos de contacto ingresados.",
+                'icon':"error"
+            });
+        @else
+            Swal.fire({
+                title: 'Cargando...',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                html: '<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>'
+            });
+        @endif
         $.when(
             $.ajax({
                 type: "get",
@@ -919,7 +879,13 @@
                             $('textarea[name="observaciones"]').val(response.persona.observaciones);
                             if(response.domicilio.latitud != null){
                                 $('input[name="coordenadas"]').val(`${response.domicilio.latitud},${response.domicilio.longitud}`);
-                                placeMarker({lat: response.domicilio.latitud, lng: response.domicilio.longitud});
+                                //placeMarker({lat: response.domicilio.latitud, lng: response.domicilio.longitud});
+                                var savedLat = response.domicilio.latitud;
+                                var savedLng = response.domicilio.longitud;
+
+                                if (savedLat && savedLng) {
+                                    marker = L.marker([savedLat, savedLng]).addTo(map);
+                                }
                             }
 
                             let etiquedasPreprocesar = (response.persona.etiquetas != null) ? response.persona.etiquetas.split(',') : [];
@@ -966,9 +932,14 @@
                             $('#rolEstructuraTemporal').trigger("change");
                         @endif
                         @if(old('coordenadas'))
-                            placeMarker({lat: {{explode(',', old('coordenadas'))[0]}}, lng: {{explode(',', old('coordenadas'))[1]}}});
+                            //placeMarker({lat: {{explode(',', old('coordenadas'))[0]}}, lng: {{explode(',', old('coordenadas'))[1]}}});
                             $('input[name="coordenadas"]').val(`{{explode(',', old('coordenadas'))[0]}},{{explode(',', old('coordenadas'))[1]}}`);
+                                var savedLat = response.domicilio.latitud;
+                                var savedLng = response.domicilio.longitud;
 
+                                if (savedLat && savedLng) {
+                                    marker = L.marker([savedLat, savedLng]).addTo(map);
+                                }
                         @endif
                         @if(old('observaciones'))
                             $('#comment').html("{{old('observaciones')}}");
@@ -1024,9 +995,14 @@
             $('#rolEstructuraTemporal').trigger("change");
         @endif
         @if(old('coordenadas'))
-            placeMarker({lat: {{explode(',', old('coordenadas'))[0]}}, lng: {{explode(',', old('coordenadas'))[1]}}});
+            //placeMarker({lat: {{explode(',', old('coordenadas'))[0]}}, lng: {{explode(',', old('coordenadas'))[1]}}});
             $('input[name="coordenadas"]').val(`{{explode(',', old('coordenadas'))[0]}},{{explode(',', old('coordenadas'))[1]}}`);
+                  var savedLat = response.domicilio.latitud;
+                                var savedLng = response.domicilio.longitud;
 
+                                if (savedLat && savedLng) {
+                                    marker = L.marker([savedLat, savedLng]).addTo(map);
+                                }
         @endif
         @if(old('observaciones'))
             $('#comment').html("{{old('observaciones')}}");
@@ -1182,13 +1158,13 @@
             }
         }
         else{
-            Swal.close();
-            Swal.fire({
-                'title':"Error",
-                'text':"Verifique los datos de contacto ingresados.",
-                'icon':"error"
-            });
-            return false;
+            // Swal.close();
+            // Swal.fire({
+            //     'title':"Error",
+            //     'text':"Verifique los datos de contacto ingresados.",
+            //     'icon':"error"
+            // });
+            // return false;
         }
     });
 

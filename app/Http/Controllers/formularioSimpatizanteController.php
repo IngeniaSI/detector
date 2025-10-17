@@ -201,7 +201,7 @@ class formularioSimpatizanteController extends Controller
             'apellido_materno' => 'nullable',
             'correo' => 'nullable|email',
             'genero' => 'nullable',
-            'telefonoCelular' => 'nullable',
+            'telefonoCelular' => 'required_without_all:calle,numeroExterior,colonia',
             'escolaridad' => 'nullable',
             'claveElectoral' => 'nullable|regex:/^([A-Z]{6})(\d{8})([B-DF-HJ-NP-TV-Z]{1})(\d{3})$/',
             'curp' => 'nullable|regex:/^([A-Z]{4})(\d{6})([HM])([A-Z]{5})([0-9A-Z]{2})$/',
@@ -210,8 +210,9 @@ class formularioSimpatizanteController extends Controller
             'programa' => 'nullable',
             'funciones' => 'nullable',
 
-            'calle' => 'nullable',
-            'numeroExterior' => 'nullable',
+            'calle' => 'required_without:telefonoCelular',
+            'numeroExterior' => 'required_without:telefonoCelular',
+            'colonia' => 'required_without:telefonoCelular|not_in:0',
         ]);
         $coordenadas = explode(',',$formulario->coordenadas);
         try {
