@@ -310,17 +310,19 @@
 
                     </div>
                     <br>
-                    <h4>¿Donde vive la persona? (Dar double click para crear una marca)</h4>
-                    <center>
-                        <input type="hidden" id="coordenadas" name="coordenadas" value="{{old('coordenadas')}}">
-                        <input type="text" class="col-3 d-none" id="cordenada" class="form-control" value="{{old('coordenadas')}}" disabled>
-                    </center>
-                    <center>
-                        <div id="map" class="mx-auto" style="width:100%;height:400px"></div>
-                        @error('coordenadas')
-                                <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
-                        @enderror
-                    </center>
+                    <div class="d-none">
+                        <h4>¿Donde vive la persona? (Dar double click para crear una marca)</h4>
+                        <center>
+                            <input type="hidden" id="coordenadas" name="coordenadas" value="{{old('coordenadas')}}">
+                            <input type="text" class="col-3 d-none" id="cordenada" class="form-control" value="{{old('coordenadas')}}" disabled>
+                        </center>
+                        <center>
+                            <div id="map" class="mx-auto" style="width:100%;height:400px"></div>
+                            @error('coordenadas')
+                                    <div class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
+                            @enderror
+                        </center>
+                    </div>
                 </div>
                 <br>
                 <div id="datosIdentificacion" class="p-4 border rounded-3 bg-secondary bg-opacity-10">

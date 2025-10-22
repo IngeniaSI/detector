@@ -76,7 +76,7 @@
                             @endcan
                             @can('encuestas.index')
 
-                                <li>
+                                <li class="d-none">
                                     <a href="#submenu2" data-bs-toggle="collapse" class="nav-link collapsed" aria-expanded="false">
                                         <i class="fas fa-file"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Encuestas</span>
                                     </a>
@@ -118,7 +118,7 @@
                                         </a>
                                     </li> --}}
                                     @can('mapa.index')
-                                    <li class="w-100">
+                                    <li class="w-100 d-none">
                                         <a class="nav-link" href="{{url('/')}}/mapa">
                                             <div class="sb-nav-link-icon"><i class="fa-solid fa-location-dot"></i></div>
                                             Mapa de Personas
@@ -127,7 +127,7 @@
                                     @endcan
                                 </ul>
                             </li>
-                            <li>
+                            <li class="d-none">
                                 <a href="#submenu5" data-bs-toggle="collapse" class="nav-link collapsed" aria-expanded="false">
                                     <i class="fas fa-bullhorn"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Marketing</span>
                                 </a>
