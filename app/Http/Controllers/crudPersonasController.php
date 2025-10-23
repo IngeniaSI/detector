@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class crudPersonasController extends Controller
 {
@@ -45,7 +46,6 @@ class crudPersonasController extends Controller
             'apellido_materno' => 'nullable',
             'correo' => 'nullable|email',
             'genero' => 'nullable',
-            'telefonoCelular' => 'nullable',
             'escolaridad' => 'nullable',
             'claveElectoral' => 'nullable|regex:/^([A-Z]{6})(\d{8})([B-DF-HJ-NP-TV-Z]{1})(\d{3})$/',
             'curp' => 'nullable|regex:/^([A-Z]{4})(\d{6})([HM])([A-Z]{5})([0-9A-Z]{2})$/',
@@ -54,9 +54,36 @@ class crudPersonasController extends Controller
             'programa' => 'nullable',
             'funciones' => 'nullable',
 
-            'calle' => 'nullable',
-            'numeroExterior' => 'nullable',
+            'calle' => 'nullable|string',
+            'numeroExterior' => 'nullable|string',
+            'colonia' => 'nullable',
+            'telefonoCelular' => [
+                'nullable',
+                Rule::requiredIf(function () use ($formulario) {
+                    // Si no hay dirección completa, el celular es obligatorio
+                    $direccionCompleta =
+                        !empty($formulario->calle) &&
+                        !empty($formulario->numeroExterior) &&
+                        !empty($formulario->colonia) &&
+                        $formulario->colonia != 0;
+
+                    return !$direccionCompleta;
+                }),
+            ],
+        ],
+        [
+            'telefonoCelular.required' => 'Debes ingresar un número celular o completar todos los datos de dirección.',
+            'direccion_incompleta' => 'Si ingresas parte de la dirección, debes completarla.',
         ]);
+        // Validación lógica adicional manual (para marcar dirección incompleta)
+        if (
+            ($formulario->filled('calle') || $formulario->filled('numeroExterior') || $formulario->colonia != 0) &&
+            (empty($formulario->calle) || empty($formulario->numeroExterior) || $formulario->colonia == 0)
+        ) {
+            return back()->withErrors([
+                'direccion_incompleta' => 'Si ingresas parte de la dirección, debes completarla.',
+            ])->withInput();
+        }
         $coordenadas = explode(',',$formulario->coordenadas);
         $curpRepetido = identificacion::where('curp', strtoupper($formulario->curp))->first();
             if(!isset($formulario->curp) || !isset($curpRepetido)){

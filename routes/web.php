@@ -114,6 +114,11 @@ Route::prefix('/')->middleware('auth')->group(function (){
         ->name('estadistica.filtrar')->middleware(['can:estadistica.index']);
         Route::post('/cargarMeta', 'cargarMeta')
         ->name('estadistica.cargarMeta')->middleware(['can:estadistica.cambiarMeta']);
+        Route::get('/exportar-metas', 'exportarMetas')
+        ->name('estadistica.exportarMetas')->middleware(['can:estadistica.cambiarMeta']);
+        Route::get('/municipios/{distrito}', [estadisticaController::class, 'municipios']);
+        Route::get('/distritos-locales/{municipio}', [estadisticaController::class, 'distritosLocales']);
+        Route::get('/secciones/{distritoLocal}', [estadisticaController::class, 'secciones']);
 
     });
     Route::prefix('encuestas')->group(function(){

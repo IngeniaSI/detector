@@ -45,9 +45,12 @@
             <h5>Refresque la pagina para reflejar los cambios </h5>
             <a href="#" onclick="location.reload(true)"> Click aqui</a>
         </div>
-        @can('estadistica.cambiarMeta')
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cargarMeta">Cargar Meta </button>
-        @endcan
+        <div class="align-self-end">
+            @can('estadistica.cambiarMeta')
+                <a href="{{ route('estadistica.exportarMetas') }}" target="_blank" class="btn btn-success">Exportar Metas a Excel</a>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cargarMeta">Cargar Meta </button>
+            @endcan
+        </div>
     </div>
     {{-- CONTROLADORES --}}
     <div class="row">
@@ -75,7 +78,7 @@
                 </div>
             </div>
         </div>
-        <div class="col">
+        <div class="col d-none">
             <div class="card ">
                 <div class="card-header">
                     <i class="fas fa-calendar me-1"></i>
@@ -119,17 +122,86 @@
 
         </div>
     </div>
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <div class="card ">
+                <div class="card-header">
+                    <i class="fas fa-calendar me-1"></i>
+                    <label>Distrito Federal</label>
+                </div>
+                <div class="card-body justify-content">
+                    <select id="distrito_federal" class="form-control select2" multiple>
+                        <option value="0" selected>Todos</option>
+                        @foreach($distritosFederales as $df)
+                            <option value="{{ $df->id }}">{{ $df->id }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card ">
+                <div class="card-header">
+                    <i class="fas fa-calendar me-1"></i>
+                    <label>Municipio</label>
+                </div>
+                <div class="card-body justify-content">
+                    <select id="municipio" class="form-control select2" multiple>
+                        <option value="0" selected>Todos</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card ">
+                <div class="card-header">
+                    <i class="fas fa-calendar me-1"></i>
+                    <label>Distrito Local</label>
+                </div>
+                <div class="card-body justify-content">
+                    <select id="distrito_local" class="form-control select2" multiple>
+                        <option value="0" selected>Todos</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card ">
+                <div class="card-header">
+                    <i class="fas fa-calendar me-1"></i>
+                    <label>Sección</label>
+                </div>
+                <div class="card-body justify-content">
+                    <select id="seccion" class="form-control select2" multiple>
+                    <option value="0" selected>Todos</option>
+                </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
 
     <div class="row">
-        <div class="col">
+        <div class="col-12 col-md-6">
             <div class="card mb-4">
                 <div class="card-header">
                     <i class="fas fa-chart-bar me-1"></i>
-                    Secciones
+                    Personas Supervisadas
                 </div>
-                <div class="card-body contenedorSeccionesGraficas">
-
+                <canvas id="conteoSupervisadosChart"></canvas>
+            </div>
+        </div>
+        <div class="col-12 col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-bar me-1"></i>
+                    Personas con Sección Por Definir
                 </div>
+                <canvas id="registrosSinSeccionChart"></canvas>
             </div>
         </div>
     </div>
@@ -138,13 +210,31 @@
             <div class="card mb-4 contenedorGraficoTiempo">
                 <div class="card-header">
                     <i class="fas fa-chart-bar me-1"></i>
-                    Registros por días
+                    Registros de Personas por Días
                 </div>
-                <div class="card-body"><canvas id="graficaTiempo" width="100%" height="50"></canvas></div>
+                <canvas id="registrosEnElTiempoChart"></canvas>
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col">
+            <div class="card mb-4">
+                <!-- Header con toggle -->
+                <div class="card-header" data-bs-toggle="collapse" data-bs-target="#collapseSecciones" style="cursor:pointer;">
+                    <i class="fas fa-chart-bar me-1"></i>
+                    <span id="titulodesglozadoSeccionesContainer">Secciones</span>
+                    <span class="float-end"><i class="fas fa-chevron-down"></i></span>
+                </div>
 
+                <!-- Contenido colapsable -->
+                <div id="collapseSecciones" class="collapse card-body">
+                    <div id="desglozadoSeccionesContainer">
+                        <!-- Aquí se generarán los gráficos -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 
@@ -188,6 +278,10 @@
                     }
                 }
             };
+            let chartConteoSupervisados;
+            let chartRegistrosEnElTiempo;
+            let chartRegistrosSinSeccion;
+            let chartSecciones = {}; // objeto para cada sección
             $('#tipoSeleccion').on('change', function() {
                 if( this.value == 'AGRUPAR'){
                     $('#PorSeparado').show();
@@ -198,6 +292,47 @@
                 }
             });
             $(document).ready(function () {
+            $('.select2').select2({
+                placeholder: "Selecciona una opción",
+                allowClear: true
+            });
+
+            $('#distrito_federal').on('change', function() {
+                const id = $(this).val();
+                $('#municipio').empty().append('<option value="0">Todos</option>');
+                $('#distrito_local').empty().append('<option value="0">Todos</option>');
+                $('#seccion').empty().append('<option value="0">Todos</option>');
+
+                if (id && id != 0) {
+                    $.get(`/estadistica/municipios/${id}`, function(data) {
+                        data.forEach(m => $('#municipio').append(`<option value="${m.id}">${m.nombre}</option>`));
+                    });
+                }
+            });
+
+            $('#municipio').on('change', function() {
+                const id = $(this).val();
+                $('#distrito_local').empty().append('<option value="0">Todos</option>');
+                $('#seccion').empty().append('<option value="0">Todos</option>');
+
+                if (id && id != 0) {
+                    $.get(`/estadistica/distritos-locales/${id}`, function(data) {
+                        data.forEach(dl => $('#distrito_local').append(`<option value="${dl.id}">${dl.id}</option>`));
+                    });
+                }
+            });
+
+            $('#distrito_local').on('change', function() {
+                const id = $(this).val();
+                $('#seccion').empty().append('<option value="0">Todos</option>');
+
+                if (id && id != 0) {
+                    $.get(`/estadistica/secciones/${id}`, function(data) {
+                        data.forEach(s => $('#seccion').append(`<option value="${s.id}">${s.id}</option>`));
+                    });
+                }
+            });
+
                 $('#PorSeparado').hide();
                 $('.selectToo').select2();
                 Swal.fire({
@@ -319,169 +454,169 @@
                         let columnas = 0;
                         var grafico = '';
                         var renglon = $('<div>').addClass('row');
-                        $.each(response.conteoSeparado, function (indexInArray, valueOfElement) {
-                            grafico = $('<div>').addClass('col-lg-6').html(
-                                $('<div>').addClass('card').addClass('mb-4').append(
-                                    $('<div>').addClass('card-header').append(
-                                        $('<i>').addClass('fas').addClass('fa-chart-bar').addClass('me-1'),
-                                        $('<span>').text(`Conteo sección ${valueOfElement.seccion_id}`)
-                                    ),
-                                    $('<div>').addClass('card-body').html(
-                                        $('<canvas>').attr('id', `graficaBarra_${valueOfElement.seccion_id}`).attr('width', '100%').attr('height', '50px')
-                                    )
-                                )
-                            );
-                            if(columnas >= 2){
-                                columnas = 0;
-                                $('.contenedorSeccionesGraficas').append(renglon);
-                                renglon = $('<div>').addClass('row');
-                                renglon.append(grafico);
-                                columnas++;
-                            }
-                            else{
-                                renglon.append(grafico);
-                                columnas++;
-                            }
-                        });
+                        // $.each(response.conteoSeparado, function (indexInArray, valueOfElement) {
+                        //     grafico = $('<div>').addClass('col-lg-6').html(
+                        //         $('<div>').addClass('card').addClass('mb-4').append(
+                        //             $('<div>').addClass('card-header').append(
+                        //                 $('<i>').addClass('fas').addClass('fa-chart-bar').addClass('me-1'),
+                        //                 $('<span>').text(`Conteo sección ${valueOfElement.seccion_id}`)
+                        //             ),
+                        //             $('<div>').addClass('card-body').html(
+                        //                 $('<canvas>').attr('id', `graficaBarra_${valueOfElement.seccion_id}`).attr('width', '100%').attr('height', '50px')
+                        //             )
+                        //         )
+                        //     );
+                        //     if(columnas >= 2){
+                        //         columnas = 0;
+                        //         $('.contenedorSeccionesGraficas').append(renglon);
+                        //         renglon = $('<div>').addClass('row');
+                        //         renglon.append(grafico);
+                        //         columnas++;
+                        //     }
+                        //     else{
+                        //         renglon.append(grafico);
+                        //         columnas++;
+                        //     }
+                        // });
                         if(columnas > 0){
                                 columnas = 0;
                                 $('.contenedorSeccionesGraficas').append(renglon);
                             }
 
-                        $.each(response.conteoSeparado, function (indexInArray, valueOfElement) {
-                            var ctx3 = document.getElementById(`graficaBarra_${valueOfElement.seccion_id}`);
-                            var datos = [valueOfElement.conteoTotal, valueOfElement.objetivo, valueOfElement.poblacion];
-                            var maximoActual = datos[0];
-                            if(datos[1] > maximoActual){
-                                maximoActual = datos[1];
-                            }
-                            if(datos[2] > maximoActual){
-                                maximoActual = datos[2];
-                            }
-                            var myLineChart = new Chart(ctx3, {
-                                type: 'bar',
-                                data: {
-                                    labels: [
-                                        "Registros Hechos",
-                                        "Registros Objetivos",
-                                        "Lista Nominal",
-                                        ],
-                                    datasets: [{
-                                        label: "Conteo",
-                                        backgroundColor: "rgba(2,117,216,1)",
-                                        borderColor: "rgba(2,117,216,1)",
-                                        data: datos,
-                                    }],
-                                },
-                                options: {
-                                    scales: {
-                                    xAxes: [{
-                                        time: {
-                                            unit: 'month'
-                                        },
-                                        gridLines: {
-                                            display: false
-                                        },
-                                        ticks: {
-                                            maxTicksLimit: 4
-                                        }
-                                    }],
-                                    yAxes: [{
-                                        ticks: {
-                                            min: 0,
-                                            max: maximoActual,
-                                            maxTicksLimit: 5
-                                        },
-                                        gridLines: {
-                                            display: true
-                                        }
-                                    }],
-                                    },
-                                    legend: {
-                                        display: false
-                                    },
-                                    plugins: {
-                                        datalabels: {
-                                            formatter: (value, ctx) => {
-                                                const datapoints = ctx.chart.data.datasets[0].data
-                                                const total = datapoints.reduce((total, datapoint) => total + datapoint, 0)
-                                                const percentage = value / total * 100
-                                                return percentage.toFixed(2) + "%";
-                                            },
-                                            color: '#000',
-                                            backgroundColor: '#fff',
-                                            borderWidth: '1',
-                                            borderColor: '#aaa',
-                                            borderRadius: '5'
-                                        }
-                                    }
-                                },
-                                plugins: [ChartDataLabels],
+                        // $.each(response.conteoSeparado, function (indexInArray, valueOfElement) {
+                        //     var ctx3 = document.getElementById(`graficaBarra_${valueOfElement.seccion_id}`);
+                        //     var datos = [valueOfElement.conteoTotal, valueOfElement.objetivo, valueOfElement.poblacion];
+                        //     var maximoActual = datos[0];
+                        //     if(datos[1] > maximoActual){
+                        //         maximoActual = datos[1];
+                        //     }
+                        //     if(datos[2] > maximoActual){
+                        //         maximoActual = datos[2];
+                        //     }
+                        //     var myLineChart = new Chart(ctx3, {
+                        //         type: 'bar',
+                        //         data: {
+                        //             labels: [
+                        //                 "Registros Hechos",
+                        //                 "Registros Objetivos",
+                        //                 "Lista Nominal",
+                        //                 ],
+                        //             datasets: [{
+                        //                 label: "Conteo",
+                        //                 backgroundColor: "rgba(2,117,216,1)",
+                        //                 borderColor: "rgba(2,117,216,1)",
+                        //                 data: datos,
+                        //             }],
+                        //         },
+                        //         options: {
+                        //             scales: {
+                        //             xAxes: [{
+                        //                 time: {
+                        //                     unit: 'month'
+                        //                 },
+                        //                 gridLines: {
+                        //                     display: false
+                        //                 },
+                        //                 ticks: {
+                        //                     maxTicksLimit: 4
+                        //                 }
+                        //             }],
+                        //             yAxes: [{
+                        //                 ticks: {
+                        //                     min: 0,
+                        //                     max: maximoActual,
+                        //                     maxTicksLimit: 5
+                        //                 },
+                        //                 gridLines: {
+                        //                     display: true
+                        //                 }
+                        //             }],
+                        //             },
+                        //             legend: {
+                        //                 display: false
+                        //             },
+                        //             plugins: {
+                        //                 datalabels: {
+                        //                     formatter: (value, ctx) => {
+                        //                         const datapoints = ctx.chart.data.datasets[0].data
+                        //                         const total = datapoints.reduce((total, datapoint) => total + datapoint, 0)
+                        //                         const percentage = value / total * 100
+                        //                         return percentage.toFixed(2) + "%";
+                        //                     },
+                        //                     color: '#000',
+                        //                     backgroundColor: '#fff',
+                        //                     borderWidth: '1',
+                        //                     borderColor: '#aaa',
+                        //                     borderRadius: '5'
+                        //                 }
+                        //             }
+                        //         },
+                        //         plugins: [ChartDataLabels],
 
-                            });
-                        });
+                        //     });
+                        // });
 
 
-                        var ctx = document.getElementById("graficaTiempo");
-                        var myLineChart = new Chart(ctx, {
-                            type: 'line',
-                            data: {
-                                labels: response.registrosPorFechas.fechas,
-                                datasets: [{
-                                    label: "Cantidad",
-                                    lineTension: 0.3,
-                                    backgroundColor: "rgba(2,117,216,0.2)",
-                                    borderColor: "rgba(2,117,216,1)",
-                                    pointRadius: 5,
-                                    pointBackgroundColor: "rgba(2,117,216,1)",
-                                    pointBorderColor: "rgba(255,255,255,0.8)",
-                                    pointHoverRadius: 5,
-                                    pointHoverBackgroundColor: "rgba(2,117,216,1)",
-                                    pointHitRadius: 50,
-                                    pointBorderWidth: 2,
-                                    data: response.registrosPorFechas.conteos,
-                                }],
-                            },
-                            options: {
-                                scales: {
-                                    xAxes: [{
-                                        time: {
-                                            unit: 'date'
-                                        },
-                                        gridLines: {
-                                            display: false
-                                        },
-                                        ticks: {
-                                            maxTicksLimit: 14
-                                        }
-                                    }],
-                                    yAxes: [{
-                                        ticks: {
-                                            min: 0,
-                                            max: response.registrosPorFechas.maximo,
-                                            maxTicksLimit: 5
-                                        },
-                                        gridLines: {
-                                            color: "rgba(0, 0, 0, .125)",
-                                        }
-                                    }],
-                                },
-                                legend: {
-                                    display: false
-                                },
-                                plugins: {
-                                    datalabels: {
-                                        formatter: (value, ctx) => {
-                                            const datapoints = ctx.chart.data.datasets[0].data
-                                            const total = datapoints.reduce((total, datapoint) => total + datapoint, 0)
-                                            const percentage = value / total * 100
-                                            return '';
-                                        },
-                                        color: '#fff',
-                                    }
-                                }
-                            },
-                        });
+                        // var ctx = document.getElementById("graficaTiempo");
+                        // var myLineChart = new Chart(ctx, {
+                        //     type: 'line',
+                        //     data: {
+                        //         labels: response.registrosPorFechas.fechas,
+                        //         datasets: [{
+                        //             label: "Cantidad",
+                        //             lineTension: 0.3,
+                        //             backgroundColor: "rgba(2,117,216,0.2)",
+                        //             borderColor: "rgba(2,117,216,1)",
+                        //             pointRadius: 5,
+                        //             pointBackgroundColor: "rgba(2,117,216,1)",
+                        //             pointBorderColor: "rgba(255,255,255,0.8)",
+                        //             pointHoverRadius: 5,
+                        //             pointHoverBackgroundColor: "rgba(2,117,216,1)",
+                        //             pointHitRadius: 50,
+                        //             pointBorderWidth: 2,
+                        //             data: response.registrosPorFechas.conteos,
+                        //         }],
+                        //     },
+                        //     options: {
+                        //         scales: {
+                        //             xAxes: [{
+                        //                 time: {
+                        //                     unit: 'date'
+                        //                 },
+                        //                 gridLines: {
+                        //                     display: false
+                        //                 },
+                        //                 ticks: {
+                        //                     maxTicksLimit: 14
+                        //                 }
+                        //             }],
+                        //             yAxes: [{
+                        //                 ticks: {
+                        //                     min: 0,
+                        //                     max: response.registrosPorFechas.maximo,
+                        //                     maxTicksLimit: 5
+                        //                 },
+                        //                 gridLines: {
+                        //                     color: "rgba(0, 0, 0, .125)",
+                        //                 }
+                        //             }],
+                        //         },
+                        //         legend: {
+                        //             display: false
+                        //         },
+                        //         plugins: {
+                        //             datalabels: {
+                        //                 formatter: (value, ctx) => {
+                        //                     const datapoints = ctx.chart.data.datasets[0].data
+                        //                     const total = datapoints.reduce((total, datapoint) => total + datapoint, 0)
+                        //                     const percentage = value / total * 100
+                        //                     return '';
+                        //                 },
+                        //                 color: '#fff',
+                        //             }
+                        //         }
+                        //     },
+                        // });
                     },
                     error: function( data, textStatus, jqXHR){
                         if (jqXHR.status === 0) {
@@ -518,6 +653,7 @@
                     });
                     Swal.close();
                 });
+                lanzarConsulta();
             });
             $('#botonConsultar').click(function (e) {
                 datosVacios = false;
@@ -529,11 +665,18 @@
                     });
                 }
                 else{
-                    var datosAjax = {
-                        'banderaAgrupacion': $('#tipoSeleccion').val(),
-                        'seccionesSeleccionadas': $('#seccionarAgrupar').val(),
+                    lanzarConsulta();
+                }
+            });
+
+            function lanzarConsulta(){
+                var datosAjax = {
                         'fechaInicio': $('#fechaInicio').val(),
-                        'fechaFin': $('#fechaFin').val()
+                        'fechaFin': $('#fechaFin').val(),
+                        'distrito_federal': $('#distrito_federal').val(),
+                        'municipio': $('#municipio').val(),
+                        'distrito_local': $('#distrito_local').val(),
+                        'seccion': $('#seccion').val(),
                     }
                     Swal.fire({
                         title: 'Cargando...',
@@ -548,384 +691,385 @@
                         data: datosAjax,
                         contentType: "application/x-www-form-urlencoded",
                         success: function (response) {
-                            $('.contenedorSeccionesGraficas').html('');
-                            $('#graficaTiempo').remove();
-                            $('.contenedorGraficoTiempo').append(
-                                $('<canvas>').attr('id', `graficaTiempo`).attr('width', '100%').attr('height', '50px')
-                            );
-                            console.log(response);
-                            if(response.conteoSeparado.length <= 0){
-                                Swal.close();
-                                datosVacios = true;
-                                Swal.fire({
-                                    'title':"Sin datos",
-                                    'text':"La consulta realizada no devuelve ningun registro",
-                                    'icon':"warning"
-                                });
-                            }
-                            if(response.tipo == 'COMPARATIVO'){
-                                let columnas = 0;
-                                var grafico = '';
-                                var renglon = $('<div>').addClass('row');
-                                $.each(response.conteoSeparado, function (indexInArray, valueOfElement) {
-                                    grafico = $('<div>').addClass('col-lg-6').html(
-                                        $('<div>').addClass('card').addClass('mb-4').append(
-                                            $('<div>').addClass('card-header').append(
-                                                $('<i>').addClass('fas').addClass('fa-chart-bar').addClass('me-1'),
-                                                $('<span>').text(`Conteo sección ${valueOfElement.seccion_id}`)
-                                            ),
-                                            $('<div>').addClass('card-body').html(
-                                                $('<canvas>').attr('id', `graficaBarra_${valueOfElement.seccion_id}`).attr('width', '100%').attr('height', '50px')
-                                            )
-                                        )
-                                    );
-                                    if(columnas >= 2){
-                                        columnas = 0;
-                                        $('.contenedorSeccionesGraficas').append(renglon);
-                                        renglon = $('<div>').addClass('row');
-                                        renglon.append(grafico);
-                                        columnas++;
-                                    }
-                                    else{
-                                        renglon.append(grafico);
-                                        columnas++;
-                                    }
-                                });
-                                if(columnas > 0){
-                                        columnas = 0;
-                                        $('.contenedorSeccionesGraficas').append(renglon);
-                                    }
+                            renderCharts(response);
+                            // $('.contenedorSeccionesGraficas').html('');
+                            // $('#graficaTiempo').remove();
+                            // $('.contenedorGraficoTiempo').append(
+                            //     $('<canvas>').attr('id', `graficaTiempo`).attr('width', '100%').attr('height', '50px')
+                            // );
+                            // console.log(response);
+                            // if(response.conteoSeparado.length <= 0){
+                            //     Swal.close();
+                            //     datosVacios = true;
+                            //     Swal.fire({
+                            //         'title':"Sin datos",
+                            //         'text':"La consulta realizada no devuelve ningun registro",
+                            //         'icon':"warning"
+                            //     });
+                            // }
+                            // if(response.tipo == 'COMPARATIVO'){
+                            //     let columnas = 0;
+                            //     var grafico = '';
+                            //     var renglon = $('<div>').addClass('row');
+                            //     $.each(response.conteoSeparado, function (indexInArray, valueOfElement) {
+                            //         grafico = $('<div>').addClass('col-lg-6').html(
+                            //             $('<div>').addClass('card').addClass('mb-4').append(
+                            //                 $('<div>').addClass('card-header').append(
+                            //                     $('<i>').addClass('fas').addClass('fa-chart-bar').addClass('me-1'),
+                            //                     $('<span>').text(`Conteo sección ${valueOfElement.seccion_id}`)
+                            //                 ),
+                            //                 $('<div>').addClass('card-body').html(
+                            //                     $('<canvas>').attr('id', `graficaBarra_${valueOfElement.seccion_id}`).attr('width', '100%').attr('height', '50px')
+                            //                 )
+                            //             )
+                            //         );
+                            //         if(columnas >= 2){
+                            //             columnas = 0;
+                            //             $('.contenedorSeccionesGraficas').append(renglon);
+                            //             renglon = $('<div>').addClass('row');
+                            //             renglon.append(grafico);
+                            //             columnas++;
+                            //         }
+                            //         else{
+                            //             renglon.append(grafico);
+                            //             columnas++;
+                            //         }
+                            //     });
+                            //     if(columnas > 0){
+                            //             columnas = 0;
+                            //             $('.contenedorSeccionesGraficas').append(renglon);
+                            //         }
 
-                                $.each(response.conteoSeparado, function (indexInArray, valueOfElement) {
-                                    var ctx3 = document.getElementById(`graficaBarra_${valueOfElement.seccion_id}`);
-                                    var datos = [valueOfElement.conteoTotal, valueOfElement.objetivo, valueOfElement.poblacion];
-                                    var maximoActual = datos[0];
-                                    if(datos[1] > maximoActual){
-                                        maximoActual = datos[1];
-                                    }
-                                    if(datos[2] > maximoActual){
-                                        maximoActual = datos[2];
-                                    }
-                                    var myLineChart = new Chart(ctx3, {
-                                        type: 'bar',
-                                        data: {
-                                            labels: [
-                                                "Registros Hechos",
-                                                "Registros Objetivos",
-                                                "Lista Nominal",
-                                                ],
-                                            datasets: [{
-                                                label: "Conteo",
-                                                backgroundColor: "rgba(2,117,216,1)",
-                                                borderColor: "rgba(2,117,216,1)",
-                                                data: datos,
-                                            }],
-                                        },
-                                        options: {
-                                            scales: {
-                                            xAxes: [{
-                                                time: {
-                                                    unit: 'month'
-                                                },
-                                                gridLines: {
-                                                    display: false
-                                                },
-                                                ticks: {
-                                                    maxTicksLimit: 4
-                                                }
-                                            }],
-                                            yAxes: [{
-                                                ticks: {
-                                                    min: 0,
-                                                    max: maximoActual,
-                                                    maxTicksLimit: 5
-                                                },
-                                                gridLines: {
-                                                    display: true
-                                                }
-                                            }],
-                                            },
-                                            legend: {
-                                                display: false
-                                            },
-                                            plugins: {
-                                                datalabels: {
-                                                    formatter: (value, ctx) => {
-                                                        const datapoints = ctx.chart.data.datasets[0].data
-                                                        const total = datapoints.reduce((total, datapoint) => total + datapoint, 0)
-                                                        const percentage = value / total * 100
-                                                        return percentage.toFixed(2) + "%";
-                                                    },
-                                                    color: '#000',
-                                                    backgroundColor: '#fff',
-                                                    borderWidth: '1',
-                                                    borderColor: '#aaa',
-                                                    borderRadius: '5'
-                                                }
-                                            }
-                                        },
-                                        plugins: [ChartDataLabels],
+                            //     $.each(response.conteoSeparado, function (indexInArray, valueOfElement) {
+                            //         var ctx3 = document.getElementById(`graficaBarra_${valueOfElement.seccion_id}`);
+                            //         var datos = [valueOfElement.conteoTotal, valueOfElement.objetivo, valueOfElement.poblacion];
+                            //         var maximoActual = datos[0];
+                            //         if(datos[1] > maximoActual){
+                            //             maximoActual = datos[1];
+                            //         }
+                            //         if(datos[2] > maximoActual){
+                            //             maximoActual = datos[2];
+                            //         }
+                            //         var myLineChart = new Chart(ctx3, {
+                            //             type: 'bar',
+                            //             data: {
+                            //                 labels: [
+                            //                     "Registros Hechos",
+                            //                     "Registros Objetivos",
+                            //                     "Lista Nominal",
+                            //                     ],
+                            //                 datasets: [{
+                            //                     label: "Conteo",
+                            //                     backgroundColor: "rgba(2,117,216,1)",
+                            //                     borderColor: "rgba(2,117,216,1)",
+                            //                     data: datos,
+                            //                 }],
+                            //             },
+                            //             options: {
+                            //                 scales: {
+                            //                 xAxes: [{
+                            //                     time: {
+                            //                         unit: 'month'
+                            //                     },
+                            //                     gridLines: {
+                            //                         display: false
+                            //                     },
+                            //                     ticks: {
+                            //                         maxTicksLimit: 4
+                            //                     }
+                            //                 }],
+                            //                 yAxes: [{
+                            //                     ticks: {
+                            //                         min: 0,
+                            //                         max: maximoActual,
+                            //                         maxTicksLimit: 5
+                            //                     },
+                            //                     gridLines: {
+                            //                         display: true
+                            //                     }
+                            //                 }],
+                            //                 },
+                            //                 legend: {
+                            //                     display: false
+                            //                 },
+                            //                 plugins: {
+                            //                     datalabels: {
+                            //                         formatter: (value, ctx) => {
+                            //                             const datapoints = ctx.chart.data.datasets[0].data
+                            //                             const total = datapoints.reduce((total, datapoint) => total + datapoint, 0)
+                            //                             const percentage = value / total * 100
+                            //                             return percentage.toFixed(2) + "%";
+                            //                         },
+                            //                         color: '#000',
+                            //                         backgroundColor: '#fff',
+                            //                         borderWidth: '1',
+                            //                         borderColor: '#aaa',
+                            //                         borderRadius: '5'
+                            //                     }
+                            //                 }
+                            //             },
+                            //             plugins: [ChartDataLabels],
 
-                                    });
-                                });
+                            //         });
+                            //     });
 
-                                var ctx = document.getElementById("graficaTiempo");
-                                var myLineChart = new Chart(ctx, {
-                                    type: 'line',
-                                    data: {
-                                        labels: response.registrosPorFechas.fechas,
-                                        datasets: [{
-                                            label: "Cantidad",
-                                            lineTension: 0.3,
-                                            backgroundColor: "rgba(2,117,216,0.2)",
-                                            borderColor: "rgba(2,117,216,1)",
-                                            pointRadius: 5,
-                                            pointBackgroundColor: "rgba(2,117,216,1)",
-                                            pointBorderColor: "rgba(255,255,255,0.8)",
-                                            pointHoverRadius: 5,
-                                            pointHoverBackgroundColor: "rgba(2,117,216,1)",
-                                            pointHitRadius: 50,
-                                            pointBorderWidth: 2,
-                                            data: response.registrosPorFechas.conteos,
-                                        }],
-                                    },
-                                    options: {
-                                        scales: {
-                                            xAxes: [{
-                                                time: {
-                                                    unit: 'date'
-                                                },
-                                                gridLines: {
-                                                    display: false
-                                                },
-                                                ticks: {
-                                                    maxTicksLimit: 14
-                                                }
-                                            }],
-                                            yAxes: [{
-                                                ticks: {
-                                                    min: 0,
-                                                    max: response.registrosPorFechas.maximo,
-                                                    maxTicksLimit: 5
-                                                },
-                                                gridLines: {
-                                                    color: "rgba(0, 0, 0, .125)",
-                                                }
-                                            }],
-                                        },
-                                        legend: {
-                                            display: false
-                                        },
-                                        plugins: {
-                                            datalabels: {
-                                                formatter: (value, ctx) => {
-                                                    const datapoints = ctx.chart.data.datasets[0].data
-                                                    const total = datapoints.reduce((total, datapoint) => total + datapoint, 0)
-                                                    const percentage = value / total * 100
-                                                    return '';
-                                                },
-                                                color: '#fff',
-                                            }
-                                        }
-                                    },
-                                });
-                            }
-                            else{
-                                var renglon = $('<div>').addClass('row');
-                                var grafico1 = $('<div>').addClass('col-lg-6').html(
-                                    $('<div>').addClass('card').addClass('mb-4').append(
-                                        $('<div>').addClass('card-header').append(
-                                            $('<i>').addClass('fas').addClass('fa-chart-bar').addClass('me-1'),
-                                            $('<span>').text(`Suma de conteo de secciones seleccionadas`)
-                                        ),
-                                        $('<div>').addClass('card-body').html(
-                                            $('<canvas>').attr('id', `graficaConteoBarras`).attr('width', '100%').attr('height', '50px')
-                                        )
-                                    )
-                                );
-                                var grafico2 = $('<div>').addClass('col-lg-6').html(
-                                    $('<div>').addClass('card').addClass('mb-4').append(
-                                        $('<div>').addClass('card-header').append(
-                                            $('<i>').addClass('fas').addClass('fa-chart-pie').addClass('me-1'),
-                                            $('<span>').text(`Registros por cada sección`)
-                                        ),
-                                        $('<div>').addClass('card-body').html(
-                                            $('<canvas>').attr('id', `graficaPorcentaje`).attr('width', '100%').attr('height', '50px')
-                                        )
-                                    )
-                                );
-                                renglon.append(grafico1);
-                                renglon.append(grafico2);
-                                $('.contenedorSeccionesGraficas').append(renglon);
+                            //     var ctx = document.getElementById("graficaTiempo");
+                            //     var myLineChart = new Chart(ctx, {
+                            //         type: 'line',
+                            //         data: {
+                            //             labels: response.registrosPorFechas.fechas,
+                            //             datasets: [{
+                            //                 label: "Cantidad",
+                            //                 lineTension: 0.3,
+                            //                 backgroundColor: "rgba(2,117,216,0.2)",
+                            //                 borderColor: "rgba(2,117,216,1)",
+                            //                 pointRadius: 5,
+                            //                 pointBackgroundColor: "rgba(2,117,216,1)",
+                            //                 pointBorderColor: "rgba(255,255,255,0.8)",
+                            //                 pointHoverRadius: 5,
+                            //                 pointHoverBackgroundColor: "rgba(2,117,216,1)",
+                            //                 pointHitRadius: 50,
+                            //                 pointBorderWidth: 2,
+                            //                 data: response.registrosPorFechas.conteos,
+                            //             }],
+                            //         },
+                            //         options: {
+                            //             scales: {
+                            //                 xAxes: [{
+                            //                     time: {
+                            //                         unit: 'date'
+                            //                     },
+                            //                     gridLines: {
+                            //                         display: false
+                            //                     },
+                            //                     ticks: {
+                            //                         maxTicksLimit: 14
+                            //                     }
+                            //                 }],
+                            //                 yAxes: [{
+                            //                     ticks: {
+                            //                         min: 0,
+                            //                         max: response.registrosPorFechas.maximo,
+                            //                         maxTicksLimit: 5
+                            //                     },
+                            //                     gridLines: {
+                            //                         color: "rgba(0, 0, 0, .125)",
+                            //                     }
+                            //                 }],
+                            //             },
+                            //             legend: {
+                            //                 display: false
+                            //             },
+                            //             plugins: {
+                            //                 datalabels: {
+                            //                     formatter: (value, ctx) => {
+                            //                         const datapoints = ctx.chart.data.datasets[0].data
+                            //                         const total = datapoints.reduce((total, datapoint) => total + datapoint, 0)
+                            //                         const percentage = value / total * 100
+                            //                         return '';
+                            //                     },
+                            //                     color: '#fff',
+                            //                 }
+                            //             }
+                            //         },
+                            //     });
+                            // }
+                            // else{
+                            //     var renglon = $('<div>').addClass('row');
+                            //     var grafico1 = $('<div>').addClass('col-lg-6').html(
+                            //         $('<div>').addClass('card').addClass('mb-4').append(
+                            //             $('<div>').addClass('card-header').append(
+                            //                 $('<i>').addClass('fas').addClass('fa-chart-bar').addClass('me-1'),
+                            //                 $('<span>').text(`Suma de conteo de secciones seleccionadas`)
+                            //             ),
+                            //             $('<div>').addClass('card-body').html(
+                            //                 $('<canvas>').attr('id', `graficaConteoBarras`).attr('width', '100%').attr('height', '50px')
+                            //             )
+                            //         )
+                            //     );
+                            //     var grafico2 = $('<div>').addClass('col-lg-6').html(
+                            //         $('<div>').addClass('card').addClass('mb-4').append(
+                            //             $('<div>').addClass('card-header').append(
+                            //                 $('<i>').addClass('fas').addClass('fa-chart-pie').addClass('me-1'),
+                            //                 $('<span>').text(`Registros por cada sección`)
+                            //             ),
+                            //             $('<div>').addClass('card-body').html(
+                            //                 $('<canvas>').attr('id', `graficaPorcentaje`).attr('width', '100%').attr('height', '50px')
+                            //             )
+                            //         )
+                            //     );
+                            //     renglon.append(grafico1);
+                            //     renglon.append(grafico2);
+                            //     $('.contenedorSeccionesGraficas').append(renglon);
 
-                                var datosAgrupados = [0, 0, 0];
-                                var datosSeparados = [];
-                                var datoMaximo = 0;
-                                var nombresSecciones = [];
-                                var coloresAleatorios = [];
-                                $.each(response.conteoSeparado, function (indexInArray, valueOfElement) {
-                                    datosAgrupados[0] += valueOfElement.conteoTotal;
-                                    datosAgrupados[1] += valueOfElement.objetivo;
-                                    datosAgrupados[2] += valueOfElement.poblacion;
-                                    datosSeparados.push(valueOfElement.conteoTotal);
-                                    nombresSecciones.push(`Sección ${valueOfElement.seccion_id}`);
-                                    if(datoMaximo <= valueOfElement.poblacion){
-                                        datoMaximo = valueOfElement.poblacion;
-                                    }
-                                    var r = Math.floor(Math.random() * 256); // Valor aleatorio para rojo (0-255)
-                                    var g = Math.floor(Math.random() * 256); // Valor aleatorio para verde (0-255)
-                                    var b = Math.floor(Math.random() * 256); // Valor aleatorio para azul (0-255)
+                            //     var datosAgrupados = [0, 0, 0];
+                            //     var datosSeparados = [];
+                            //     var datoMaximo = 0;
+                            //     var nombresSecciones = [];
+                            //     var coloresAleatorios = [];
+                            //     $.each(response.conteoSeparado, function (indexInArray, valueOfElement) {
+                            //         datosAgrupados[0] += valueOfElement.conteoTotal;
+                            //         datosAgrupados[1] += valueOfElement.objetivo;
+                            //         datosAgrupados[2] += valueOfElement.poblacion;
+                            //         datosSeparados.push(valueOfElement.conteoTotal);
+                            //         nombresSecciones.push(`Sección ${valueOfElement.seccion_id}`);
+                            //         if(datoMaximo <= valueOfElement.poblacion){
+                            //             datoMaximo = valueOfElement.poblacion;
+                            //         }
+                            //         var r = Math.floor(Math.random() * 256); // Valor aleatorio para rojo (0-255)
+                            //         var g = Math.floor(Math.random() * 256); // Valor aleatorio para verde (0-255)
+                            //         var b = Math.floor(Math.random() * 256); // Valor aleatorio para azul (0-255)
 
-                                    // Combinar los componentes RGB en un string hexadecimal
-                                    var colorHex = "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+                            //         // Combinar los componentes RGB en un string hexadecimal
+                            //         var colorHex = "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
 
-                                    coloresAleatorios.push(colorHex);
-                                });
-                                var maximoActual = datosAgrupados[0];
-                                    if(datosAgrupados[1] > maximoActual){
-                                        maximoActual = datosAgrupados[1];
-                                    }
-                                    if(datosAgrupados[2] > maximoActual){
-                                        maximoActual = datosAgrupados[2];
-                                    }
-                                var ctx3 = document.getElementById(`graficaConteoBarras`);
-                                    var myLineChart = new Chart(ctx3, {
-                                        type: 'bar',
-                                        data: {
-                                            labels: [
-                                                "Suma Registros Hechos",
-                                                "Suma Registros Objetivos",
-                                                "Suma Lista Nominal",
-                                                ],
-                                            datasets: [{
-                                                label: "Conteo",
-                                                backgroundColor: "rgba(2,117,216,1)",
-                                                borderColor: "rgba(2,117,216,1)",
-                                                data: datosAgrupados,
-                                            }],
-                                        },
-                                        options: {
-                                            scales: {
-                                            xAxes: [{
-                                                time: {
-                                                    unit: 'month'
-                                                },
-                                                gridLines: {
-                                                    display: false
-                                                },
-                                                ticks: {
-                                                    maxTicksLimit: 4
-                                                }
-                                            }],
-                                            yAxes: [{
-                                                ticks: {
-                                                    min: 0,
-                                                    max: maximoActual,
-                                                    maxTicksLimit: 5
-                                                },
-                                                gridLines: {
-                                                    display: true
-                                                }
-                                            }],
-                                            },
-                                            legend: {
-                                                display: false
-                                            },
-                                            plugins: {
-                                                datalabels: {
-                                                    formatter: (value, ctx) => {
-                                                        const datapoints = ctx.chart.data.datasets[0].data
-                                                        const total = datapoints.reduce((total, datapoint) => total + datapoint, 0)
-                                                        const percentage = value / total * 100
-                                                        return percentage.toFixed(2) + "%";
-                                                    },
-                                                    color: '#000',
-                                                    backgroundColor: '#fff',
-                                                    borderWidth: '1',
-                                                    borderColor: '#aaa',
-                                                    borderRadius: '5'
-                                                }
-                                            }
-                                        },
-                                        plugins: [ChartDataLabels],
+                            //         coloresAleatorios.push(colorHex);
+                            //     });
+                            //     var maximoActual = datosAgrupados[0];
+                            //         if(datosAgrupados[1] > maximoActual){
+                            //             maximoActual = datosAgrupados[1];
+                            //         }
+                            //         if(datosAgrupados[2] > maximoActual){
+                            //             maximoActual = datosAgrupados[2];
+                            //         }
+                            //     var ctx3 = document.getElementById(`graficaConteoBarras`);
+                            //         var myLineChart = new Chart(ctx3, {
+                            //             type: 'bar',
+                            //             data: {
+                            //                 labels: [
+                            //                     "Suma Registros Hechos",
+                            //                     "Suma Registros Objetivos",
+                            //                     "Suma Lista Nominal",
+                            //                     ],
+                            //                 datasets: [{
+                            //                     label: "Conteo",
+                            //                     backgroundColor: "rgba(2,117,216,1)",
+                            //                     borderColor: "rgba(2,117,216,1)",
+                            //                     data: datosAgrupados,
+                            //                 }],
+                            //             },
+                            //             options: {
+                            //                 scales: {
+                            //                 xAxes: [{
+                            //                     time: {
+                            //                         unit: 'month'
+                            //                     },
+                            //                     gridLines: {
+                            //                         display: false
+                            //                     },
+                            //                     ticks: {
+                            //                         maxTicksLimit: 4
+                            //                     }
+                            //                 }],
+                            //                 yAxes: [{
+                            //                     ticks: {
+                            //                         min: 0,
+                            //                         max: maximoActual,
+                            //                         maxTicksLimit: 5
+                            //                     },
+                            //                     gridLines: {
+                            //                         display: true
+                            //                     }
+                            //                 }],
+                            //                 },
+                            //                 legend: {
+                            //                     display: false
+                            //                 },
+                            //                 plugins: {
+                            //                     datalabels: {
+                            //                         formatter: (value, ctx) => {
+                            //                             const datapoints = ctx.chart.data.datasets[0].data
+                            //                             const total = datapoints.reduce((total, datapoint) => total + datapoint, 0)
+                            //                             const percentage = value / total * 100
+                            //                             return percentage.toFixed(2) + "%";
+                            //                         },
+                            //                         color: '#000',
+                            //                         backgroundColor: '#fff',
+                            //                         borderWidth: '1',
+                            //                         borderColor: '#aaa',
+                            //                         borderRadius: '5'
+                            //                     }
+                            //                 }
+                            //             },
+                            //             plugins: [ChartDataLabels],
 
-                                    });
+                            //         });
 
-                                var ctx2 = document.getElementById("graficaPorcentaje").getContext('2d');
-                                var myPieChart2 = new Chart(ctx2, {
-                                    type: 'pie',
-                                    data: {
-                                        labels: nombresSecciones,
-                                        datasets: [{
-                                            data: datosSeparados,
-                                            backgroundColor: coloresAleatorios,
-                                            borderColor: "#fff"
-                                        }],
-                                    },
-                                    options: options,
-                                    plugins: [ChartDataLabels],
-                                });
-                                var ctx = document.getElementById("graficaTiempo");
-                                var myLineChart = new Chart(ctx, {
-                                    type: 'line',
-                                    data: {
-                                        labels: response.registrosPorFechas.fechas,
-                                        datasets: [{
-                                            label: "Cantidad",
-                                            lineTension: 0.3,
-                                            backgroundColor: "rgba(2,117,216,0.2)",
-                                            borderColor: "rgba(2,117,216,1)",
-                                            pointRadius: 5,
-                                            pointBackgroundColor: "rgba(2,117,216,1)",
-                                            pointBorderColor: "rgba(255,255,255,0.8)",
-                                            pointHoverRadius: 5,
-                                            pointHoverBackgroundColor: "rgba(2,117,216,1)",
-                                            pointHitRadius: 50,
-                                            pointBorderWidth: 2,
-                                            data: response.registrosPorFechas.conteos,
-                                        }],
-                                    },
-                                    options: {
-                                        scales: {
-                                            xAxes: [{
-                                                time: {
-                                                    unit: 'date'
-                                                },
-                                                gridLines: {
-                                                    display: false
-                                                },
-                                                ticks: {
-                                                    maxTicksLimit: 14
-                                                }
-                                            }],
-                                            yAxes: [{
-                                                ticks: {
-                                                    min: 0,
-                                                    max: response.registrosPorFechas.maximo,
-                                                    maxTicksLimit: 5
-                                                },
-                                                gridLines: {
-                                                    color: "rgba(0, 0, 0, .125)",
-                                                }
-                                            }],
-                                        },
-                                        legend: {
-                                            display: false
-                                        },
-                                        plugins: {
-                                            datalabels: {
-                                                formatter: (value, ctx) => {
-                                                    const datapoints = ctx.chart.data.datasets[0].data
-                                                    const total = datapoints.reduce((total, datapoint) => total + datapoint, 0)
-                                                    const percentage = value / total * 100
-                                                    return '';
-                                                },
-                                                color: '#fff',
-                                            }
-                                        }
-                                    },
-                                });
-                            }
+                            //     var ctx2 = document.getElementById("graficaPorcentaje").getContext('2d');
+                            //     var myPieChart2 = new Chart(ctx2, {
+                            //         type: 'pie',
+                            //         data: {
+                            //             labels: nombresSecciones,
+                            //             datasets: [{
+                            //                 data: datosSeparados,
+                            //                 backgroundColor: coloresAleatorios,
+                            //                 borderColor: "#fff"
+                            //             }],
+                            //         },
+                            //         options: options,
+                            //         plugins: [ChartDataLabels],
+                            //     });
+                            //     var ctx = document.getElementById("graficaTiempo");
+                            //     var myLineChart = new Chart(ctx, {
+                            //         type: 'line',
+                            //         data: {
+                            //             labels: response.registrosPorFechas.fechas,
+                            //             datasets: [{
+                            //                 label: "Cantidad",
+                            //                 lineTension: 0.3,
+                            //                 backgroundColor: "rgba(2,117,216,0.2)",
+                            //                 borderColor: "rgba(2,117,216,1)",
+                            //                 pointRadius: 5,
+                            //                 pointBackgroundColor: "rgba(2,117,216,1)",
+                            //                 pointBorderColor: "rgba(255,255,255,0.8)",
+                            //                 pointHoverRadius: 5,
+                            //                 pointHoverBackgroundColor: "rgba(2,117,216,1)",
+                            //                 pointHitRadius: 50,
+                            //                 pointBorderWidth: 2,
+                            //                 data: response.registrosPorFechas.conteos,
+                            //             }],
+                            //         },
+                            //         options: {
+                            //             scales: {
+                            //                 xAxes: [{
+                            //                     time: {
+                            //                         unit: 'date'
+                            //                     },
+                            //                     gridLines: {
+                            //                         display: false
+                            //                     },
+                            //                     ticks: {
+                            //                         maxTicksLimit: 14
+                            //                     }
+                            //                 }],
+                            //                 yAxes: [{
+                            //                     ticks: {
+                            //                         min: 0,
+                            //                         max: response.registrosPorFechas.maximo,
+                            //                         maxTicksLimit: 5
+                            //                     },
+                            //                     gridLines: {
+                            //                         color: "rgba(0, 0, 0, .125)",
+                            //                     }
+                            //                 }],
+                            //             },
+                            //             legend: {
+                            //                 display: false
+                            //             },
+                            //             plugins: {
+                            //                 datalabels: {
+                            //                     formatter: (value, ctx) => {
+                            //                         const datapoints = ctx.chart.data.datasets[0].data
+                            //                         const total = datapoints.reduce((total, datapoint) => total + datapoint, 0)
+                            //                         const percentage = value / total * 100
+                            //                         return '';
+                            //                     },
+                            //                     color: '#fff',
+                            //                 }
+                            //             }
+                            //         },
+                            //     });
+                            // }
                         },
                         error: function( data, textStatus, jqXHR){
                             if (jqXHR.status === 0) {
@@ -951,12 +1095,206 @@
                                 Swal.close();
                             }
                     });
-                }
-            });
+            }
 
             function componentToHex(c) {
                 var hex = c.toString(16); // Convertir el valor a hexadecimal
                 return hex.length == 1 ? "0" + hex : hex; // Asegurarse de que el resultado siempre tenga dos caracteres
             }
+            function renderCharts(dataBackend) {
+    // -------------------------
+    // 1️⃣ Conteo Supervisados
+    // -------------------------
+    if(chartConteoSupervisados) chartConteoSupervisados.destroy();
+
+    chartConteoSupervisados = new Chart($("#conteoSupervisadosChart"), {
+        type: 'doughnut',
+        data: {
+            labels: dataBackend.conteoSupervisados.map(x => x.supervisado),
+            datasets: [{
+                data: dataBackend.conteoSupervisados.map(x => x.conteoTotal),
+                backgroundColor: ['#FF6384', '#36A2EB']
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        min: 0,
+                    },
+                    gridLines: {
+                        display: true
+                    }
+                }],
+            },
+            plugins: {
+                datalabels: {
+                    formatter: (value, ctx) => {
+                        const datapoints = ctx.chart.data.datasets[0].data
+                        const total = datapoints.reduce((total, datapoint) => total + datapoint, 0)
+                        const percentage = value / total * 100
+                        return value + " (" + percentage.toFixed(0) + "%)";
+                    },
+                    color: '#000',
+                    backgroundColor: '#fff',
+                    borderWidth: '1',
+                    borderColor: '#aaa',
+                    borderRadius: '5'
+                },
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+
+    // -------------------------
+    // 2️⃣ Desglozado Secciones
+    // -------------------------
+    const container = $("#desglozadoSeccionesContainer");
+    container.empty(); // limpiamos contenedor previo
+    chartSecciones = {}; // limpiamos instancias previas
+    $("#titulodesglozadoSeccionesContainer").text("Secciones (" + dataBackend.desglozadoSecciones.length + ")" );
+    dataBackend.desglozadoSecciones.forEach(seccion => {
+        const canvasId = "seccionChart_" + seccion.id;
+        container.append(`<div class="col-11 mx-auto col-md-5" style="display:inline-block; margin:10px;">
+            <h5>Sección ${seccion.id}</h5>
+            <canvas id="${canvasId}"></canvas>
+        </div>`);
+
+        chartSecciones[seccion.id] = new Chart($("#" + canvasId), {
+            type: 'bar',
+            data: {
+                labels: ['Conteo Personas', 'Objetivo', 'Población'],
+                datasets: [{
+                    label: 'Sección ' + seccion.id,
+                    data: [seccion.conteoTotal, seccion.objetivo, seccion.poblacion],
+                    backgroundColor: ['#FF6384','#36A2EB','#FFCE56']
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            min: 0,
+                        },
+                        gridLines: {
+                            display: true
+                        }
+                    }],
+                },
+                legend: {
+                    display: false
+                },
+                plugins: {
+                    datalabels: {
+                        // formatter: (value, ctx) => {
+                        //     const datapoints = ctx.chart.data.datasets[0].data
+                        //     const total = datapoints.reduce((total, datapoint) => total + datapoint, 0)
+                        //     const percentage = value / total * 100
+                        //     return value + " (" + percentage.toFixed(2) + "%)";
+                        // },
+                        color: '#000',
+                        backgroundColor: '#fff',
+                        borderWidth: '1',
+                        borderColor: '#aaa',
+                        borderRadius: '5'
+                    }
+                }
+            }
+        });
+    });
+
+    // -------------------------
+    // 3️⃣ Registros en el tiempo
+    // -------------------------
+    if(chartRegistrosEnElTiempo) chartRegistrosEnElTiempo.destroy();
+
+    chartRegistrosEnElTiempo = new Chart($("#registrosEnElTiempoChart"), {
+        type: 'line',
+        data: {
+            labels: dataBackend.registrosEnElTiempo.map(x => x.fecha),
+            datasets: [{
+                label: 'Registros',
+                data: dataBackend.registrosEnElTiempo.map(x => x.conteoTotal),
+                borderColor: '#36A2EB',
+                backgroundColor: 'rgba(54,162,235,0.2)',
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: { x: { title: { display:true, text: 'Fecha' } }, y: { title: { display:true, text: 'Conteo' } } },
+            legend: {
+                display: false
+            },
+            plugins: {
+                datalabels: {
+                    formatter: (value, ctx) => {
+                        const datapoints = ctx.chart.data.datasets[0].data
+                        const total = datapoints.reduce((total, datapoint) => total + datapoint, 0)
+                        const percentage = value / total * 100
+                        return value + " (" + percentage.toFixed(0) + "%)";
+                    },
+                    color: '#000',
+                    backgroundColor: '#fff',
+                    borderWidth: '1',
+                    borderColor: '#aaa',
+                    borderRadius: '5'
+                }
+            }
+        }
+    });
+
+    // -------------------------
+    // 4️⃣ Registros sin sección
+    // -------------------------
+    if(chartRegistrosSinSeccion) chartRegistrosSinSeccion.destroy();
+
+    chartRegistrosSinSeccion = new Chart($("#registrosSinSeccionChart"), {
+        type: 'bar',
+        data: {
+            labels: ['Con Sección', 'Sin Sección'],
+            datasets: [{
+                label: 'Cantidad',
+                data: [parseInt(dataBackend.registrosSinSeccion.con_seccion), parseInt(dataBackend.registrosSinSeccion.sin_seccion)],
+                backgroundColor: ['#36A2EB','#FF6384']
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        min: 0,
+                    },
+                    gridLines: {
+                        display: true
+                    }
+                }],
+            },
+            legend: {
+                display: false
+            },
+            plugins: {
+                datalabels: {
+                    formatter: (value, ctx) => {
+                        const datapoints = ctx.chart.data.datasets[0].data
+                        const total = datapoints.reduce((total, datapoint) => total + datapoint, 0)
+                        const percentage = value / total * 100
+                        return value + " (" + percentage.toFixed(0) + "%)";
+                    },
+                    color: '#000',
+                    backgroundColor: '#fff',
+                    borderWidth: '1',
+                    borderColor: '#aaa',
+                    borderRadius: '5'
+                }
+            }
+        }
+    });
+}
+
         </script>
 @endsection

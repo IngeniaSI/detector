@@ -216,14 +216,16 @@
 
                 </div>
                 <br>
-                <h4>¿Donde vive la persona?</h4>
-                <center>
-                    <input type="hidden" id="coordenadas" name="coordenadas" value="{{old('coordenadas')}}">
-                    <input type="text" class="col-3 d-none" id="cordenada" class="form-control" value="{{old('coordenadas')}}" disabled>
-                </center>
-                <center>
-                    <div id="map" class="mx-auto" style="width:100%;height:400px"></div>
-                </center>
+                <div class="d-none">
+                    <h4>¿Donde vive la persona?</h4>
+                    <center>
+                        <input type="hidden" id="coordenadas" name="coordenadas" value="{{old('coordenadas')}}">
+                        <input type="text" class="col-3 d-none" id="cordenada" class="form-control" value="{{old('coordenadas')}}" disabled>
+                    </center>
+                    <center>
+                        <div id="map" class="mx-auto" style="width:100%;height:400px"></div>
+                    </center>
+                </div>
             </div>
             <br>
             <div class="p-4 border rounded-3 bg-secondary bg-opacity-10">
