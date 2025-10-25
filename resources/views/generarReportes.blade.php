@@ -53,21 +53,19 @@
             </div>
         </div>
 
-        {{-- ================================
-             Reporte N (ejemplo adicional)
+         {{-- ================================
+             Reporte 3
         ================================= --}}
-        {{--
         <div class="card mb-4 shadow-sm">
             <div class="card-body">
-                <h5 class="card-title">Reporte 3: Ventas por Mes</h5>
-                <p class="card-text">Genera un reporte mensual de ventas con totales y promedios.</p>
+                <h5 class="card-title">Reporte 3: Listado de Metas</h5>
+                <p class="card-text">Listado de metas establecidas y su cumplimiento.</p>
 
-                <a href="{{ route('reportes.ventas') }}" class="btn btn-success">
+                <a href="{{route('estadistica.exportarMetas')}}" target="_blank" class="btn btn-success">
                     <i class="bi bi-file-earmark-excel"></i> Descargar Excel
                 </a>
             </div>
         </div>
-        --}}
     </div>
 
 @endsection
