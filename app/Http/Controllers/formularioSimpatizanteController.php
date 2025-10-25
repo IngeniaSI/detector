@@ -21,7 +21,22 @@ use Illuminate\Validation\Rule;
 class formularioSimpatizanteController extends Controller
 {
     public function index(){
-        return view('formularioSimpatizante');
+        $distritosEstatales = distritoFederal::select(
+            'id',
+            'id as text',
+        )
+        ->get();
+        $distritoLocales = distritoLocal::select(
+            'id',
+            'id as text',
+        )
+        ->get();
+        $secciones = seccion::select(
+            'id',
+            'id as text',
+        )
+        ->get();
+        return view('formularioSimpatizante', compact('distritosEstatales', 'distritoLocales', 'secciones'));
     }
     public function inicializar(){
         try{

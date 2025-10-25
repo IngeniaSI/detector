@@ -449,7 +449,7 @@
                         </div>
                         <div class="col">
                             <h4 id="rolNumeroEncabezado">Seleccione un rol en estructura</h4>
-                            <input type="number" class="form-control" id="rolNumero" name="rolNumero" value="{{old('rolNumero')}}" disabled>
+                            <select name="rolNumero" id="rolNumero" class="col-12" disabled></select>
                             @error('rolNumero')
                                 <div id="rolNumeroError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
@@ -485,7 +485,7 @@
                         </div>
                         <div class="col">
                             <h4 id="rolNumeroEncabezadoTemporal">Seleccione un rol en estructura</h4>
-                            <input type="number" class="form-control" id="rolNumeroTemporal" name="rolNumeroTemporal" value="{{old('rolNumeroTemporal')}}" disabled>
+                            <select name="rolNumeroTemporal" id="rolNumeroTemporal" class="col-12" disabled></select>
                             @error('rolNumeroTemporal')
                                 <div id="rolNumeroTemporalError" class="p-2 mt-2 rounded-3 bg-danger text-white"><small>{{$message}}</small></div>
                             @enderror
@@ -704,6 +704,8 @@
 
     // FUNCION PARA CARGAR TABLA DE USUARIOS
     $(document).ready(function () {
+        $('#rolNumeroTemporal').select2();
+        $('#rolNumero').select2();
         @if($errors->any())
             Swal.fire({
                 'title':"Error",
@@ -873,10 +875,10 @@
                             }
                             $('select[name="rolEstructura"]').val(response.persona.rolEstructura != null ?   response.persona.rolEstructura : 0);
                             $('select[name="rolEstructura"]').trigger('change');
-                            $('input[name="rolNumero"]').val(response.persona.rolNumero);
+                            $('select[name="rolNumero"]').val(response.persona.rolNumero);
                             $('select[name="rolEstructuraTemporal"]').val(response.persona.rolEstructuraTemporal != null ?   response.persona.rolEstructuraTemporal : 0);
                             $('select[name="rolEstructuraTemporal"]').trigger('change');
-                            $('input[name="rolNumeroTemporal"]').val(response.persona.rolNumeroTemporal);
+                            $('select[name="rolNumeroTemporal"]').val(response.persona.rolNumeroTemporal);
                             $('input[name="funciones"]').val(response.persona.funcion_en_campania);
                             $('textarea[name="observaciones"]').val(response.persona.observaciones);
                             if(response.domicilio.latitud != null){
@@ -1011,18 +1013,41 @@
         @endif
     });
 
+    const distritosEstatales = @json($distritosEstatales);
+    const distritoLocales = @json($distritoLocales);
+    const secciones = @json($secciones);
+
 
     $('#rolEstructuraTemporal').change(function (e) {
         $('#rolNumeroTemporal').prop('disabled', false);
+        $('#rolNumeroTemporal').empty().trigger('change');
         switch ($(this).val()) {
             case 'COORDINADOR ESTATAL':
                 $('#rolNumeroEncabezadoTemporal').text('¿En qué Entidad?');
+                distritosEstatales.forEach(function(valor, i){
+                    $('#rolNumeroTemporal').append(
+                        new Option(valor.text, valor.id)
+                    );
+                });
+                $('#rolNumeroTemporal').trigger('change');
                 break;
                 case 'COORDINADOR DE DISTRITO LOCAL':
                 $('#rolNumeroEncabezadoTemporal').text('¿En qué Distrito?');
+                distritoLocales.forEach(function(valor, i){
+                    $('#rolNumeroTemporal').append(
+                        new Option(valor.text, valor.id)
+                    );
+                });
+                $('#rolNumeroTemporal').trigger('change');
                 break;
                 case 'COORDINADOR DE SECCIÓN':
                 $('#rolNumeroEncabezadoTemporal').text('¿En qué Sección?');
+                secciones.forEach(function(valor, i){
+                    $('#rolNumeroTemporal').append(
+                        new Option(valor.text, valor.id)
+                    );
+                });
+                $('#rolNumeroTemporal').trigger('change');
                 break;
                 case 'PROMOTOR':
                 $('#rolNumeroEncabezadoTemporal').text('Promotor seleccionado');
@@ -1036,15 +1061,34 @@
     });
     $('#rolEstructura').change(function (e) {
         $('#rolNumero').prop('disabled', false);
+        $('#rolNumero').empty().trigger('change');
         switch ($(this).val()) {
             case 'COORDINADOR ESTATAL':
                 $('#rolNumeroEncabezado').text('¿En qué Entidad?');
+                 distritosEstatales.forEach(function(valor, i){
+                    $('#rolNumero').append(
+                        new Option(valor.text, valor.id)
+                    );
+                });
+                $('#rolNumero').trigger('change');
                 break;
                 case 'COORDINADOR DE DISTRITO LOCAL':
                 $('#rolNumeroEncabezado').text('¿En qué Distrito?');
+                 distritoLocales.forEach(function(valor, i){
+                    $('#rolNumero').append(
+                        new Option(valor.text, valor.id)
+                    );
+                });
+                $('#rolNumero').trigger('change');
                 break;
                 case 'COORDINADOR DE SECCIÓN':
                 $('#rolNumeroEncabezado').text('¿En qué Sección?');
+                secciones.forEach(function(valor, i){
+                    $('#rolNumero').append(
+                        new Option(valor.text, valor.id)
+                    );
+                });
+                $('#rolNumero').trigger('change');
                 break;
                 case 'PROMOTOR':
                 $('#rolNumeroEncabezado').text('Promotor seleccionado');

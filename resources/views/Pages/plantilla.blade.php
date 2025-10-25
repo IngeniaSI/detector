@@ -98,6 +98,19 @@
 
                             @endcan
                             <li>
+                                <a href="#submenu5" data-bs-toggle="collapse" class="nav-link collapsed" aria-expanded="false">
+                                    <i class="fa-solid fa-file-export"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Reportes</span>
+                                </a>
+                                <ul class="collapse  nav flex-column ms-1" id="submenu5" data-bs-parent="#menu">
+                                    <li class="w-100">
+                                        <a class="nav-link" href="{{route('reportes.index')}}">
+                                            <div class="sb-nav-link-icon"><i class="fa-solid fa-file-export"></i></div>
+                                            Reportes
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
                                 <a href="#submenu3" data-bs-toggle="collapse" class="nav-link collapsed" aria-expanded="false">
                                     <i class="fas fa-id-card"></i> <span class="ms-1 d-none d-sm-inline"> &nbsp; &nbsp;Contactos</span>
                                 </a>

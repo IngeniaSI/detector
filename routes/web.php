@@ -13,6 +13,7 @@ use App\Http\Controllers\crudObjetivoController;
 use App\Http\Controllers\crudOportunidadesController;
 use App\Http\Controllers\crudPromotoresController;
 use App\Http\Controllers\crudResultadosController;
+use App\Http\Controllers\reportesController;
 use App\Http\Controllers\repuestasEncuestasController;
 
 use App\Models\bitacora;
@@ -120,6 +121,14 @@ Route::prefix('/')->middleware('auth')->group(function (){
         Route::get('/distritos-locales/{municipio}', [estadisticaController::class, 'distritosLocales']);
         Route::get('/secciones/{distritoLocal}', [estadisticaController::class, 'secciones']);
 
+    });
+    Route::prefix('reportes')->controller(reportesController::class)->group(function(){
+        Route::get('/', 'index')
+        ->name('reportes.index');
+        Route::get('/generar-reporte-1', 'generarReporte1')
+        ->name('reportes.generarReporte1');
+        Route::get('/generar-reporte-2', 'generarReporte2')
+        ->name('reportes.generarReporte2');
     });
     Route::prefix('encuestas')->group(function(){
         Route::controller(crudEncuestasController::class)->group(function(){

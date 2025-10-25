@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\bitacora;
+use App\Models\distritoFederal;
+use App\Models\distritoLocal;
 use App\Models\domicilio;
 use App\Models\identificacion;
 use App\Models\persona;
+use App\Models\seccion;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,8 +22,25 @@ class crudPersonasController extends Controller
             session()->flash('personaModificarDenegada', 'No se puede modificar una persona autorizada');
             return redirect()->route('crudSimpatizantes.index');
         }
+        $distritosEstatales = distritoFederal::select(
+            'id',
+            'id as text',
+        )
+        ->get();
+        $distritoLocales = distritoLocal::select(
+            'id',
+            'id as text',
+        )
+        ->get();
+        $secciones = seccion::select(
+            'id',
+            'id as text',
+        )
+        ->get();
+
         return view('formularioSimpatizante', ['persona' => $persona->id, 'latitud' => $persona->identificacion->domicilio->latitud,
-        'longitud' => $persona->identificacion->domicilio->longitud]);
+        'longitud' => $persona->identificacion->domicilio->longitud, 'distritosEstatales' => $distritosEstatales,
+        'distritoLocales' => $distritoLocales, 'secciones' => $secciones]);
     }
 
     public function cargarPersona(persona $persona){

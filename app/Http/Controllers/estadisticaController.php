@@ -456,19 +456,28 @@ class estadisticaController extends Controller
 
     public function municipios($distritoFederalId)
     {
-        $municipios = municipio::where('distrito_federal_id', $distritoFederalId)->orderBy('nombre')->get();
+        $distritoFederalArray = explode(',', $distritoFederalId);
+        $municipios = municipio::when(!in_array(0, $distritoFederalArray) || empty($distritoFederalArray), function ($query) use ($distritoFederalArray) {
+            $query->whereIn('distrito_federal_id', $distritoFederalArray);
+        })->orderBy('nombre')->get();
         return response()->json($municipios);
     }
 
     public function distritosLocales($municipioId)
     {
-        $locales = distritoLocal::where('municipio_id', $municipioId)->orderBy('id')->get();
+        $MunicipioArray = explode(',', $municipioId);
+        $locales = distritoLocal::when(!in_array(0, $MunicipioArray) || empty($MunicipioArray), function ($query) use ($MunicipioArray) {
+            $query->whereIn('municipio_id', $MunicipioArray);
+        })->orderBy('id')->get();
         return response()->json($locales);
     }
 
     public function secciones($distritoLocalId)
     {
-        $secciones = seccion::where('distrito_local_id', $distritoLocalId)->orderBy('id')->get();
+        $distritoLocalArray = explode(',', $distritoLocalId);
+        $secciones = seccion::when(!in_array(0, $distritoLocalArray) || empty($distritoLocalArray), function ($query) use ($distritoLocalArray) {
+            $query->whereIn('distrito_local_id', $distritoLocalArray);
+        })->orderBy('id')->get();
         return response()->json($secciones);
     }
 }

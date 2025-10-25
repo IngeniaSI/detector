@@ -115,8 +115,9 @@
                     <i class="fas fa-search me-1"></i>
                     Base de Datos
                 </div>
-                <div class="card-body">
+                <div class="card-body d-flex justify-content-between align-items-center">
                     <input id="botonConsultar" class="btn btn-primary btn-block" type="button" value="Consultar" />
+                    <small class="col-9">Las personas que no estén registradas en ninguna sección solo aparecen con el filtro "Todos".</small>
                 </div>
             </div>
 
@@ -292,46 +293,51 @@
                 }
             });
             $(document).ready(function () {
-            $('.select2').select2({
-                placeholder: "Selecciona una opción",
-                allowClear: true
-            });
+                $('.select2').select2({
+                    placeholder: "Selecciona una opción",
+                    allowClear: true
+                });
 
-            $('#distrito_federal').on('change', function() {
-                const id = $(this).val();
-                $('#municipio').empty().append('<option value="0">Todos</option>');
-                $('#distrito_local').empty().append('<option value="0">Todos</option>');
-                $('#seccion').empty().append('<option value="0">Todos</option>');
+                $('#distrito_federal').on('change', function() {
+                    const id = $(this).val();
+                    $('#municipio').empty().append('<option value="0">Todos</option>');
+                    $('#distrito_local').empty().append('<option value="0">Todos</option>');
+                    $('#seccion').empty().append('<option value="0">Todos</option>');
 
-                if (id && id != 0) {
-                    $.get(`/estadistica/municipios/${id}`, function(data) {
-                        data.forEach(m => $('#municipio').append(`<option value="${m.id}">${m.nombre}</option>`));
-                    });
-                }
-            });
+                    //if (id && id != 0) {
+                        $.get(`/detector/estadistica/municipios/${id}`, function(data) {
+                            data.forEach(m => $('#municipio').append(`<option value="${m.id}">${m.nombre}</option>`));
+                        });
+                    //}
+                });
 
-            $('#municipio').on('change', function() {
-                const id = $(this).val();
-                $('#distrito_local').empty().append('<option value="0">Todos</option>');
-                $('#seccion').empty().append('<option value="0">Todos</option>');
+                $('#municipio').on('change', function() {
+                    const id = $(this).val();
+                    $('#distrito_local').empty().append('<option value="0">Todos</option>');
+                    $('#seccion').empty().append('<option value="0">Todos</option>');
 
-                if (id && id != 0) {
-                    $.get(`/estadistica/distritos-locales/${id}`, function(data) {
-                        data.forEach(dl => $('#distrito_local').append(`<option value="${dl.id}">${dl.id}</option>`));
-                    });
-                }
-            });
+                    //if (id && id != 0) {
+                        $.get(`/detector/estadistica/distritos-locales/${id}`, function(data) {
+                            data.forEach(dl => $('#distrito_local').append(`<option value="${dl.id}">${dl.id}</option>`));
+                        });
+                    //}
+                });
 
-            $('#distrito_local').on('change', function() {
-                const id = $(this).val();
-                $('#seccion').empty().append('<option value="0">Todos</option>');
+                $('#distrito_local').on('change', function() {
+                    const id = $(this).val();
+                    $('#seccion').empty().append('<option value="0">Todos</option>');
 
-                if (id && id != 0) {
-                    $.get(`/estadistica/secciones/${id}`, function(data) {
-                        data.forEach(s => $('#seccion').append(`<option value="${s.id}">${s.id}</option>`));
-                    });
-                }
-            });
+                    //if (id && id != 0) {
+                        $.get(`/detector/estadistica/secciones/${id}`, function(data) {
+                            data.forEach(s => $('#seccion').append(`<option value="${s.id}">${s.id}</option>`));
+                        });
+                    //}
+                });
+
+                $('#distrito_federal').val(0).trigger('change');
+                $('#municipio').val(0).trigger('change');
+                $('#distrito_local').val(0).trigger('change');
+                $('#seccion').val(0).trigger('change');
 
                 $('#PorSeparado').hide();
                 $('.selectToo').select2();
