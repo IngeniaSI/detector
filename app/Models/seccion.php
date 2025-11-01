@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class seccion extends Model
 {
+    protected $fillable = [
+        'id',
+        'objetivo',
+        'poblacion',
+    ];
     use HasFactory;
     public function seccionColonia(){
         return $this->hasMany(seccionColonia::class);

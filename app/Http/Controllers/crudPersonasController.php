@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\listadoPersonasExport;
+use App\Exports\personasMultipleExport;
 use App\Models\bitacora;
 use App\Models\distritoFederal;
 use App\Models\distritoLocal;
@@ -14,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Facades\Excel;
 
 class crudPersonasController extends Controller
 {
@@ -258,5 +261,136 @@ class crudPersonasController extends Controller
             'seccion' => isset($persona->identificacion->seccion) ? $persona->identificacion->seccion->id : null,
         ];
         return view('consultarSimpatizante', $datos);
+    }
+    public function importarPersonas(Request $request)
+    {
+        $request->validate([
+            'archivo' => 'required|file|mimes:xlsx,csv,xls',
+        ]);
+
+        $data = Excel::toArray([], $request->file('archivo'))[0];
+
+        if (count($data) < 2) {
+            return back()->with('error', 'El archivo está vacío o no tiene datos.');
+        }
+
+        $headers = array_map('trim', $data[0]);
+
+        // Mapeo de columnas requeridas
+        $required = [
+            'Consecutivo',
+            'Nombres',
+            'Apellido paterno',
+            'Apellido materno',
+        ];
+
+        foreach ($required as $col) {
+            if (!in_array($col, $headers)) {
+                return back()->with('error', "Falta la columna requerida: {$col}");
+            }
+        }
+
+        // Índices de columnas
+        $idx = array_flip($headers);
+
+        DB::beginTransaction();
+
+        try {
+            for ($i = 1; $i < count($data); $i++) {
+                $fila = $data[$i];
+
+                $id = trim($fila[$idx['Consecutivo']] ?? null);
+                if (empty($id)) continue; // si no hay consecutivo, se omite
+
+                // Buscar si existe la persona
+                $persona = persona::find($id);
+
+                // Datos de persona
+                $personaData = [
+                    'folio' => $fila[$idx['Folio']] ?? null,
+                    'promotor_id' => $fila[$idx['promotor_id']] ?? null,
+                    'nombres' => $fila[$idx['Nombres']] ?? null,
+                    'apellido_paterno' => $fila[$idx['Apellido paterno']] ?? null,
+                    'apellido_materno' => $fila[$idx['Apellido materno']] ?? null,
+                    'genero' => $fila[$idx['Genero']] ?? null,
+                    'fecha_nacimiento' => $fila[$idx['Fecha de nacimiento']] ?? null,
+                    'edadPromedio' => $fila[$idx['Rango de edad']] ?? null,
+                    'telefono_celular' => $fila[$idx['Telefono celular']] ?? null,
+                    'telefono_fijo' => $fila[$idx['Telefono fijo']] ?? null,
+                    'correo' => $fila[$idx['Correo']] ?? null,
+                    'facebook' => $fila[$idx['Facebook']] ?? null,
+                    'escolaridad' => $fila[$idx['Escolaridad']] ?? null,
+                    'afiliado' => $fila[$idx['Afiliado']] ?? null,
+                    'simpatizante' => $fila[$idx['Simpatizante']] ?? null,
+                    'programa' => $fila[$idx['Programa']] ?? null,
+                    'funcion_en_campania' => $fila[$idx['Función en campaña']] ?? null,
+                    'rolEstructura' => $fila[$idx['Rol Designado']] ?? null,
+                    'rolNumero' => $fila[$idx['Id del rol']] ?? null,
+                    'supervisado' => $fila[$idx['Supervisado']] ?? null,
+                    'observaciones' => $fila[$idx['Observaciones']] ?? null,
+                    'etiquetas' => $fila[$idx['Etiquetas']] ?? null,
+                ];
+
+                // Si la persona no existe, crearla
+                if (!$persona) {
+                    $persona = persona::create(array_merge($personaData, ['id' => $id]));
+                } else {
+                    // Si existe, actualizar
+                    $persona->update(array_filter($personaData, fn($v) => $v !== null && $v !== ''));
+                }
+
+                // Datos de identificación
+                $identificacionData = [
+                    'clave_electoral' => $fila[$idx['Clave electoral']] ?? null,
+                    'curp' => $fila[$idx['CURP']] ?? null,
+                    'seccion_id' => $fila[$idx['Sección']] ?? null,
+                    // 'distrito_local' => $fila[$idx['Distrito Local']] ?? null,
+                    // 'municipio' => $fila[$idx['Municipio']] ?? null,
+                    // 'distrito_federal' => $fila[$idx['Distrito Federal']] ?? null,
+                    // 'entidad_federativa' => $fila[$idx['Entidad Federativa']] ?? null,
+                    'persona_id' => $persona->id,
+                ];
+
+                $identificacion = identificacion::firstOrNew(['persona_id' => $persona->id]);
+                $identificacion->fill(array_filter($identificacionData, fn($v) => $v !== null && $v !== ''));
+                $identificacion->save();
+
+                // Datos de domicilio
+                $domicilioData = [
+                    'calle' => $fila[$idx['Calle']] ?? null,
+                    'numero_exterior' => $fila[$idx['Numero exterior']] ?? null,
+                    'numero_interior' => $fila[$idx['Numero interior']] ?? null,
+                    'codigo_postal' => $fila[$idx['Código postal']] ?? null,
+                    'colonia' => $fila[$idx['Colonia']] ?? null,
+                    'identificacion_id' => $identificacion->id,
+                ];
+
+                // Buscar domicilio existente o crear nuevo
+                $domicilio = domicilio::firstOrNew(['identificacion_id' => $identificacion->id]);
+                $domicilio->fill(array_filter($domicilioData, fn($v) => $v !== null && $v !== ''));
+                $domicilio->save();
+
+
+
+
+            }
+
+            DB::commit();
+
+            return back()->with('success', 'Importación completada correctamente.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::info($e);
+            return back()->with('error', 'Error al importar: ' . $e->getMessage());
+        }
+    }
+
+
+    public function exportarPersonas(){
+        $fechaInicio = '2000-01-01';
+        $fechaFin = '2999-12-31';
+
+        return Excel::download(new personasMultipleExport($fechaInicio, $fechaFin), 'listado_completo.xlsx');
+
     }
 }

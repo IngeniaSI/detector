@@ -19,6 +19,12 @@ Tabla de Simpatizantes
         </script>
     @endif
     <br>
+     @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+    @if(session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
+    @endif
 
     <div class="container-fluid px-4">
         <h1 class="mt-4">Tabla de Personas</h1>
@@ -34,8 +40,9 @@ Tabla de Simpatizantes
             <div class="card-header">
                 <div class="d-flex justify-content-end">
                     @can('crudSimpatizantes.exportar')
-                        <a href="{{route('crudSimpatizantes.descargar')}}" target="_blank" class="me-3">
-                            <button class="btn btn-primary">Exportar a Excel</button>
+                            <a href="{{route('crudSimpatizantes.descargar')}}" target="_blank" class="me-3 mx-1">
+                            <a href="#" id="btnModalImport" class="btn btn-success mx-1">Importar Metas a Excel</a>
+                            <a href="{{route('crudPersonas.exportarPersonas')}}" target="_blank" class="btn btn-primary mx-1">Exportar a Excel</a>
                         </a>
                     @endcan
                     @can('agregarSimpatizante.index')
@@ -66,6 +73,27 @@ Tabla de Simpatizantes
             </div>
         </div>
     </div>
+    <!-- Modal -->
+<div class="modal fade" id="modalImportarMetas" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Importar listado de personas</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form id="formularioModalImportarMetas" action="{{ route('crudPersonas.importarPersonas') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="file" name="archivo" accept=".xlsx,.csv" required>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            <button type="button" id="btnGuardarModalImportarMetas" class="btn btn-primary">Guardar</button>
+        </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
@@ -200,6 +228,20 @@ Tabla de Simpatizantes
         });
 
 
+    });
+
+    $('#btnModalImport').click(function (){
+        $('#modalImportarMetas').modal('show');
+    });
+
+    $('#btnGuardarModalImportarMetas').click(function(){
+        Swal.fire({
+            title: 'Cargando...',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            html: '<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>'
+        });
+        $('#formularioModalImportarMetas').trigger('submit');
     });
 
 

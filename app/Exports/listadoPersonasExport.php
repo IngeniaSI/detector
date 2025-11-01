@@ -11,12 +11,13 @@ use Maatwebsite\Excel\Concerns\FromCollection;
 use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithTitle;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
-class listadoPersonasExport implements FromCollection, WithHeadings, WithStyles, ShouldAutoSize
-{
+class listadoPersonasExport implements FromCollection, WithHeadings, WithStyles, ShouldAutoSize, WithTitle
+{ 
     protected $fechaInicio;
     protected $fechaFin;
 
@@ -67,8 +68,6 @@ class listadoPersonasExport implements FromCollection, WithHeadings, WithStyles,
             'calle',
             'numero_exterior',
             'numero_interior',
-            'latitud',
-            'longitud',
         ]);
 
         $array = [];
@@ -160,9 +159,6 @@ class listadoPersonasExport implements FromCollection, WithHeadings, WithStyles,
             'Municipio',
             'Distrito Federal',
             'Entidad Federativa',
-
-            'Latitud',
-            'Longitud',
             'Observaciones',
             'Etiquetas',
         ];
@@ -208,4 +204,10 @@ class listadoPersonasExport implements FromCollection, WithHeadings, WithStyles,
 
             return [];
         }
-}
+
+    public function title(): string
+    {
+        return 'Listado Personas';
+    }
+
+    }

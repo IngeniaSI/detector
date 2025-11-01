@@ -32,8 +32,8 @@ class MetaExport implements FromCollection, WithHeadings, WithStyles, WithTitle,
                 'distrito_locals.id',
                 'seccions.id as SeccionID',
                 FacadesDB::raw("COUNT(personas.id) as Registros_Realizados"),
+                'seccions.objetivo as Objetivo',
                 'seccions.poblacion as Poblacion',
-                'seccions.objetivo as Objetivo'
             )
             ->groupBy('municipios.nombre', 'distrito_locals.id', 'seccions.id', 'seccions.poblacion', 'seccions.objetivo')
             ->orderBy('Registros_Realizados', 'desc')
@@ -48,8 +48,8 @@ class MetaExport implements FromCollection, WithHeadings, WithStyles, WithTitle,
             'Distrito Local',
             'Sección',
             'Registros Realizados',
-            'Población',
             'Objetivo',
+            'Votación total',
         ];
     }
       public function title(): string

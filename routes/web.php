@@ -104,6 +104,10 @@ Route::prefix('/')->middleware('auth')->group(function (){
             ->name('crudPersonas.modificarPersona')->middleware(['can:crudSimpatizantes.modificar', 'nivelAcceso']); //ESTOS NECESITA LA VALIDACION
             Route::get('/consultar-{persona}', 'consultar')
             ->name('crudPersonas.consultar')->middleware(['can:crudSimpatizantes.consultar', 'nivelAcceso']); //ESTOS NECESITA LA VALIDACION
+            Route::get('/exportar-personas', 'exportarPersonas')
+            ->name('crudPersonas.exportarPersonas');
+            Route::post('/importar-personas', 'importarPersonas')
+            ->name('crudPersonas.importarPersonas');
         });
     });
     Route::prefix('estadistica')->controller(estadisticaController::class)->group(function(){
@@ -117,6 +121,8 @@ Route::prefix('/')->middleware('auth')->group(function (){
         ->name('estadistica.cargarMeta')->middleware(['can:estadistica.cambiarMeta']);
         Route::get('/exportar-metas', 'exportarMetas')
         ->name('estadistica.exportarMetas')->middleware(['can:estadistica.cambiarMeta']);
+        Route::post('/importar-metas', 'importarMetas')
+        ->name('estadistica.importarMetas')->middleware(['can:estadistica.cambiarMeta']);
         Route::get('/municipios/{distrito}', [estadisticaController::class, 'municipios']);
         Route::get('/distritos-locales/{municipio}', [estadisticaController::class, 'distritosLocales']);
         Route::get('/secciones/{distritoLocal}', [estadisticaController::class, 'secciones']);

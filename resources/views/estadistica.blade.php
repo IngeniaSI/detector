@@ -47,11 +47,18 @@
         </div>
         <div class="align-self-end">
             @can('estadistica.cambiarMeta')
+                <a href="#" id="btnModalImport" class="btn btn-success">Importar Metas a Excel</a>
                 <a href="{{ route('estadistica.exportarMetas') }}" target="_blank" class="btn btn-success">Exportar Metas a Excel</a>
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cargarMeta">Cargar Meta </button>
             @endcan
         </div>
     </div>
+     @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+    @if(session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
+    @endif
     {{-- CONTROLADORES --}}
     <div class="row">
         <div class="col">
@@ -236,10 +243,35 @@
             </div>
         </div>
     </div>
-
-
-
-
+</div>
+<!-- Modal -->
+<div class="modal fade" id="modalImportarMetas" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Importar metas y listado nominal</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="mb-3">
+                <label for="" class="fw-bold mb-3">Ejemplo Archivo para importar Metas</label>
+                <img src="{{ asset('ejemplo_importar.png') }}" alt="Ejemplo de archivo" class="img-fluid rounded shadow-sm mb-2" style="max-height: 200px;">
+                <small class="text-muted d-block">
+                    Este es un ejemplo de un archivo para importar datos. <br>
+                    <strong>Verifique mayúsculas y ortografía</strong> en los nombres de las columnas.
+                </small>
+            </div>
+            <form id="formularioModalImportarMetas" action="{{ route('estadistica.importarMetas') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="file" name="archivo" accept=".xlsx,.csv" required>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            <button type="button" id="btnGuardarModalImportarMetas" class="btn btn-primary">Guardar</button>
+        </div>
+        </div>
+    </div>
 </div>
 @endsection
 
@@ -374,7 +406,7 @@
                                                 $('<input>').attr('type', 'number').attr('id', 'cantidadObjetivo').attr('name', 'cantidadObjetivo').addClass('form-control').val(valueOfElement.objetivo)
                                         ),
                                         $('<div>').addClass('col').append(
-                                            $('<h4>').text('Listado Nominal:'),
+                                            $('<h4>').text('Votación Total:'),
                                                 $('<input>').attr('type', 'number').attr('id', 'poblacion').attr('name', 'poblacion').addClass('form-control').val(valueOfElement.poblacion)
                                         ),
                                         $('<div>').addClass(['col', 'align-self-end']).append(
@@ -661,6 +693,21 @@
                 });
                 lanzarConsulta();
             });
+
+            $('#btnModalImport').click(function (){
+                $('#modalImportarMetas').modal('show');
+            });
+
+            $('#btnGuardarModalImportarMetas').click(function(){
+                Swal.fire({
+                    title: 'Cargando...',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    html: '<div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div>'
+                });
+                $('#formularioModalImportarMetas').trigger('submit');
+            });
+
             $('#botonConsultar').click(function (e) {
                 datosVacios = false;
                 if($('#tipoSeleccion').val() == 'AGRUPAR' && $('#seccionarAgrupar').val().length <= 0){

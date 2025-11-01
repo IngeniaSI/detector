@@ -454,6 +454,75 @@ class estadisticaController extends Controller
         return Excel::download(new MetaExport, 'metas_secciones.xlsx');
     }
 
+    public function importarMetas(Request $request)
+    {
+        $request->validate([
+            'archivo' => 'required|file|mimes:xlsx,csv,xls',
+        ]);
+
+        $data = Excel::toArray([], $request->file('archivo'))[0];
+
+        if (count($data) < 1) {
+            return back()->with('error', 'El archivo está vacío.');
+        }
+
+        $headers = array_map('trim', $data[0]);
+        $required = ['sección', 'objetivos', 'votación total'];
+
+        foreach ($required as $col) {
+            if (!in_array($col, $headers)) {
+                return back()->with('error', "Falta la columna requerida: {$col}");
+            }
+        }
+
+        $idxSeccion = array_search('sección', $headers);
+        $idxObjetivos = array_search('objetivos', $headers);
+        $idxVotacion = array_search('votación total', $headers);
+
+        $updates = [];
+        for ($i = 1; $i < count($data); $i++) {
+            $fila = $data[$i];
+            $seccion = trim($fila[$idxSeccion] ?? '');
+            $objetivo = trim($fila[$idxObjetivos] ?? '');
+            $votacion = trim($fila[$idxVotacion] ?? '');
+
+            if (empty($seccion)) break;
+
+            $updates[$seccion] = [
+                'objetivo' => is_numeric($objetivo) ? $objetivo : 0,
+                'poblacion' => is_numeric($votacion) ? $votacion : 0,
+            ];
+        }
+
+        if (empty($updates)) {
+            return back()->with('error', 'No hay datos válidos para actualizar.');
+        }
+
+        // 🔥 Construir un UPDATE masivo con CASE
+        $ids = implode(',', array_keys($updates));
+
+        $sqlObjetivo = "CASE id ";
+        $sqlPoblacion = "CASE id ";
+
+        foreach ($updates as $id => $valores) {
+            $sqlObjetivo .= "WHEN {$id} THEN {$valores['objetivo']} ";
+            $sqlPoblacion .= "WHEN {$id} THEN {$valores['poblacion']} ";
+        }
+
+        $sqlObjetivo .= "END";
+        $sqlPoblacion .= "END";
+
+        $sql = "UPDATE seccions
+                SET objetivo = {$sqlObjetivo},
+                    poblacion = {$sqlPoblacion}
+                WHERE id IN ({$ids})";
+
+        DB::statement($sql);
+
+        return back()->with('success', 'Importación completada correctamente.');
+    }
+
+
     public function municipios($distritoFederalId)
     {
         $distritoFederalArray = explode(',', $distritoFederalId);

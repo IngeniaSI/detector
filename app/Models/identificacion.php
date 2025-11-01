@@ -7,6 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class identificacion extends Model
 {
+    protected $fillable = [
+        'clave_electoral',
+        'curp',
+        'seccion',
+        'persona_id'
+    ];
     use HasFactory;
     public function persona(){
         return $this->belongsTo(persona::class);
